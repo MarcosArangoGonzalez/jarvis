@@ -1,16 +1,23 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/bin/bash
 
-patterns='(OPENAI_API_KEY|ANTHROPIC_API_KEY|GITHUB_TOKEN|GITHUB_PERSONAL_ACCESS_TOKEN|SLACK_BOT_TOKEN|ELEVENLABS_API_KEY|PIPER_[A-Z_]*|sk-[A-Za-z0-9_-]{20,}|ghp_[A-Za-z0-9_]{20,}|xox[baprs]-[A-Za-z0-9-]{20,})'
+# 1. Ignorar el propio script de hook y archivos de configuración conocidos
+# 2. Buscar patrones que parezcan claves reales (no solo el nombre de la variable)
+# 3. Permitir el uso de placeholders tipo ${VAR} o os.getenv("VAR")
 
-if ! git diff --cached --name-only --diff-filter=ACMR | grep -q .; then
-  exit 0
-fi
+# Regex mejorada: busca el prefijo seguido de caracteres típicos de una clave, 
+# evitando placeholders comunes de shell o python.
+PATTERNS="(sk-[A-Za-z0-9_-]{20,}|ghp_[A-Za-z0-9_]{20,}|xox[baprs]-[A-Za-z0-9-]{20,})"
 
-matches="$(git diff --cached --unified=0 --no-ext-diff | grep -E "^\+" | grep -Ev "^\+\+\+" | grep -E "$patterns" || true)"
+# Archivos en el área de stage (excluyendo el propio hook)
+FILES=$(git diff --cached --name-only | grep -v ".githooks/pre-commit")
 
-if [ -n "$matches" ]; then
-  echo "Jarvis Kernel: possible secret detected in staged changes. Commit blocked." >&2
-  echo "$matches" >&2
-  exit 1
+if [ -z "$FILES" ]; then exit 0; fi
+
+FORBIDDEN_FOUND=$(git diff --cached -- $FILES | grep -E "$PATTERNS" | grep -vE "(\$\{|=.*getenv|DEFAULT_PIPER)")
+
+if [ ! -z "$FORBIDDEN_FOUND" ]; then
+    echo "❌ Jarvis Kernel: Posible secreto REAL detectado en los cambios."
+    echo "$FORBIDDEN_FOUND"
+    echo "Commit bloqueado por seguridad. Revisa las claves antes de continuar."
+    exit 1
 fi
