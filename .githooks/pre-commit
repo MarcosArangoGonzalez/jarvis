@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+patterns='(OPENAI_API_KEY|ANTHROPIC_API_KEY|GITHUB_TOKEN|GITHUB_PERSONAL_ACCESS_TOKEN|SLACK_BOT_TOKEN|ELEVENLABS_API_KEY|PIPER_[A-Z_]*|sk-[A-Za-z0-9_-]{20,}|ghp_[A-Za-z0-9_]{20,}|xox[baprs]-[A-Za-z0-9-]{20,})'
+
+if ! git diff --cached --name-only --diff-filter=ACMR | grep -q .; then
+  exit 0
+fi
+
+matches="$(git diff --cached --unified=0 --no-ext-diff | grep -E "^\+" | grep -Ev "^\+\+\+" | grep -E "$patterns" || true)"
+
+if [ -n "$matches" ]; then
+  echo "Jarvis Kernel: possible secret detected in staged changes. Commit blocked." >&2
+  echo "$matches" >&2
+  exit 1
+fi

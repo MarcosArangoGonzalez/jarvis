@@ -1,0 +1,58 @@
+.codex
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+secrets/
+credentials/
+local-secrets/
+
+# Voice and local model artifacts
+tools/local/
+tools/models/
+tools/voice/
+*.onnx
+*.gguf
+*.bin
+*.wav
+*.mp3
+*.flac
+*.m4a
+*.ogg
+
+# Python and Node
+__pycache__/
+*.pyc
+.venv/
+venv/
+node_modules/
+npm-debug.log*
+
+# Obsidian local state
+.obsidian/workspace
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/cache/
+.obsidian/trash/
+.trash/
+
+# OS/editor/build temp
+.DS_Store
+*.swp
+*.swo
+*.tmp
+*.log
+.cache/
+dist/
+build/
+
+# Raw temporary and archived imports
+raw/**/*.tmp
+raw/**/*.log
+raw/archive/
