@@ -87,6 +87,7 @@ def paste_clipboard(terminal: bool = False) -> bool:
 
         ydotool = shutil.which("ydotool")
         if ydotool:
+            ensure_ydotoold()
             command = [ydotool, "key", "29:1", "42:1", "47:1", "47:0", "42:0", "29:0"] if terminal else [ydotool, "key", "29:1", "47:1", "47:0", "29:0"]
             if subprocess.run(command, check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode == 0:
                 return True
@@ -98,6 +99,19 @@ def paste_clipboard(terminal: bool = False) -> bool:
             return True
 
     return False
+
+
+def ensure_ydotoold() -> None:
+    ydotoold = shutil.which("ydotoold")
+    if not ydotoold:
+        return
+    if subprocess.run(["pgrep", "-x", "ydotoold"], check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode == 0:
+        return
+    try:
+        subprocess.Popen([ydotoold], start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        time.sleep(0.2)
+    except Exception as exc:
+        print(f"voice_bridge warning: could not start ydotoold ({exc}); paste may fail.", file=sys.stderr)
 
 
 def type_text(text: str, terminal: bool = False) -> bool:

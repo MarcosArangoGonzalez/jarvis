@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Jarvis Voice Toggle
+Comment=Start or stop Jarvis voice dictation
+Exec=/home/marcos/jarvis/tools/skills/jarvis_voice_toggle.sh
+Icon=audio-input-microphone
+Terminal=false
+Categories=AudioVideo;Audio;

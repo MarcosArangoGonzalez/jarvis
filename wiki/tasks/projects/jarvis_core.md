@@ -92,6 +92,8 @@ Implemented on 2026-04-12:
 - optional Ollama refinement when `JARVIS_VOICE_REFINE_MODEL` or `OLLAMA_MODEL` is configured
 - desktop notifications through `notify-send`
 - shortcut wrapper: `tools/skills/jarvis_voice_flow.sh`
+- recommended toggle wrapper: `tools/skills/jarvis_voice_toggle.sh`
+- optional launcher: `tools/skills/jarvis-voice-toggle.desktop`
 
 Quality update on 2026-04-13:
 
@@ -101,6 +103,15 @@ Quality update on 2026-04-13:
 - added `--prompt` and `--no-prompt` controls for `listen` and `transcribe`
 - verified a 3s microphone test with `ggml-small.bin`: output was `Hola buenas tardes.`
 
+Interaction update on 2026-04-13:
+
+- added toggle behavior: first shortcut press starts recording, second press stops recording and runs transcription/paste
+- kept the fixed-duration wrapper as fallback
+- added a `.desktop` launcher for icon-based activation
+- confirmed GNOME shortcut: `Super + Shift + V`
+- confirmed `ydotoold` is running for Wayland paste support
+- installed local launcher at `~/.local/share/applications/jarvis-voice-toggle.desktop`
+
 Known constraints:
 
 - Ollama has no local models installed yet, so refinement is disabled by default in the wrapper.
@@ -109,8 +120,7 @@ Known constraints:
 
 Recommended implementation order:
 
-1. Bind `/home/marcos/jarvis/tools/skills/jarvis_voice_flow.sh` to an Ubuntu global shortcut.
-2. Validate paste in Codex, Claude Code, browser text fields, and terminal.
-3. If paste fails on Wayland, start/enable `ydotoold` or install `wtype`.
-4. Install an Ollama model if refinement becomes necessary.
-5. Compare against OpenWhispr only if the custom shortcut flow is unreliable.
+1. Validate paste in Codex, Claude Code, browser text fields, and terminal.
+2. If paste fails on Wayland, start/enable `ydotoold` or install `wtype`.
+3. Install an Ollama model if refinement becomes necessary.
+4. Compare against OpenWhispr only if the custom shortcut flow is unreliable.
