@@ -21,3 +21,4 @@ Summary: Chronological operating log for JarvisOS.
 - Added global session protocol in `.jarvis/session_manager.md`, linked it from `CLAUDE.md`, and initialized BJJ RAG feature progress tracking.
 - Added BJJ agentic RAG graph design and TFG project document index.
 - Added scalable task structure under `wiki/tasks/`, root `README.md`, and morning coffee quick-start protocol.
+- Implemented Jarvis Voice Flow v1: fixed-duration recording, whisper.cpp transcription, optional Ollama refinement, Wayland/X11 clipboard and paste attempt, and Ubuntu shortcut wrapper.

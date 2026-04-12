@@ -9,6 +9,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import time
 from pathlib import Path
 
 
@@ -17,6 +18,8 @@ DEFAULT_WHISPER_BIN = ROOT / "tools" / "local" / "whisper.cpp" / "build" / "bin"
 DEFAULT_WHISPER_MODEL = ROOT / "tools" / "local" / "whisper.cpp" / "models" / "ggml-base.bin"
 DEFAULT_PIPER_BIN = ROOT / "tools" / "local" / "voice-venv" / "bin" / "piper"
 DEFAULT_PIPER_MODEL = ROOT / "tools" / "local" / "piper-voices" / "en_US-lessac-medium.onnx"
+DEFAULT_LISTEN_SECONDS = int(os.getenv("JARVIS_VOICE_DURATION", "8"))
+DEFAULT_LANGUAGE = os.getenv("JARVIS_VOICE_LANGUAGE", "es")
 
 
 def resolve_binary(env_name: str, fallback: str, local_default: Path) -> str | None:
@@ -37,15 +40,101 @@ def resolve_path(env_name: str, local_default: Path) -> str | None:
     return None
 
 
+def notify(title: str, message: str) -> None:
+    notifier = shutil.which("notify-send")
+    if notifier:
+        subprocess.run([notifier, title, message, "-i", "audio-input-microphone", "-t", "2500"], check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+
 def copy_to_clipboard(text: str) -> None:
+    wl_copy = shutil.which("wl-copy")
+    if os.getenv("WAYLAND_DISPLAY") and wl_copy:
+        subprocess.run([wl_copy], input=text, text=True, check=True)
+        return
+
+    xclip = shutil.which("xclip")
+    if os.getenv("DISPLAY") and xclip:
+        subprocess.run([xclip, "-selection", "clipboard"], input=text, text=True, check=True)
+        return
+
     try:
         import pyperclip  # type: ignore
     except Exception as exc:  # pragma: no cover - environment dependent
-        raise RuntimeError(f"pyperclip is required for clipboard injection: {exc}") from exc
+        raise RuntimeError(f"wl-copy, xclip, or pyperclip is required for clipboard injection: {exc}") from exc
     pyperclip.copy(text)
 
 
-def transcribe(audio_path: Path) -> str:
+def paste_clipboard(terminal: bool = False) -> bool:
+    if os.getenv("WAYLAND_DISPLAY"):
+        wtype = shutil.which("wtype")
+        if wtype:
+            command = [wtype, "-M", "ctrl", "-M", "shift", "v", "-m", "shift", "-m", "ctrl"] if terminal else [wtype, "-M", "ctrl", "v", "-m", "ctrl"]
+            if subprocess.run(command, check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode == 0:
+                return True
+
+        ydotool = shutil.which("ydotool")
+        if ydotool:
+            command = [ydotool, "key", "29:1", "42:1", "47:1", "47:0", "42:0", "29:0"] if terminal else [ydotool, "key", "29:1", "47:1", "47:0", "29:0"]
+            if subprocess.run(command, check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode == 0:
+                return True
+
+    xdotool = shutil.which("xdotool")
+    if os.getenv("DISPLAY") and xdotool:
+        command = [xdotool, "key", "ctrl+shift+v"] if terminal else [xdotool, "key", "ctrl+v"]
+        if subprocess.run(command, check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode == 0:
+            return True
+
+    return False
+
+
+def type_text(text: str, terminal: bool = False) -> bool:
+    copy_to_clipboard(text)
+    time.sleep(0.08)
+    return paste_clipboard(terminal=terminal)
+
+
+def record_audio(output: Path, duration: int) -> Path:
+    if duration <= 0:
+        raise RuntimeError("duration must be greater than zero seconds.")
+
+    ffmpeg = shutil.which("ffmpeg")
+    if ffmpeg:
+        command = [ffmpeg, "-y", "-hide_banner", "-loglevel", "error", "-f", "pulse", "-i", "default", "-t", str(duration), "-ac", "1", "-ar", "16000", str(output)]
+        if subprocess.run(command, check=False).returncode == 0:
+            return output
+
+    arecord = shutil.which("arecord")
+    if arecord:
+        command = [arecord, "-D", "pulse", "-f", "S16_LE", "-r", "16000", "-c", "1", "-d", str(duration), str(output)]
+        subprocess.run(command, check=True)
+        return output
+
+    raise RuntimeError("ffmpeg or arecord is required for voice recording.")
+
+
+def refine_text(text: str) -> str:
+    model = os.getenv("JARVIS_VOICE_REFINE_MODEL") or os.getenv("OLLAMA_MODEL")
+    ollama = shutil.which("ollama")
+    if not model or not ollama:
+        print("voice_bridge warning: refine requested but JARVIS_VOICE_REFINE_MODEL/OLLAMA_MODEL or ollama is unavailable; using raw transcription.", file=sys.stderr)
+        return text
+
+    prompt = (
+        "Corrige la transcripcion de voz manteniendo el significado original. "
+        "Devuelve solo el texto final, sin explicaciones. "
+        "Respeta terminos tecnicos de programacion, BJJ, Codex, Claude y Jarvis.\n\n"
+        f"Transcripcion:\n{text}"
+    )
+    try:
+        completed = subprocess.run([ollama, "run", model, prompt], check=True, capture_output=True, text=True, timeout=45)
+    except Exception as exc:
+        print(f"voice_bridge warning: refine failed ({exc}); using raw transcription.", file=sys.stderr)
+        return text
+    refined = completed.stdout.strip()
+    return refined or text
+
+
+def transcribe(audio_path: Path, language: str | None = None) -> str:
     whisper_bin = resolve_binary("WHISPER_CPP_BIN", "whisper-cli", DEFAULT_WHISPER_BIN)
     model = resolve_path("WHISPER_MODEL", DEFAULT_WHISPER_MODEL)
     if not whisper_bin:
@@ -54,9 +143,31 @@ def transcribe(audio_path: Path) -> str:
         raise RuntimeError("WHISPER_MODEL must point to a whisper.cpp ggml model.")
 
     command = [whisper_bin, "-m", model, "-f", str(audio_path), "-nt"]
+    if language:
+        command.extend(["-l", language])
     completed = subprocess.run(command, check=True, capture_output=True, text=True)
     text = completed.stdout.strip()
     copy_to_clipboard(text)
+    return text
+
+
+def listen(duration: int, output: Path | None, language: str | None, refine: bool, inject: bool, terminal: bool, keep_audio: bool) -> str:
+    audio_path = output or (Path(tempfile.gettempdir()) / f"jarvis-voice-{os.getpid()}.wav")
+    notify("JarvisOS", f"Escuchando durante {duration}s...")
+    record_audio(audio_path, duration)
+    notify("JarvisOS", "Transcribiendo...")
+    text = transcribe(audio_path, language=language)
+    if refine:
+        notify("JarvisOS", "Corrigiendo transcripcion...")
+        text = refine_text(text)
+        copy_to_clipboard(text)
+    pasted = type_text(text, terminal=terminal) if inject else False
+    if inject and not pasted:
+        notify("JarvisOS", "Texto copiado. Pega manualmente con Ctrl+V.")
+    else:
+        notify("JarvisOS", "Dictado listo.")
+    if not keep_audio and not output:
+        audio_path.unlink(missing_ok=True)
     return text
 
 
@@ -88,10 +199,22 @@ def check() -> int:
         "WHISPER_MODEL": resolve_path("WHISPER_MODEL", DEFAULT_WHISPER_MODEL),
         "PIPER_BIN": piper_bin,
         "PIPER_VOICE_MODEL": resolve_path("PIPER_VOICE_MODEL", DEFAULT_PIPER_MODEL),
+        "RECORDER": shutil.which("ffmpeg") or shutil.which("arecord"),
+        "CLIPBOARD": shutil.which("wl-copy") or shutil.which("xclip") or "pyperclip",
+        "PASTE_TOOL": shutil.which("wtype") or shutil.which("ydotool") or shutil.which("xdotool") or "clipboard-only",
     }
     for key, value in checks.items():
         print(f"{key}: {value or 'missing'}")
     return 0 if all(checks.values()) else 1
+
+
+def normalize_legacy_args(argv: list[str]) -> list[str]:
+    commands = {"check", "notify", "speak", "transcribe", "listen"}
+    if any(arg in commands for arg in argv):
+        return argv
+    if "--listen" in argv:
+        return ["listen"] + [arg for arg in argv if arg != "--listen"]
+    return argv
 
 
 def main() -> None:
@@ -104,7 +227,19 @@ def main() -> None:
     speak_parser.add_argument("text")
     transcribe_parser = subparsers.add_parser("transcribe")
     transcribe_parser.add_argument("audio", type=Path)
-    args = parser.parse_args()
+    transcribe_parser.add_argument("--language", default=DEFAULT_LANGUAGE)
+    transcribe_parser.add_argument("--refine", action="store_true")
+    transcribe_parser.add_argument("--type", action="store_true", dest="inject")
+    transcribe_parser.add_argument("--terminal-paste", action="store_true")
+    listen_parser = subparsers.add_parser("listen")
+    listen_parser.add_argument("--duration", "-d", type=int, default=DEFAULT_LISTEN_SECONDS)
+    listen_parser.add_argument("--output", type=Path)
+    listen_parser.add_argument("--language", default=DEFAULT_LANGUAGE)
+    listen_parser.add_argument("--refine", action="store_true")
+    listen_parser.add_argument("--type", action="store_true", dest="inject")
+    listen_parser.add_argument("--terminal-paste", action="store_true")
+    listen_parser.add_argument("--keep-audio", action="store_true")
+    args = parser.parse_args(normalize_legacy_args(sys.argv[1:]))
 
     if args.command == "check":
         raise SystemExit(check())
@@ -112,7 +247,16 @@ def main() -> None:
         print(speak(args.text))
         return
     if args.command == "transcribe":
-        print(transcribe(args.audio))
+        text = transcribe(args.audio, language=args.language)
+        if args.refine:
+            text = refine_text(text)
+            copy_to_clipboard(text)
+        if args.inject and not type_text(text, terminal=args.terminal_paste):
+            notify("JarvisOS", "Texto copiado. Pega manualmente con Ctrl+V.")
+        print(text)
+        return
+    if args.command == "listen":
+        print(listen(args.duration, args.output, args.language, args.refine, args.inject, args.terminal_paste, args.keep_audio))
         return
 
 

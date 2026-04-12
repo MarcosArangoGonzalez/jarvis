@@ -29,7 +29,7 @@ Summary: "Global Jarvis task dashboard for daily planning across projects and li
 
 | Priority | Task | Project | Feature | Status | Next Action | Source |
 |---|---|---|---|---|---|---|
-| P1 | Configure Jarvis voice flow | Jarvis Core | Voice | Ready | Plan changes to `voice_bridge.py` and wrapper script | `wiki/tasks/projects/jarvis_core.md` |
+| P1 | Configure Jarvis voice flow | Jarvis Core | Voice | Implemented v1 | Bind `jarvis_voice_flow.sh` to an Ubuntu shortcut and validate paste in Codex/Claude | `wiki/tasks/projects/jarvis_core.md` |
 | P1 | Implement Intent Classifier + Router | BJJ RAG | Agentic RAG | Ready | Start with rules-only classifier, no LLM | `wiki/tasks/projects/bjj_rag.md` |
 | P2 | Create TFG anteproyecto/memoria outline | TFG BJJ App | TFG Docs | Backlog | Draft document structure and evaluation rubric | `wiki/tasks/projects/tfg_bjj_app.md` |
 

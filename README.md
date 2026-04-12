@@ -87,17 +87,24 @@ keyboard shortcut -> record -> transcribe -> optionally refine -> paste into foc
 
 Current state:
 
-- `tools/skills/voice_bridge.py` supports `check`, `notify`, `speak`, and `transcribe <audio>`.
-- It does not yet support `--listen`, `--refine`, or `--type`.
+- `tools/skills/voice_bridge.py` supports `check`, `notify`, `speak`, `transcribe <audio>`, and `listen`.
+- Legacy invocation also works: `voice_bridge.py --listen --duration 8 --language es --type`.
+- `tools/skills/jarvis_voice_flow.sh` wraps the default dictation flow for an Ubuntu keyboard shortcut.
 - Piper and whisper.cpp runtime assets exist under `tools/local/`.
+- The workstation is currently on Wayland, so paste is Wayland-first with X11 fallback.
 
-Recommended next implementation:
+Default usage:
 
-1. Add recording/listen mode.
-2. Add paste/type mode using clipboard + `xdotool`/`xclip` for X11, with Wayland caveat.
-3. Add optional refinement with a local or configured LLM.
-4. Add `jarvis_voice_flow.sh` wrapper.
-5. Configure Ubuntu keyboard shortcut manually.
+```bash
+/home/marcos/jarvis/tools/skills/jarvis_voice_flow.sh
+```
+
+Recommended next configuration:
+
+1. Bind the wrapper to an Ubuntu custom keyboard shortcut.
+2. Ensure Wayland paste works by running `ydotoold` or installing `wtype`.
+3. If refinement is needed, install an Ollama model and set `JARVIS_VOICE_REFINE=1` plus `JARVIS_VOICE_REFINE_MODEL=<model>`.
+4. Optionally compare against OpenWhispr later if the custom flow is not smooth enough.
 
 ## Handover
 
