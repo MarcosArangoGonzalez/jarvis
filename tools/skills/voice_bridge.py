@@ -16,10 +16,21 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_WHISPER_BIN = ROOT / "tools" / "local" / "whisper.cpp" / "build" / "bin" / "whisper-cli"
 DEFAULT_WHISPER_MODEL = ROOT / "tools" / "local" / "whisper.cpp" / "models" / "ggml-base.bin"
+PREFERRED_WHISPER_MODEL = ROOT / "tools" / "local" / "whisper.cpp" / "models" / "ggml-small.bin"
 DEFAULT_PIPER_BIN = ROOT / "tools" / "local" / "voice-venv" / "bin" / "piper"
 DEFAULT_PIPER_MODEL = ROOT / "tools" / "local" / "piper-voices" / "en_US-lessac-medium.onnx"
 DEFAULT_LISTEN_SECONDS = int(os.getenv("JARVIS_VOICE_DURATION", "8"))
 DEFAULT_LANGUAGE = os.getenv("JARVIS_VOICE_LANGUAGE", "es")
+DEFAULT_WHISPER_PROMPT = os.getenv(
+    "JARVIS_WHISPER_PROMPT",
+    (
+        "Jarvis, Codex, Claude Code, bjj-app, RAG agentico, LangGraph, backend, frontend, "
+        "Python, Java, Spring Boot, Docker, PostgreSQL, Chroma, Gemini, Ollama, Whisper, "
+        "Brazilian Jiu Jitsu, BJJ, jiu jitsu, guardia, media guardia, guardia mariposa, "
+        "De la Riva, mount, side control, back control, rear naked choke, armbar, triangle, "
+        "kimura, americana, berimbolo, combat story, grader, router, retriever, evaluator."
+    ),
+)
 
 
 def resolve_binary(env_name: str, fallback: str, local_default: Path) -> str | None:
@@ -35,6 +46,8 @@ def resolve_path(env_name: str, local_default: Path) -> str | None:
     configured = os.getenv(env_name)
     if configured:
         return configured
+    if env_name == "WHISPER_MODEL" and PREFERRED_WHISPER_MODEL.exists():
+        return str(PREFERRED_WHISPER_MODEL)
     if local_default.exists():
         return str(local_default)
     return None
@@ -134,7 +147,7 @@ def refine_text(text: str) -> str:
     return refined or text
 
 
-def transcribe(audio_path: Path, language: str | None = None) -> str:
+def transcribe(audio_path: Path, language: str | None = None, prompt: str | None = DEFAULT_WHISPER_PROMPT) -> str:
     whisper_bin = resolve_binary("WHISPER_CPP_BIN", "whisper-cli", DEFAULT_WHISPER_BIN)
     model = resolve_path("WHISPER_MODEL", DEFAULT_WHISPER_MODEL)
     if not whisper_bin:
@@ -145,18 +158,21 @@ def transcribe(audio_path: Path, language: str | None = None) -> str:
     command = [whisper_bin, "-m", model, "-f", str(audio_path), "-nt"]
     if language:
         command.extend(["-l", language])
+    if prompt:
+        command.extend(["--prompt", prompt])
+    command.append("--suppress-nst")
     completed = subprocess.run(command, check=True, capture_output=True, text=True)
     text = completed.stdout.strip()
     copy_to_clipboard(text)
     return text
 
 
-def listen(duration: int, output: Path | None, language: str | None, refine: bool, inject: bool, terminal: bool, keep_audio: bool) -> str:
+def listen(duration: int, output: Path | None, language: str | None, prompt: str | None, refine: bool, inject: bool, terminal: bool, keep_audio: bool) -> str:
     audio_path = output or (Path(tempfile.gettempdir()) / f"jarvis-voice-{os.getpid()}.wav")
     notify("JarvisOS", f"Escuchando durante {duration}s...")
     record_audio(audio_path, duration)
     notify("JarvisOS", "Transcribiendo...")
-    text = transcribe(audio_path, language=language)
+    text = transcribe(audio_path, language=language, prompt=prompt)
     if refine:
         notify("JarvisOS", "Corrigiendo transcripcion...")
         text = refine_text(text)
@@ -197,6 +213,7 @@ def check() -> int:
     checks = {
         "WHISPER_CPP_BIN": whisper_bin,
         "WHISPER_MODEL": resolve_path("WHISPER_MODEL", DEFAULT_WHISPER_MODEL),
+        "WHISPER_PROMPT": "configured" if DEFAULT_WHISPER_PROMPT else "disabled",
         "PIPER_BIN": piper_bin,
         "PIPER_VOICE_MODEL": resolve_path("PIPER_VOICE_MODEL", DEFAULT_PIPER_MODEL),
         "RECORDER": shutil.which("ffmpeg") or shutil.which("arecord"),
@@ -228,6 +245,8 @@ def main() -> None:
     transcribe_parser = subparsers.add_parser("transcribe")
     transcribe_parser.add_argument("audio", type=Path)
     transcribe_parser.add_argument("--language", default=DEFAULT_LANGUAGE)
+    transcribe_parser.add_argument("--prompt", default=DEFAULT_WHISPER_PROMPT)
+    transcribe_parser.add_argument("--no-prompt", action="store_true")
     transcribe_parser.add_argument("--refine", action="store_true")
     transcribe_parser.add_argument("--type", action="store_true", dest="inject")
     transcribe_parser.add_argument("--terminal-paste", action="store_true")
@@ -235,6 +254,8 @@ def main() -> None:
     listen_parser.add_argument("--duration", "-d", type=int, default=DEFAULT_LISTEN_SECONDS)
     listen_parser.add_argument("--output", type=Path)
     listen_parser.add_argument("--language", default=DEFAULT_LANGUAGE)
+    listen_parser.add_argument("--prompt", default=DEFAULT_WHISPER_PROMPT)
+    listen_parser.add_argument("--no-prompt", action="store_true")
     listen_parser.add_argument("--refine", action="store_true")
     listen_parser.add_argument("--type", action="store_true", dest="inject")
     listen_parser.add_argument("--terminal-paste", action="store_true")
@@ -247,7 +268,8 @@ def main() -> None:
         print(speak(args.text))
         return
     if args.command == "transcribe":
-        text = transcribe(args.audio, language=args.language)
+        prompt = None if args.no_prompt else args.prompt
+        text = transcribe(args.audio, language=args.language, prompt=prompt)
         if args.refine:
             text = refine_text(text)
             copy_to_clipboard(text)
@@ -256,7 +278,8 @@ def main() -> None:
         print(text)
         return
     if args.command == "listen":
-        print(listen(args.duration, args.output, args.language, args.refine, args.inject, args.terminal_paste, args.keep_audio))
+        prompt = None if args.no_prompt else args.prompt
+        print(listen(args.duration, args.output, args.language, prompt, args.refine, args.inject, args.terminal_paste, args.keep_audio))
         return
 
 

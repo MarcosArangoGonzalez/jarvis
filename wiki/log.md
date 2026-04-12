@@ -22,3 +22,4 @@ Summary: Chronological operating log for JarvisOS.
 - Added BJJ agentic RAG graph design and TFG project document index.
 - Added scalable task structure under `wiki/tasks/`, root `README.md`, and morning coffee quick-start protocol.
 - Implemented Jarvis Voice Flow v1: fixed-duration recording, whisper.cpp transcription, optional Ollama refinement, Wayland/X11 clipboard and paste attempt, and Ubuntu shortcut wrapper.
+- Improved Jarvis Voice Flow recognition quality: downloaded Whisper `ggml-small.bin`, made it the preferred model, and added a technical/BJJ prompt for better Codex/RAG/BJJ vocabulary handling.

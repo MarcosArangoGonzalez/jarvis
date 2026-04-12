@@ -93,6 +93,14 @@ Implemented on 2026-04-12:
 - desktop notifications through `notify-send`
 - shortcut wrapper: `tools/skills/jarvis_voice_flow.sh`
 
+Quality update on 2026-04-13:
+
+- downloaded `ggml-small.bin` and made it the preferred model when present
+- kept `ggml-base.bin` as fallback
+- added a default Whisper prompt with Jarvis, coding, RAG, and BJJ vocabulary
+- added `--prompt` and `--no-prompt` controls for `listen` and `transcribe`
+- verified a 3s microphone test with `ggml-small.bin`: output was `Hola buenas tardes.`
+
 Known constraints:
 
 - Ollama has no local models installed yet, so refinement is disabled by default in the wrapper.

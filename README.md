@@ -91,6 +91,8 @@ Current state:
 - Legacy invocation also works: `voice_bridge.py --listen --duration 8 --language es --type`.
 - `tools/skills/jarvis_voice_flow.sh` wraps the default dictation flow for an Ubuntu keyboard shortcut.
 - Piper and whisper.cpp runtime assets exist under `tools/local/`.
+- Whisper uses `ggml-small.bin` when available and falls back to `ggml-base.bin`.
+- A default technical/BJJ prompt is passed to Whisper to improve terms like Codex, Claude Code, RAG, LangGraph, guardia, De la Riva, mount, triangle, and combat story.
 - The workstation is currently on Wayland, so paste is Wayland-first with X11 fallback.
 
 Default usage:
@@ -105,6 +107,12 @@ Recommended next configuration:
 2. Ensure Wayland paste works by running `ydotoold` or installing `wtype`.
 3. If refinement is needed, install an Ollama model and set `JARVIS_VOICE_REFINE=1` plus `JARVIS_VOICE_REFINE_MODEL=<model>`.
 4. Optionally compare against OpenWhispr later if the custom flow is not smooth enough.
+
+Quality knobs:
+
+- `JARVIS_VOICE_DURATION=12` gives more time to speak.
+- `WHISPER_MODEL=/path/to/model.bin` overrides the selected model.
+- `JARVIS_WHISPER_PROMPT="..."` overrides the vocabulary hint.
 
 ## Handover
 
