@@ -101,6 +101,22 @@ def paste_clipboard(terminal: bool = False) -> bool:
     return False
 
 
+def direct_type_text(text: str) -> bool:
+    if os.getenv("WAYLAND_DISPLAY"):
+        wtype = shutil.which("wtype")
+        if wtype:
+            if subprocess.run([wtype, text], check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode == 0:
+                return True
+
+        ydotool = shutil.which("ydotool")
+        if ydotool:
+            ensure_ydotoold()
+            if subprocess.run([ydotool, "type", text], check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode == 0:
+                return True
+
+    return False
+
+
 def ensure_ydotoold() -> None:
     ydotoold = shutil.which("ydotoold")
     if not ydotoold:
@@ -117,6 +133,8 @@ def ensure_ydotoold() -> None:
 def type_text(text: str, terminal: bool = False) -> bool:
     copy_to_clipboard(text)
     time.sleep(0.08)
+    if direct_type_text(text):
+        return True
     return paste_clipboard(terminal=terminal)
 
 

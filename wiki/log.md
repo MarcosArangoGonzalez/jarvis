@@ -25,3 +25,4 @@ Summary: Chronological operating log for JarvisOS.
 - Improved Jarvis Voice Flow recognition quality: downloaded Whisper `ggml-small.bin`, made it the preferred model, and added a technical/BJJ prompt for better Codex/RAG/BJJ vocabulary handling.
 - Added Jarvis Voice Toggle: press shortcut once to start recording, press again to stop/transcribe/paste, plus optional `.desktop` launcher for icon activation.
 - Configured Jarvis Voice Toggle access: `Super + Shift + V` GNOME shortcut, local `.desktop` launcher installed, and `ydotoold` active for Wayland paste support.
+- Fixed Jarvis Voice Wayland injection: prefer direct `ydotool type`/`wtype` text insertion before falling back to simulated paste, avoiding raw keycode artifacts such as `2442`.
