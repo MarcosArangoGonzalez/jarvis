@@ -46,6 +46,32 @@ If the current path does not map clearly to a project note, ask before writing
 project logs. In that case, writing to `wiki/log.md` is allowed only for global
 Jarvis maintenance.
 
+## Morning Coffee
+
+Short prompt:
+
+```text
+Jarvis, morning coffee.
+```
+
+Meaning:
+
+1. Read this file.
+2. Read `wiki/tasks/index.md`.
+3. Read only the active project logs needed for P0/P1 tasks.
+4. Produce a daily priority report:
+   - top 3 tasks
+   - blockers
+   - recommended session target
+   - suggested mode
+   - primary role
+   - supporting roles/subagents
+5. Ask what to add, remove, reorder, or plan.
+6. Prepare the selected task in Plan Mode before implementation when the environment supports it.
+
+If the user says `Jarvis, morning coffee. Focus <project>`, prioritize the task
+file under `wiki/tasks/projects/` that matches `<project>`.
+
 ## Work Mode Profiles
 
 ### Senior Architect
@@ -137,6 +163,8 @@ column is mandatory because it carries the real progress signal.
 ## Tool Notes
 
 - Prefer local Jarvis wiki context before external tools.
+- Use `tools/skills/morning_coffee.py` as a context adapter, but treat
+  `wiki/tasks/index.md` as the priority source of truth.
 - Do not mutate project files until the active task is clear and the relevant project log has been read.
 - For Codex-style subagents, define role, ownership, expected output, model/effort preference, tone, and token budget before delegation.
 - For Claude Code or similar agents, keep the same role definitions and record final handover in the project log.
