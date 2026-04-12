@@ -18,3 +18,5 @@ Summary: Chronological operating log for JarvisOS.
 
 - Initialized JarvisOS workspace in `/home/marcos/jarvis`.
 - Added identity switching, local voice, queue-based ingest, and token pruning plan.
+- Added global session protocol in `.jarvis/session_manager.md`, linked it from `CLAUDE.md`, and initialized BJJ RAG feature progress tracking.
+- Added BJJ agentic RAG graph design and TFG project document index.

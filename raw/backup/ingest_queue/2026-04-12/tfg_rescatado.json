@@ -1,0 +1,2 @@
+# Vuelca el portapapeles directamente a la cola
+xclip -selection clipboard -o > /home/marcos/jarvis/raw/ingest_queue/tfg_rescatado.json
