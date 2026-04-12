@@ -21,6 +21,10 @@ DEFAULT_PIPER_BIN = ROOT / "tools" / "local" / "voice-venv" / "bin" / "piper"
 DEFAULT_PIPER_MODEL = ROOT / "tools" / "local" / "piper-voices" / "en_US-lessac-medium.onnx"
 DEFAULT_LISTEN_SECONDS = int(os.getenv("JARVIS_VOICE_DURATION", "8"))
 DEFAULT_LANGUAGE = os.getenv("JARVIS_VOICE_LANGUAGE", "es")
+DEFAULT_VOICE_MODE = os.getenv("JARVIS_VOICE_MODE", "balanced").lower()
+DEFAULT_WHISPER_THREADS = os.getenv("JARVIS_WHISPER_THREADS", "8")
+DEFAULT_WHISPER_BEAM_SIZE = os.getenv("JARVIS_WHISPER_BEAM_SIZE", "1")
+DEFAULT_WHISPER_BEST_OF = os.getenv("JARVIS_WHISPER_BEST_OF", "1")
 DEFAULT_WHISPER_PROMPT = os.getenv(
     "JARVIS_WHISPER_PROMPT",
     (
@@ -46,7 +50,7 @@ def resolve_path(env_name: str, local_default: Path) -> str | None:
     configured = os.getenv(env_name)
     if configured:
         return configured
-    if env_name == "WHISPER_MODEL" and PREFERRED_WHISPER_MODEL.exists():
+    if env_name == "WHISPER_MODEL" and DEFAULT_VOICE_MODE != "fast" and PREFERRED_WHISPER_MODEL.exists():
         return str(PREFERRED_WHISPER_MODEL)
     if local_default.exists():
         return str(local_default)
@@ -62,18 +66,19 @@ def notify(title: str, message: str) -> None:
 def copy_to_clipboard(text: str) -> None:
     wl_copy = shutil.which("wl-copy")
     if os.getenv("WAYLAND_DISPLAY") and wl_copy:
-        subprocess.run([wl_copy], input=text, text=True, check=True)
-        return
+        if subprocess.run([wl_copy], input=text, text=True, check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode == 0:
+            return
 
     xclip = shutil.which("xclip")
     if os.getenv("DISPLAY") and xclip:
-        subprocess.run([xclip, "-selection", "clipboard"], input=text, text=True, check=True)
-        return
+        if subprocess.run([xclip, "-selection", "clipboard"], input=text, text=True, check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode == 0:
+            return
 
     try:
         import pyperclip  # type: ignore
     except Exception as exc:  # pragma: no cover - environment dependent
-        raise RuntimeError(f"wl-copy, xclip, or pyperclip is required for clipboard injection: {exc}") from exc
+        print(f"voice_bridge warning: clipboard unavailable ({exc}); continuing without clipboard copy.", file=sys.stderr)
+        return
     pyperclip.copy(text)
 
 
@@ -187,7 +192,20 @@ def transcribe(audio_path: Path, language: str | None = None, prompt: str | None
     if not model:
         raise RuntimeError("WHISPER_MODEL must point to a whisper.cpp ggml model.")
 
-    command = [whisper_bin, "-m", model, "-f", str(audio_path), "-nt"]
+    command = [
+        whisper_bin,
+        "-m",
+        model,
+        "-f",
+        str(audio_path),
+        "-nt",
+        "-t",
+        DEFAULT_WHISPER_THREADS,
+        "-bs",
+        DEFAULT_WHISPER_BEAM_SIZE,
+        "-bo",
+        DEFAULT_WHISPER_BEST_OF,
+    ]
     if language:
         command.extend(["-l", language])
     if prompt:
@@ -245,6 +263,9 @@ def check() -> int:
     checks = {
         "WHISPER_CPP_BIN": whisper_bin,
         "WHISPER_MODEL": resolve_path("WHISPER_MODEL", DEFAULT_WHISPER_MODEL),
+        "VOICE_MODE": DEFAULT_VOICE_MODE,
+        "WHISPER_THREADS": DEFAULT_WHISPER_THREADS,
+        "WHISPER_BEAM_SIZE": DEFAULT_WHISPER_BEAM_SIZE,
         "WHISPER_PROMPT": "configured" if DEFAULT_WHISPER_PROMPT else "disabled",
         "PIPER_BIN": piper_bin,
         "PIPER_VOICE_MODEL": resolve_path("PIPER_VOICE_MODEL", DEFAULT_PIPER_MODEL),

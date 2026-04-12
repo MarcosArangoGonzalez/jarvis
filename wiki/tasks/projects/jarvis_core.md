@@ -103,6 +103,14 @@ Quality update on 2026-04-13:
 - added `--prompt` and `--no-prompt` controls for `listen` and `transcribe`
 - verified a 3s microphone test with `ggml-small.bin`: output was `Hola buenas tardes.`
 
+Latency update on 2026-04-13:
+
+- added `JARVIS_VOICE_MODE=fast|balanced`
+- toggle default is now `fast`, which uses `ggml-base.bin`
+- `balanced` remains available for better accuracy with `ggml-small.bin`
+- short smoke benchmark: `fast` around 1.2s vs `balanced` around 3.1s on the same test audio
+- clipboard copy is now non-fatal if desktop clipboard access is unavailable
+
 Interaction update on 2026-04-13:
 
 - added toggle behavior: first shortcut press starts recording, second press stops recording and runs transcription/paste

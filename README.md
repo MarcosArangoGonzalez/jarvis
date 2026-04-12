@@ -93,7 +93,7 @@ Current state:
 - `tools/skills/jarvis_voice_flow.sh` remains available for fixed-duration dictation.
 - `tools/skills/jarvis-voice-toggle.desktop` is a launcher entry that can be installed as an icon.
 - Piper and whisper.cpp runtime assets exist under `tools/local/`.
-- Whisper uses `ggml-small.bin` when available and falls back to `ggml-base.bin`.
+- Whisper uses `ggml-base.bin` in `fast` mode and `ggml-small.bin` in `balanced` mode.
 - A default technical/BJJ prompt is passed to Whisper to improve terms like Codex, Claude Code, RAG, LangGraph, guardia, De la Riva, mount, triangle, and combat story.
 - The workstation is currently on Wayland, so paste is Wayland-first with X11 fallback.
 
@@ -124,6 +124,8 @@ install -m 0644 /home/marcos/jarvis/tools/skills/jarvis-voice-toggle.desktop ~/.
 
 Quality knobs:
 
+- `JARVIS_VOICE_MODE=fast` uses `ggml-base.bin` for lower latency. This is the toggle default.
+- `JARVIS_VOICE_MODE=balanced` uses `ggml-small.bin` for better recognition quality.
 - `JARVIS_VOICE_DURATION=12` gives more time to speak.
 - `WHISPER_MODEL=/path/to/model.bin` overrides the selected model.
 - `JARVIS_WHISPER_PROMPT="..."` overrides the vocabulary hint.
