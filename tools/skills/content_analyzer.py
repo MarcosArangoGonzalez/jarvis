@@ -127,7 +127,8 @@ def extract_instagram(url: str) -> ExtractResult:
     with tempfile.TemporaryDirectory() as tmpdir:
         result = subprocess.run(
             ["yt-dlp", "--skip-download", "--write-auto-subs", "--sub-format", "vtt",
-             "--sub-langs", "es,en", "--dump-json", "--no-playlist", url],
+             "--sub-langs", "es,en", "--dump-json", "--no-playlist",
+             "--cookies-from-browser", "chrome", url],
             capture_output=True, text=True, timeout=60, cwd=tmpdir,
         )
         meta: dict = {}
