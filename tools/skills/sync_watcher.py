@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[2]
 QUEUE = ROOT / "raw" / "ingest_queue"
 CHAT_INGESTOR = ROOT / "tools" / "skills" / "chat_ingestor.py"
 VOICE_BRIDGE = ROOT / "tools" / "skills" / "voice_bridge.py"
-SUPPORTED = {".json", ".pdf", ".md"}
+SUPPORTED = {".json", ".pdf", ".md", ".txt", ".html", ".htm", ".rst", ".csv"}
 
 
 def wait_until_stable(path: Path, attempts: int = 5, delay: float = 0.5) -> bool:

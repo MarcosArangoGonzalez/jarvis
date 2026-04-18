@@ -169,3 +169,21 @@ column is mandatory because it carries the real progress signal.
 - For Codex-style subagents, define role, ownership, expected output, model/effort preference, tone, and token budget before delegation.
 - For Claude Code or similar agents, keep the same role definitions and record final handover in the project log.
 - Never store secrets in the wiki or session manager.
+
+## Handover 2026-04-18 20:58
+- session_end: 2026-04-18T18:58:18Z
+
+## Handover 2026-04-18 20:59
+- session_end: 2026-04-18T18:59:54Z
+
+## Handover 2026-04-18 21:02
+- session_end: 2026-04-18T19:02:06Z
+
+## Handover 2026-04-18 21:04
+- session_end: 2026-04-18T19:04:12Z
+
+## Handover 2026-04-18 21:12
+- session_end: 2026-04-18T19:12:01Z
+
+## Handover 2026-04-18 21:36
+- session_end: 2026-04-18T19:36:00Z

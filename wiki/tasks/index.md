@@ -13,6 +13,7 @@ sources:
   - "/home/marcos/jarvis/wiki/tasks/projects/bjj_rag.md"
   - "/home/marcos/jarvis/wiki/tasks/projects/tfg_bjj_app.md"
   - "/home/marcos/jarvis/wiki/tasks/projects/jarvis_core.md"
+  - "/home/marcos/jarvis/wiki/tasks/projects/sie.md"
 Summary: "Global Jarvis task dashboard for daily planning across projects and life areas."
 ---
 
@@ -32,6 +33,8 @@ Summary: "Global Jarvis task dashboard for daily planning across projects and li
 | P1 | Configure Jarvis voice flow | Jarvis Core | Voice | Implemented v1 | Bind `jarvis_voice_flow.sh` to an Ubuntu shortcut and validate paste in Codex/Claude | `wiki/tasks/projects/jarvis_core.md` |
 | P1 | Implement Intent Classifier + Router | BJJ RAG | Agentic RAG | Ready | Start with rules-only classifier, no LLM | `wiki/tasks/projects/bjj_rag.md` |
 | P2 | Create TFG anteproyecto/memoria outline | TFG BJJ App | TFG Docs | Backlog | Draft document structure and evaluation rubric | `wiki/tasks/projects/tfg_bjj_app.md` |
+| P0 | Configurar OAuth Google Drive MCP | SIE | Integración | Pendiente | Ejecutar flujo OAuth para activar acceso a Drive | `wiki/tasks/projects/sie.md` |
+| P1 | Ampliar investigación + redactar contenido | SIE | Investigación | WIP | Fuentes en NotebookLM; doc en Drive necesita más desarrollo | `wiki/tasks/projects/sie.md` |
 
 ## Cross-Project Backlog
 

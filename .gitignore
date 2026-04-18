@@ -56,3 +56,18 @@ build/
 raw/**/*.tmp
 raw/**/*.log
 raw/archive/
+
+# WhatsApp listener session (contains auth cookies)
+tools/skills/whatsapp_listener/.wwebjs_auth/
+tools/skills/whatsapp_listener/.wwebjs_cache/
+
+# Secrets and credentials
+keys.json
+:BW_SESSION*
+
+# Claude local settings (contains allowed commands with embedded secrets)
+.claude/settings.local.json
+
+# Raw alert dumps and personal chat exports
+raw/alerts/
+wiki/sources/whatsapp_chat*

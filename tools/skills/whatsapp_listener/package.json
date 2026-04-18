@@ -1,0 +1,14 @@
+{
+  "name": "jarvis-whatsapp-listener",
+  "version": "1.0.0",
+  "description": "Real-time WhatsApp listener for JarvisOS via whatsapp-web.js",
+  "main": "listener.js",
+  "type": "module",
+  "scripts": {
+    "start": "node listener.js"
+  },
+  "dependencies": {
+    "qrcode-terminal": "^0.12.0",
+    "whatsapp-web.js": "^1.23.0"
+  }
+}

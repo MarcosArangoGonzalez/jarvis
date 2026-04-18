@@ -57,7 +57,23 @@ async def ingest_browser(payload: BrowserIngestPayload, request: Request) -> dic
     return {"status": "ok", "path": str(output), "messages": len(payload.messages)}
 
 
+@app.post("/webhook/whatsapp")
+async def webhook_whatsapp(request: Request) -> dict[str, Any]:
+    """Green API webhook — processes incoming WhatsApp messages automatically."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent))
+    from whatsapp_skill import GreenAPIClient, on_message  # noqa: PLC0415
+
+    payload = await request.json()
+    try:
+        client = GreenAPIClient()
+        on_message(client, payload)
+        return {"status": "ok"}
+    except Exception as exc:
+        return {"status": "error", "detail": str(exc)}
+
+
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host="127.0.0.1", port=5000)
+    uvicorn.run(app, host="0.0.0.0", port=5000)

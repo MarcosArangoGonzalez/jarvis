@@ -9,13 +9,14 @@ tags:
   - software-architecture
   - security-specs
 created: 2026-04-12
-updated: 2026-04-12
+updated: 2026-04-16
 tokens_consumed: 1200
 sources:
+  - "/home/marcos/Descargas/20260416-Anteproxecto-TFG-MarcosArangoGonzález.pdf"
   - "/home/marcos/Escritorio/TFG/pa/bjj-app/memory/tfg.md"
   - "/home/marcos/jarvis/wiki/analyses/bjj_agent_design.md"
   - "/home/marcos/jarvis/wiki/projects/bjj_rag_implementation.md"
-Summary: "Indice de gestion del TFG para bjj-app: anteproyecto, memoria, metodologia, bibliografia, experimentos, decisiones arquitectonicas y pendientes."
+Summary: "Indice de gestion del TFG para bjj-app: anteproyecto firmado (15/04/2026), memoria, metodologia, bibliografia, experimentos, decisiones arquitectonicas y pendientes."
 ---
 
 # TFG BJJ App
@@ -28,10 +29,50 @@ Gestionar los documentos y decisiones del TFG asociado a `bjj-app`, especialment
 
 | Documento | Estado | Ubicacion | Siguiente accion |
 |---|---|---|---|
-| Anteproyecto | Backlog | Pendiente | Crear esquema inicial y objetivos. |
+| Anteproyecto | **Entregado** (asinado 15/04/2026) | `/home/marcos/Descargas/20260416-Anteproxecto-TFG-MarcosArangoGonzález.pdf` | — |
 | Memoria | Backlog | Pendiente | Sincronizar estructura con `memory/tfg.md`. |
 | Bibliografia | Backlog | Pendiente | Consolidar referencias RAG, pgvector, LangChain, HNSW y agentes. |
 | Evaluacion empirica | Backlog | Pendiente | Definir tabla RAG stateless vs RAG agentico. |
+
+## Anteproyecto — Resumen
+
+- **Título (ES):** Diseño e implementación de una plataforma inteligente de análisis y aprendizaje para Brazilian Jiu-Jitsu
+- **Título (EN):** Design and Implementation of an Intelligent Analysis and Learning Platform for Brazilian Jiu-Jitsu
+- **Tutor:** Álvarez Díaz, Manuel (manuel.alvarez@udc.es) — FIC, UDC
+- **Tipo:** Clásico de enxeñaría · Mención Ingeniería del Software · Propuesta del alumno
+- **Firmado:** A Coruña, 15/04/2026
+
+### Objetivo principal
+Plataforma web inteligente para análisis, búsqueda y aprendizaje en BJJ, integrando visión artificial, búsqueda semántica y modelos de lenguaje.
+
+### Objetivos concretos
+1. Arquitectura backend en capas con Spring Boot (REST, microservicios, escalabilidad).
+2. Pipeline de análisis de vídeo: detección de poses por keypoints (YOLOv8-pose), clasificación ML (Random Forest / ViCoS), inferencia geométrica de ángulos.
+3. Motor de búsqueda híbrido: relacional por metadatos + semántico vectorial (ChromaDB / pgvector).
+4. Sistema RAG agentico como tutor especializado: responde preguntas técnicas, recomienda vídeos, planifica entrenamientos, mejora continua validada por PROFESSOR.
+5. Interfaz de usuario: visualización biomecánica sobre vídeo, timeline del combate, consulta al tutor.
+6. Seguridad: autenticación y autorización con roles PROFESSOR / USER.
+7. Diseño desacoplado para adaptación a otros deportes.
+8. Evaluación empírica del pipeline de visión y calidad del feedback del tutor.
+
+### Stack tecnológico
+| Capa | Tecnologías |
+|---|---|
+| Backend | Java, Spring Boot, Hibernate/JPA, Spring Security |
+| Base de datos | PostgreSQL + pgvector |
+| Servicio IA | Python, FastAPI, YOLOv8-pose, Random Forest (scikit-learn, ViCoS), NumPy, Gemini Vision, ChromaDB |
+| Frontend | React, Tailwind CSS, shadcn/ui |
+| Despliegue | Docker Compose, webhooks |
+| Herramientas | Maven, npm, Git, VS Code |
+
+### Metodología
+Desarrollo iterativo e incremental para único desarrollador. Iteraciones de 2-3 semanas con entregable funcional verificable por pruebas de integración.
+
+### Fases
+1. Investigación y formación en tecnologías necesarias.
+2. Definición de requisitos y diseño de arquitectura.
+3. Desarrollo iterativo: Backend → Servicio IA → Frontend → Pruebas → Documentación.
+4. Despliegue local y pruebas de integración.
 
 ## Methodology
 

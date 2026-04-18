@@ -27,3 +27,15 @@ Summary: Chronological operating log for JarvisOS.
 - Configured Jarvis Voice Toggle access: `Super + Shift + V` GNOME shortcut, local `.desktop` launcher installed, and `ydotoold` active for Wayland paste support.
 - Fixed Jarvis Voice Wayland injection: prefer direct `ydotool type`/`wtype` text insertion before falling back to simulated paste, avoiding raw keycode artifacts such as `2442`.
 - Reduced Jarvis Voice latency: added `JARVIS_VOICE_MODE=fast|balanced`, set the toggle default to `fast`, and made clipboard copy non-fatal when desktop clipboard access is unavailable.
+
+## 2026-04-18 20:58 — session end
+
+## 2026-04-18 20:59 — session end
+
+## 2026-04-18 21:02 — session end
+
+## 2026-04-18 21:04 — session end
+
+## 2026-04-18 21:12 — session end
+
+## 2026-04-18 21:36 — session end

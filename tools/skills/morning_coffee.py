@@ -30,11 +30,33 @@ def github_context() -> list[str]:
     token = os.getenv("GITHUB_TOKEN") or os.getenv("GITHUB_PERSONAL_ACCESS_TOKEN")
     if not token:
         return ["GitHub: no token configured."]
+    lines: list[str] = []
+    # PRs abiertas en repos propios (compatible con gh v2.4+)
     try:
-        completed = subprocess.run(["gh", "pr", "status", "--json", "currentBranch"], capture_output=True, text=True, check=True)
-        return [f"GitHub: {completed.stdout.strip()[:500]}"]
+        result = subprocess.run(
+            ["gh", "pr", "list", "--author", "@me", "--state", "open", "--limit", "5"],
+            capture_output=True, text=True, check=True,
+        )
+        prs = result.stdout.strip()
+        lines.append(f"Open PRs: {prs if prs else 'none'}")
     except Exception as exc:
-        return [f"GitHub: unavailable ({exc})."]
+        lines.append(f"PRs: unavailable ({exc})")
+    # CI runs en bjj-app (compatible con gh v2.4 — sin displayTitle)
+    try:
+        result = subprocess.run(
+            ["gh", "run", "list", "--repo", "MarcosArangoGonzalez/bjj-app",
+             "--json", "databaseId,conclusion,status,createdAt", "--limit", "3"],
+            capture_output=True, text=True, check=True,
+        )
+        runs = json.loads(result.stdout or "[]")
+        if runs:
+            for r in runs:
+                lines.append(f"CI run {r['databaseId']}: {r['conclusion'] or r['status']} ({r['createdAt'][:10]})")
+        else:
+            lines.append("CI bjj-app: no recent runs")
+    except Exception as exc:
+        lines.append(f"CI: unavailable ({exc})")
+    return lines
 
 
 def linear_context() -> list[str]:

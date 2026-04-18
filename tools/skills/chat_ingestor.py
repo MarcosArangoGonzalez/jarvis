@@ -16,7 +16,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 WIKI_SOURCES = ROOT / "wiki" / "sources"
 RAW_ARCHIVE = ROOT / "raw" / "archive" / "ingest_queue"
-SUPPORTED_EXTENSIONS = {".json", ".md", ".pdf", ".txt"}
+SUPPORTED_EXTENSIONS = {".json", ".md", ".pdf", ".txt", ".html", ".htm", ".rst", ".csv"}
 
 
 @dataclass
@@ -97,11 +97,20 @@ def read_source(path: Path) -> tuple[str, str, list[str]]:
         data = json.loads(path.read_text(encoding="utf-8"))
         title = data.get("title") if isinstance(data, dict) else None
         return extract_messages_from_json(data), "draft", ["chat", "import", slugify(str(title or path.stem))]
-    if suffix in {".md", ".txt"}:
+    if suffix in {".md", ".txt", ".rst"}:
         return path.read_text(encoding="utf-8", errors="replace"), "draft", ["source", "import"]
     if suffix == ".pdf":
         text, status = read_pdf(path)
         return text, status, ["pdf", "source", "import"]
+    if suffix in {".html", ".htm"}:
+        raw = path.read_text(encoding="utf-8", errors="replace")
+        # Strip HTML tags for plain text body
+        import re
+        text = re.sub(r"<[^>]+>", " ", raw)
+        text = re.sub(r"\s{2,}", "\n", text).strip()
+        return text, "draft", ["html", "source", "import"]
+    if suffix == ".csv":
+        return path.read_text(encoding="utf-8", errors="replace"), "draft", ["csv", "source", "import"]
 
     raise ValueError(f"Unsupported file type: {suffix}")
 
