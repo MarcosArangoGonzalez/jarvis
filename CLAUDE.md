@@ -48,7 +48,10 @@ Goal: move raw context into structured, searchable knowledge.
    - Sources: `raw/sources/`
    - News: `raw/news/`
    - Drop queue: `raw/ingest_queue/`
-2. Normalize each item into Markdown under `wiki/sources/` unless another wiki folder is more precise.
+2. Normalize each item into Markdown under the most precise wiki folder:
+   - Generic external captures: `wiki/sources/`
+   - BJJ sport-learning videos from WhatsApp/social feeds: `wiki/areas/bjj/learning-videos/`
+   - bjj-app TFG/RAG/video-analysis system material: `wiki/projects/TFG/bjj-app/`
 3. Every generated note must include YAML frontmatter with:
    - `title`
    - `type`
@@ -61,6 +64,7 @@ Goal: move raw context into structured, searchable knowledge.
    - `Summary`
 4. Token pruning rule: every file over 100 lines must have `Summary` in YAML frontmatter. Claude/Jarvis must read the body only if strictly necessary.
 5. Preserve originals. When `sync_watcher.py` processes an item, archive it under `raw/archive/ingest_queue/YYYY-MM-DD/`.
+6. Do not mix BJJ sport-learning captures with bjj-app implementation notes. Videos for learning technique belong to the BJJ learning area; app architecture, video analysis, RAG, contracts, and TFG notes belong to the bjj-app project folder.
 
 ### QUERY
 Goal: answer from local memory first, then external tools only when needed.

@@ -79,5 +79,5 @@ No transcript available. Title: 2 conceptos que cambiarán tu forma de entender 
 
 ## Related
 
-- Project: [[bjj-app-index]]
-- Project state: [[tfg-bjj-app]]
+- Area: [[bjj-learning-videos]]
+- Related project: [[bjj-app-index]]

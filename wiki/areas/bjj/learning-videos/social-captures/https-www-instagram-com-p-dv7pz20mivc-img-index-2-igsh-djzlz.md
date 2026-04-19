@@ -63,5 +63,5 @@ No transcript available.
 
 ## Related
 
-- Project: [[bjj-app-index]]
-- Project state: [[tfg-bjj-app]]
+- Area: [[bjj-learning-videos]]
+- Related project: [[bjj-app-index]]

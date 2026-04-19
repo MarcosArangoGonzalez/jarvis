@@ -22,6 +22,7 @@ import argparse
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -33,6 +34,7 @@ from urllib.error import URLError
 ROOT = Path(__file__).resolve().parents[2]
 WIKI_SOURCES = ROOT / "wiki" / "sources"
 RAW_QUEUE = ROOT / "raw" / "ingest_queue"
+RAW_ARCHIVE = ROOT / "raw" / "archive" / "ingest_queue"
 
 # ── Green API client ──────────────────────────────────────────────────────────
 
@@ -100,6 +102,18 @@ def detect_content_type(text: str) -> str:
     return "text"
 
 
+def archive_queue_file(path: Path) -> Path:
+    archive_dir = RAW_ARCHIVE / datetime.now(timezone.utc).date().isoformat()
+    archive_dir.mkdir(parents=True, exist_ok=True)
+    target = archive_dir / path.name
+    counter = 2
+    while target.exists():
+        target = archive_dir / f"{path.stem}-{counter}{path.suffix}"
+        counter += 1
+    shutil.move(str(path), str(target))
+    return target
+
+
 # ── Message processing ───────────────────────────────────────────────────────
 
 def process_message(client: GreenAPIClient, chat_id: str, text: str) -> str:
@@ -125,16 +139,26 @@ def process_message(client: GreenAPIClient, chat_id: str, text: str) -> str:
         queue_file.write_text(text, encoding="utf-8")
         reply = "✓ Texto recibido. Guardando en wiki/sources/..."
 
-    # Try to process immediately via chat_ingestor
+    # Try to process immediately. URLs use the rich analyzer; plain text uses
+    # the lightweight file ingestor.
+    analyzer = ROOT / "tools" / "skills" / "content_analyzer.py"
     ingestor = ROOT / "tools" / "skills" / "chat_ingestor.py"
     try:
-        result = subprocess.run(
-            [sys.executable, str(ingestor), str(queue_file), "--archive"],
-            capture_output=True, text=True, timeout=30,
-        )
+        if url:
+            result = subprocess.run(
+                [sys.executable, str(analyzer), url, "--origin", "whatsapp"],
+                capture_output=True, text=True, timeout=120,
+            )
+        else:
+            result = subprocess.run(
+                [sys.executable, str(ingestor), str(queue_file), "--archive"],
+                capture_output=True, text=True, timeout=30,
+            )
         if result.returncode == 0:
             out = json.loads(result.stdout.strip())
             note_name = Path(out["output"]).name
+            if url and queue_file.exists():
+                archive_queue_file(queue_file)
             reply = f"✓ Nota creada: {note_name}"
         else:
             reply = f"⚠️ Nota en cola — se procesará en el próximo ciclo."

@@ -21,11 +21,14 @@ import fs from "fs";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const JARVIS_ROOT = process.env.JARVIS_ROOT || path.resolve(__dirname, "../../..");
 const RAW_QUEUE = path.join(JARVIS_ROOT, "raw", "ingest_queue");
+const RAW_ARCHIVE = path.join(JARVIS_ROOT, "raw", "archive", "ingest_queue");
 const PYTHON = process.env.PYTHON || "python3";
 const ANALYZER = path.join(JARVIS_ROOT, "tools", "skills", "content_analyzer.py");
 const TARGET_CHAT = process.env.JARVIS_WHATSAPP_CHAT_ID || "";
+const STARTED_AT_MS = Date.now();
 
 const URL_RE = /https?:\/\/[^\s]+/i;
+const BOT_REPLY_RE = /^(✓|⚠️|Jarvis:)/;
 
 function stamp() {
   return new Date().toISOString().replace(/[:.]/g, "-").replace("T", "T").slice(0, 19);
@@ -46,11 +49,26 @@ function enqueue(text, type) {
   return file;
 }
 
+function archiveQueueFile(file) {
+  const day = new Date().toISOString().slice(0, 10);
+  const archiveDir = path.join(RAW_ARCHIVE, day);
+  fs.mkdirSync(archiveDir, { recursive: true });
+  const parsed = path.parse(file);
+  let target = path.join(archiveDir, parsed.base);
+  let counter = 2;
+  while (fs.existsSync(target)) {
+    target = path.join(archiveDir, `${parsed.name}-${counter}${parsed.ext}`);
+    counter += 1;
+  }
+  fs.renameSync(file, target);
+  return target;
+}
+
 function runAnalyzer(urlOrPath, model = "local:llama3.1") {
   return new Promise((resolve, reject) => {
     execFile(
       PYTHON,
-      [ANALYZER, urlOrPath, "--model", model],
+      [ANALYZER, urlOrPath, "--model", model, "--origin", "whatsapp"],
       { timeout: 120_000 },
       (err, stdout, stderr) => {
         if (err) {
@@ -70,6 +88,8 @@ function runAnalyzer(urlOrPath, model = "local:llama3.1") {
 async function handleMessage(msg) {
   const text = msg.body?.trim() || "";
   if (!text) return;
+  if (BOT_REPLY_RE.test(text)) return;
+  if (msg.timestamp && msg.timestamp * 1000 < STARTED_AT_MS - 60_000) return;
 
   const type = detectType(text);
   const urlMatch = text.match(URL_RE);
@@ -78,15 +98,16 @@ async function handleMessage(msg) {
   console.log(`[${new Date().toISOString()}] ${type}: ${text.slice(0, 80)}`);
 
   if (url) {
+    const queued = enqueue(url, type);
     // Analyze immediately with content_analyzer
     try {
       const result = await runAnalyzer(url);
+      archiveQueueFile(queued);
       const noteName = result.output ? path.basename(result.output) : "?";
       const reply = `✓ Nota creada: ${noteName}\n📝 ${result.summary || result.title || url}`;
       await msg.reply(reply);
     } catch (err) {
-      // Fallback: enqueue for sync_watcher
-      enqueue(url, type);
+      // Leave queued file in raw/ingest_queue for sync_watcher.
       await msg.reply(`⚠️ En cola para procesamiento: ${type}`);
       console.error("Analyzer error:", err.message);
     }
@@ -143,6 +164,25 @@ client.on("message", async (msg) => {
     await handleMessage(msg);
   } catch (err) {
     console.error("Message handler error:", err);
+  }
+});
+
+client.on("message_create", async (msg) => {
+  // The "You" chat can surface as a message created by this account rather
+  // than as an incoming message. Only process URL messages here to avoid
+  // turning normal sent text or Jarvis replies into notes.
+  const text = msg.body?.trim() || "";
+  if (!msg.fromMe || !URL_RE.test(text) || BOT_REPLY_RE.test(text)) return;
+  if (msg.timestamp && msg.timestamp * 1000 < STARTED_AT_MS - 60_000) return;
+  if (msg.from === "status@broadcast") return;
+
+  const chatId = msg.to || msg.from;
+  if (TARGET_CHAT && chatId !== TARGET_CHAT) return;
+
+  try {
+    await handleMessage(msg);
+  } catch (err) {
+    console.error("Self-chat handler error:", err);
   }
 });
 

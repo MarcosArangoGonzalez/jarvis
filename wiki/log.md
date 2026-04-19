@@ -93,6 +93,14 @@ Summary: Chronological operating log for JarvisOS.
 - Archivos modificados o creados en esta sesión:
   - .obsidian/graph.json
 
+## 2026-04-19 — Phase 5D: e2e validado — pipeline completo, API key necesaria
+
+- `config.py` completado: añadidos `python_parity_mode`, `spring_poc_enabled`, `spring_poc_base_url`, `poc_python_dir` (referenciados en `main.py` pero ausentes del modelo de configuración).
+- Corregido bug crítico en `RagService.query_documents()`: búsqueda sin filtros usaba `document_type=master` pero los 13 chunks gold-standard no tienen ese campo → devolvía 0 resultados siempre. Añadido fallback a búsqueda sin filtro cuando el filtro no produce resultados.
+- Validado e2e con servidor levantado: clasificador → retriever (5 docs encontrados) → generator (falla con `API_KEY_INVALID` de Gemini) → GuardedFallback (`llm_error`) → respuesta backward-compatible con `agent_metrics` en modo debug.
+- Pipeline funciona en todos los nodos; el único bloqueante para respuestas reales es una `GEMINI_API_KEY` válida en `.env`.
+- Siguiente: actualizar API key de Gemini y hacer una query real de prueba.
+
 ## 2026-04-19 — Phase 5D: tests, Java endpoint confirmed, Technique Debugger self-fetch
 
 - Confirmado: endpoint Java para combat story es `GET /api/v1/publications/{id}/story` (no `/combat-story`). `vectorized` NO está en `PublicationDto` → se verifica en ChromaDB directamente.
@@ -151,4 +159,41 @@ Summary: Chronological operating log for JarvisOS.
   - .obsidian/graph.json
   - README.md
   - wiki/log.md
+
+## 2026-04-19 21:24 — BJJ learning area and automatic ingest routing
+
+- Separados los vídeos/capturas de aprendizaje de BJJ fuera de `projects/TFG/bjj-app`: ahora viven en `wiki/areas/bjj/learning-videos/`, con índice propio y enlaces de vuelta al área.
+- Ajustado el ruteo de ingesta: WhatsApp/queue URLs usan `content_analyzer.py --origin whatsapp|queue`; vídeos BJJ de WhatsApp van al área de aprendizaje, mientras material explícito de `bjj-app` puede ir a `projects/TFG/bjj-app/sources/ai-rag-research`.
+- Cerrada parte pendiente de ingesta automática: `sync_watcher.py` ya distingue URLs de texto plano, `whatsapp_skill.py` y `whatsapp_listener/listener.js` usan el analizador rico para URLs, y `ingest_server.py` convierte capturas de navegador en nota wiki automáticamente.
+
+## 2026-04-19 22:07 — session end
+
+## 2026-04-19 22:07 — session end (auto)
+
+- Archivos modificados o creados en esta sesión:
+  - CLAUDE.md
+  - .obsidian/graph.json
+  - README.md
+  - tools/skills/content_analyzer.py
+  - tools/skills/ingest_server.py
+  - tools/skills/process_whatsapp_backlog.py
+  - tools/skills/README.md
+  - tools/skills/sync_watcher.py
+  - tools/skills/whatsapp_listener/jarvis-whatsapp-listener.service
+  - tools/skills/whatsapp_listener/listener.js
+  - tools/skills/whatsapp_listener/start.sh
+  - tools/skills/whatsapp_skill.py
+  - wiki/areas/bjj/learning-videos/bjj-learning-videos.md
+  - wiki/areas/bjj/learning-videos/social-captures/https-www-instagram-com-p-dv7pz20mivc-img-index-2-igsh-djzlz.md
+  - wiki/areas/bjj/learning-videos/social-captures/https-www-instagram-com-p-dwfqf6cjcnl-img-index-2-igsh-awn0c.md
+  - wiki/areas/bjj/learning-videos/social-captures/https-www-instagram-com-p-dwkevxwdk3e-img-index-2-igsh-mtz3b.md
+  - wiki/areas/bjj/learning-videos/social-captures/https-www-instagram-com-p-dwwvlice-yy-img-index-2-igsh-bdzhe.md
+  - wiki/areas/bjj/learning-videos/whatsapp/2-conceptos-que-cambiar-n-tu-forma-de-entender-la-guardia-ab.md
+  - wiki/areas/bjj/learning-videos/whatsapp/a-sneaky-armbar-that-everyone-should-know.md
+  - wiki/areas/bjj/learning-videos/whatsapp/bjj-beginners-kickboxing-combo-warmup.md
+  - wiki/areas/bjj/learning-videos/whatsapp/bjj-breakdown-side-mount-submission.md
+  - wiki/log.md
+  - wiki/projects/TFG/bjj-app/bjj-app-index.md
+  - wiki/projects/TFG/bjj-app/sources/bjj-training/2-conceptos-que-cambiar-n-tu-forma-de-entender-la-guardia-ab.md
+  - wiki/projects/TFG/bjj-app/sources/bjj-training/a-sneaky-armbar-that-everyone-should-know.md
 

@@ -63,5 +63,5 @@ This is insane! Comment “Jarvis” to learn how I did this! #claude #aiagents 
 
 ## Related
 
-- Project: [[bjj-app-index]]
-- Project state: [[tfg-bjj-app]]
+- Area: [[bjj-learning-videos]]
+- Related project: [[bjj-app-index]]

@@ -36,5 +36,5 @@ Comenta STACK y te envío el documento completo con cada herramienta, por qué l
 
 ## Related
 
-- Project: [[bjj-app-index]]
-- Project state: [[tfg-bjj-app]]
+- Area: [[bjj-learning-videos]]
+- Related project: [[bjj-app-index]]

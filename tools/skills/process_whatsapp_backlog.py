@@ -62,7 +62,7 @@ def already_processed_urls() -> set[str]:
     import re as _re
     sources_re = _re.compile(r'^\s*-\s+"?(https?://[^\s"]+)"?', _re.MULTILINE)
     found: set[str] = set()
-    for md in WIKI_SOURCES.glob("*.md"):
+    for md in (ROOT / "wiki").rglob("*.md"):
         if md.name.startswith("whatsapp_"):
             continue  # skip the backlog note itself
         text = md.read_text(encoding="utf-8", errors="replace")
@@ -88,7 +88,7 @@ def save_progress(progress: dict) -> None:
 def process_url(url: str, model: str) -> dict:
     analyzer = ROOT / "tools" / "skills" / "content_analyzer.py"
     result = subprocess.run(
-        [sys.executable, str(analyzer), url, "--model", model],
+        [sys.executable, str(analyzer), url, "--model", model, "--origin", "whatsapp"],
         capture_output=True, text=True, timeout=120,
     )
     if result.returncode == 0:

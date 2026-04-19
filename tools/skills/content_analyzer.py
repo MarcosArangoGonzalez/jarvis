@@ -31,6 +31,8 @@ WIKI_SOURCES = ROOT / "wiki" / "sources"
 WIKI_PATTERNS = ROOT / "wiki" / "patterns"
 WIKI_CONCEPTS = ROOT / "wiki" / "concepts"
 WIKI_TASKS = ROOT / "wiki" / "tasks"
+WIKI_BJJ_LEARNING_VIDEOS = ROOT / "wiki" / "areas" / "bjj" / "learning-videos"
+WIKI_BJJ_APP_SOURCES = ROOT / "wiki" / "projects" / "TFG" / "bjj-app" / "sources" / "ai-rag-research"
 
 
 # ── Type detection ─────────────────────────────────────────────────────────────
@@ -460,8 +462,60 @@ def yaml_list(values: list) -> str:
     return "\n" + "\n".join(items)
 
 
+def _as_text(value: object) -> str:
+    if isinstance(value, list):
+        return " ".join(_as_text(item) for item in value)
+    if isinstance(value, dict):
+        return " ".join(_as_text(item) for item in value.values())
+    return str(value or "")
+
+
+def is_bjj_sport_learning(extracted: ExtractResult, analysis: dict) -> bool:
+    haystack = " ".join([
+        extracted.title,
+        extracted.text[:2000],
+        _as_text(analysis.get("title")),
+        _as_text(analysis.get("summary")),
+        _as_text(analysis.get("tags")),
+        _as_text(analysis.get("concepts")),
+        _as_text(analysis.get("technique")),
+        _as_text(analysis.get("domain")),
+    ]).lower()
+    sport_terms = (
+        "bjj", "jiu-jitsu", "jiu jitsu", "brazilian jiu-jitsu",
+        "grappling", "guard", "mount", "choke", "armbar", "submission",
+        "sweep", "passing", "take down", "takedown",
+    )
+    app_terms = (
+        "bjj-app", "agentgraphservice", "java/python", "webhook",
+        "contract", "dto", "rag agent", "agentic rag", "tfg",
+    )
+    return any(term in haystack for term in sport_terms) and not any(term in haystack for term in app_terms)
+
+
+def choose_output_folder(extracted: ExtractResult, analysis: dict, out_folder: str,
+                         origin: str | None = None, project: str | None = None) -> Path:
+    """Route generated notes to the correct knowledge area."""
+    if out_folder == "patterns":
+        return WIKI_PATTERNS
+    if out_folder == "concepts":
+        return WIKI_CONCEPTS
+
+    if project == "bjj-app":
+        return WIKI_BJJ_APP_SOURCES
+
+    if origin == "whatsapp" and extracted.content_type in {"youtube", "instagram"}:
+        if is_bjj_sport_learning(extracted, analysis):
+            if extracted.content_type == "instagram":
+                return WIKI_BJJ_LEARNING_VIDEOS / "social-captures"
+            return WIKI_BJJ_LEARNING_VIDEOS / "whatsapp"
+
+    return WIKI_SOURCES
+
+
 def build_note(extracted: ExtractResult, analysis: dict, out_folder: str,
-               relevance_section: str = "") -> tuple[Path, str]:
+               relevance_section: str = "", origin: str | None = None,
+               project: str | None = None) -> tuple[Path, str]:
     today = date.today().isoformat()
 
     title = analysis.get("title") or extracted.title
@@ -544,20 +598,19 @@ def build_note(extracted: ExtractResult, analysis: dict, out_folder: str,
         f"- URL: {extracted.url}",
         f"- Type: {extracted.content_type}",
     ]
+    if origin:
+        body_lines.append(f"- Origin: {origin}")
     if domain:
         body_lines.append(f"- Domain: {domain}")
+    if origin == "whatsapp" and is_bjj_sport_learning(extracted, analysis):
+        body_lines += ["", "## Related", "", "- Area: [[bjj-learning-videos]]"]
+    elif project == "bjj-app":
+        body_lines += ["", "## Related", "", "- Project: [[bjj-app-index]]"]
     body_lines += ["", "## Raw Extract (excerpt)", "", extracted.text[:2000]]
 
     content = "\n".join(frontmatter_lines) + "\n\n" + "\n".join(body_lines) + "\n"
 
-    # Choose output directory
-    if out_folder == "patterns":
-        folder = WIKI_PATTERNS
-    elif out_folder == "concepts":
-        folder = WIKI_CONCEPTS
-    else:
-        folder = WIKI_SOURCES
-
+    folder = choose_output_folder(extracted, analysis, out_folder, origin=origin, project=project)
     folder.mkdir(parents=True, exist_ok=True)
     base = slugify(title or extracted.content_type)
     out_path = folder / f"{base}.md"
@@ -635,7 +688,8 @@ EXTRACTORS = {
 
 def analyze(target: str, content_type: str = "auto", model: str = "local",
             out_folder: str = "sources", no_llm: bool = False,
-            no_relevance: bool = False) -> dict:
+            no_relevance: bool = False, origin: str | None = None,
+            project: str | None = None) -> dict:
 
     if content_type == "auto":
         content_type = detect_type(target)
@@ -646,14 +700,23 @@ def analyze(target: str, content_type: str = "auto", model: str = "local",
 
     extracted = extractor(target)
 
+    llm_failed = False
     if no_llm:
         analysis = {"title": extracted.title, "summary": extracted.text[:200], "tags": [content_type]}
     else:
-        analysis = analyze_with_llm(extracted, model)
+        try:
+            analysis = analyze_with_llm(extracted, model)
+        except Exception as exc:
+            llm_failed = True
+            analysis = {
+                "title": extracted.title,
+                "summary": extracted.text[:300] or f"Raw {content_type} capture. LLM analysis failed: {exc}",
+                "tags": [content_type, "needs-analysis"],
+            }
 
     # Build relevance section — map content to active projects
     relevance_section = ""
-    if not no_relevance and not no_llm:
+    if not no_relevance and not no_llm and not llm_failed:
         try:
             sys.path.insert(0, str(Path(__file__).parent))
             from relevance_mapper import map_relevance, format_relevance_section  # type: ignore
@@ -674,10 +737,12 @@ def analyze(target: str, content_type: str = "auto", model: str = "local",
 
     # For GitHub repos with patterns, also save to wiki/patterns/
     if content_type == "github" and analysis.get("reusable") and out_folder == "sources":
-        pattern_path, pattern_content = build_note(extracted, analysis, "patterns", relevance_section)
+        pattern_path, pattern_content = build_note(extracted, analysis, "patterns", relevance_section,
+                                                   origin=origin, project=project)
         pattern_path.write_text(pattern_content, encoding="utf-8")
 
-    out_path, content = build_note(extracted, analysis, out_folder, relevance_section)
+    out_path, content = build_note(extracted, analysis, out_folder, relevance_section,
+                                   origin=origin, project=project)
     out_path.write_text(content, encoding="utf-8")
 
     extra_outputs: list[str] = []
@@ -697,10 +762,16 @@ def analyze(target: str, content_type: str = "auto", model: str = "local",
         "title": analysis.get("title", extracted.title),
         "summary": analysis.get("summary", ""),
     }
+    if origin:
+        result["origin"] = origin
+    if project:
+        result["project"] = project
     if extra_outputs:
         result["extra_outputs"] = extra_outputs
     if relevance_section:
         result["relevance_mapped"] = True
+    if llm_failed:
+        result["llm_fallback"] = True
 
     return result
 
@@ -713,6 +784,10 @@ def main() -> None:
     parser.add_argument("--model", default=None, help="LLM backend (default: $JARVIS_DEFAULT_MODEL or local)")
     parser.add_argument("--out", dest="out_folder", default="sources",
                         choices=["sources", "patterns", "concepts"])
+    parser.add_argument("--origin", default=None, choices=["whatsapp", "browser", "queue", "manual"],
+                        help="Capture origin used for routing generated notes")
+    parser.add_argument("--project", default=None, choices=["bjj-app"],
+                        help="Route output into a project-local source folder")
     parser.add_argument("--no-llm", action="store_true", help="Skip LLM analysis, save raw extract only")
     parser.add_argument("--no-relevance", action="store_true", help="Skip project relevance mapping")
     args = parser.parse_args()
@@ -728,6 +803,8 @@ def main() -> None:
             out_folder=args.out_folder,
             no_llm=args.no_llm,
             no_relevance=args.no_relevance,
+            origin=args.origin,
+            project=args.project,
         )
         print(json.dumps(result, ensure_ascii=False, indent=2))
     except Exception as exc:

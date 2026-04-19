@@ -40,6 +40,5 @@ Summary: "Entry point for the TFG bjj-app project folder, grouping project state
 
 ## Source Categories
 
-- `sources/bjj-training/` - BJJ technique and training captures useful as domain material.
-- `sources/social-captures/` - URL-shaped Instagram captures that need later cleanup.
 - `sources/ai-rag-research/` - Reserved for project-specific AI/RAG source captures.
+- [[bjj-learning-videos]] - sport-learning videos and social captures kept outside the app project.

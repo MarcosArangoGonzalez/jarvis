@@ -1,0 +1,15 @@
+[Unit]
+Description=Jarvis WhatsApp automatic ingest listener
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/marcos/jarvis/tools/skills/whatsapp_listener
+ExecStart=/home/marcos/jarvis/tools/skills/whatsapp_listener/start.sh
+Restart=always
+RestartSec=10
+Environment=PYTHON=python3
+
+[Install]
+WantedBy=default.target

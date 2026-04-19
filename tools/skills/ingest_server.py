@@ -4,6 +4,8 @@
 from __future__ import annotations
 
 import json
+import subprocess
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -15,6 +17,7 @@ from pydantic import BaseModel, Field
 
 ROOT = Path(__file__).resolve().parents[2]
 RAW_CHATS = ROOT / "raw" / "chats"
+CHAT_INGESTOR = ROOT / "tools" / "skills" / "chat_ingestor.py"
 
 
 class BrowserIngestPayload(BaseModel):
@@ -54,7 +57,21 @@ async def ingest_browser(payload: BrowserIngestPayload, request: Request) -> dic
     document["client"] = request.client.host if request.client else None
     output = RAW_CHATS / f"{safe_stamp()}-browser-chat.json"
     output.write_text(json.dumps(document, ensure_ascii=False, indent=2), encoding="utf-8")
-    return {"status": "ok", "path": str(output), "messages": len(payload.messages)}
+    result: dict[str, Any] = {"status": "ok", "path": str(output), "messages": len(payload.messages)}
+    try:
+        completed = subprocess.run(
+            [sys.executable, str(CHAT_INGESTOR), str(output)],
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+        if completed.returncode == 0:
+            result["ingested"] = json.loads(completed.stdout.strip())
+        else:
+            result["ingest_error"] = completed.stderr.strip()[:300]
+    except Exception as exc:
+        result["ingest_error"] = str(exc)
+    return result
 
 
 @app.post("/webhook/whatsapp")
