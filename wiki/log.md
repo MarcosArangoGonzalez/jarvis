@@ -93,6 +93,14 @@ Summary: Chronological operating log for JarvisOS.
 - Archivos modificados o creados en esta sesión:
   - .obsidian/graph.json
 
+## 2026-04-19 — Phase 5D: tests, Java endpoint confirmed, Technique Debugger self-fetch
+
+- Confirmado: endpoint Java para combat story es `GET /api/v1/publications/{id}/story` (no `/combat-story`). `vectorized` NO está en `PublicationDto` → se verifica en ChromaDB directamente.
+- Añadido `_fetch_publication_for_debugger()` en `AgentGraphService`: llama a `/story` vía httpx, verifica vectorization en ChromaDB, extrae joint_angles de los bloques del combat_story. Se invoca automáticamente en `run()` cuando `intent=video_debug` y `publication=None`.
+- Creado `tests/test_agent_graph_service.py` (27 tests): clasificador de intención x10, normalización de query x3, GuardedFallback x4, gate del Technique Debugger x4, contrato de respuesta x6.
+- Corregido bug en `_node_guarded_fallback`: confianza era `0.2` para todos los casos → ahora `0.5` para `unverified_response`, `0.0` para el resto.
+- 27/27 tests pasan. Siguiente: verificar endpoint e2e con el servidor levantado.
+
 ## 2026-04-19 — Phase 5D: AgentGraphService wired into rag.py + main.py
 
 - Creado `agent_graph_service.py` (Phase 1 completo): GraphState, clasificador de intención, nodos retriever/generator/evaluator/rewriter/technique-debugger/session-summary/guarded-fallback, y método `run()` async.
@@ -133,4 +141,14 @@ Summary: Chronological operating log for JarvisOS.
   - wiki/projects/TFG/bjj-app/analyses/plan-assessment.md
   - wiki/projects/TFG/bjj-app/analyses/rag-patterns.md
   - wiki/projects/TFG/bjj-app/bjj-app-index.md
+
+
+## 2026-04-19 21:18 — session end
+
+## 2026-04-19 21:18 — session end (auto)
+
+- Archivos modificados o creados en esta sesión:
+  - .obsidian/graph.json
+  - README.md
+  - wiki/log.md
 
