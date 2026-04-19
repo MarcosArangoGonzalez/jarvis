@@ -19,7 +19,7 @@ Summary: Entry point for the JarvisOS local knowledge base.
 - Sources: `wiki/sources/`
 - Entities: `wiki/entities/`
 - Concepts: `wiki/concepts/`
-- Analyses: `wiki/analyses/`
+- Analyses: global notes in `wiki/analyses/`; project-owned notes inside each project folder.
 - Logs: `wiki/logs/`
 - Projects: `wiki/projects/`
 
@@ -36,4 +36,5 @@ Summary: Entry point for the JarvisOS local knowledge base.
 
 ## Active Analysis Indexes
 
+- [[bjj-app-index]] — project-local index for TFG bjj-app.
 - [[bjj-agent-knowledge-index]] — AI architecture index for the BJJ AgentGraphService notes.

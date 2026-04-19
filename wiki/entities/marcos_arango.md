@@ -77,4 +77,4 @@ Estudiante de último año del Grado en Ingeniería Informática en la Universid
 
 ## Related
 
-[[tfg_bjj_app]] | [[bjj_agent_design]] | [[bjj_rag_implementation]]
+[[tfg-bjj-app]] | [[bjj-agent-design]] | [[bjj-rag-implementation]]

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Map ingested content to active Jarvis projects and suggest specific applications.
 
-Loads project/research context from wiki/projects/ and wiki/analyses/, then
+Loads project/research context from nested wiki/projects/ folders and wiki/analyses/, then
 asks the LLM where newly ingested content can add value — with concrete actions.
 """
 
@@ -44,13 +44,16 @@ def load_context(wiki_root: Path = WIKI) -> list[dict]:
     """Load active projects and notable research/analyses as context items."""
     items: list[dict] = []
 
-    # Active projects
+    # Active projects. Project folders may be nested, e.g.
+    # wiki/projects/TFG/bjj-app/project/tfg-bjj-app.md.
     projects_dir = wiki_root / "projects"
     if projects_dir.exists():
-        for p in sorted(projects_dir.glob("*.md")):
+        for p in sorted(projects_dir.rglob("*.md")):
             try:
                 text = p.read_text(encoding="utf-8", errors="replace")
                 fm = _parse_frontmatter(text)
+                if fm.get("type") != "project":
+                    continue
                 if fm.get("status", "active") not in ("archived", "done", "cancelled"):
                     # Extract a richer description from the note body
                     body_start = text.find("---", 3)
@@ -67,24 +70,29 @@ def load_context(wiki_root: Path = WIKI) -> list[dict]:
             except OSError:
                 pass
 
-    # Notable analyses (research context)
-    analyses_dir = wiki_root / "analyses"
-    if analyses_dir.exists():
-        for p in sorted(analyses_dir.glob("*.md")):
-            try:
-                text = p.read_text(encoding="utf-8", errors="replace")
-                fm = _parse_frontmatter(text)
-                summary = fm.get("Summary", "").strip('"').strip("'")
-                if summary:
-                    items.append({
-                        "name": fm.get("title", p.stem),
-                        "type": "research",
-                        "summary": summary,
-                        "tags": fm.get("tags", ""),
-                        "path": str(p.relative_to(ROOT)),
-                    })
-            except OSError:
-                pass
+    # Notable analyses and research context. These can live in global
+    # wiki/analyses/ or inside a project folder.
+    for p in sorted(wiki_root.rglob("*.md")):
+        try:
+            text = p.read_text(encoding="utf-8", errors="replace")
+            fm = _parse_frontmatter(text)
+            if fm.get("type") not in ("analysis", "research", "index", "prompt"):
+                continue
+            if fm.get("type") == "index" and not (
+                p.is_relative_to(wiki_root / "projects") or p.is_relative_to(wiki_root / "analyses")
+            ):
+                continue
+            summary = fm.get("Summary", "").strip('"').strip("'")
+            if summary:
+                items.append({
+                    "name": fm.get("title", p.stem),
+                    "type": "research",
+                    "summary": summary,
+                    "tags": fm.get("tags", ""),
+                    "path": str(p.relative_to(ROOT)),
+                })
+        except OSError:
+            pass
 
     return items
 

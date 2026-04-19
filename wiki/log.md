@@ -73,17 +73,17 @@ Summary: Chronological operating log for JarvisOS.
 ## 2026-04-19 19:08 — session end (auto)
 
 - Archivos modificados o creados en esta sesión:
-  - wiki/analyses/agent-langgraph-migration.md
-  - wiki/analyses/bjj-agent-knowledge-index.md
-  - wiki/analyses/company-vs-tfg-comparison.md
-  - wiki/analyses/improvements-prompt.md
-  - wiki/analyses/plan-assessment.md
-  - wiki/analyses/rag-patterns.md
+  - wiki/projects/TFG/bjj-app/analyses/agent-langgraph-migration.md
+  - wiki/projects/TFG/bjj-app/analyses/bjj-agent-knowledge-index.md
+  - wiki/projects/TFG/bjj-app/analyses/company-vs-tfg-comparison.md
+  - wiki/projects/TFG/bjj-app/analyses/improvements-prompt.md
+  - wiki/projects/TFG/bjj-app/analyses/plan-assessment.md
+  - wiki/projects/TFG/bjj-app/analyses/rag-patterns.md
   - wiki/index.md
   - wiki/log.md
-  - wiki/projects/bjj_rag_implementation.md
-  - wiki/projects/tfg_bjj_app.md
-  - wiki/tasks/projects/bjj_rag.md
+  - wiki/projects/TFG/bjj-app/project/bjj-rag-implementation.md
+  - wiki/projects/TFG/bjj-app/project/tfg-bjj-app.md
+  - wiki/projects/TFG/bjj-app/tasks/bjj-rag-tasks.md
 
 
 ## 2026-04-19 20:57 — session end
@@ -92,4 +92,45 @@ Summary: Chronological operating log for JarvisOS.
 
 - Archivos modificados o creados en esta sesión:
   - .obsidian/graph.json
+
+## 2026-04-19 — Phase 5D: AgentGraphService wired into rag.py + main.py
+
+- Creado `agent_graph_service.py` (Phase 1 completo): GraphState, clasificador de intención, nodos retriever/generator/evaluator/rewriter/technique-debugger/session-summary/guarded-fallback, y método `run()` async.
+- ChromaDB poblado con 13 chunks gold-standard BJJ (Phase 0 completo).
+- Extendido `routers/rag.py`: `RagQueryRequest` acepta `session_summary`, `publication_id`, `debug`; `RagQueryResponse` incluye `confidence`, `warnings`, `mode`, `session_summary`, `agent_metrics`; endpoint delega a `AgentGraphService.run()` con fallback directo a `RagService` si no está inicializado.
+- Actualizado `main.py`: `AgentGraphService` se inicializa en el lifespan tras `RagService` y se almacena en `app.state.agent_graph_service`.
+- Decisión clave: sin LangGraph — custom graph isomorfo, dependencia cero, migrable post-TFG.
+- Siguiente acción: escribir `tests/test_agent_graph_service.py` y confirmar endpoint Java `GET /publications/{id}/combat-story` (bloqueante para Technique Debugger).
+
+
+## 2026-04-19 21:10 — session end
+
+## 2026-04-19 21:10 — session end (auto)
+
+- Archivos modificados o creados en esta sesión:
+  - .obsidian/graph.json
+  - README.md
+  - tools/skills/relevance_mapper.py
+  - wiki/analyses/agent-langgraph-migration.md
+  - wiki/analyses/bjj_agent_design.md
+  - wiki/analyses/bjj_agentic_rag_context.md
+  - wiki/analyses/bjj-agent-knowledge-index.md
+  - wiki/analyses/bjj_java_python_contracts.md
+  - wiki/analyses/company-vs-tfg-comparison.md
+  - wiki/analyses/improvements-prompt.md
+  - wiki/analyses/plan-assessment.md
+  - wiki/analyses/rag-patterns.md
+  - wiki/entities/marcos_arango.md
+  - wiki/index.md
+  - wiki/log.md
+  - wiki/projects/TFG/bjj-app/analyses/agent-langgraph-migration.md
+  - wiki/projects/TFG/bjj-app/analyses/bjj-agent-design.md
+  - wiki/projects/TFG/bjj-app/analyses/bjj-agentic-rag-context.md
+  - wiki/projects/TFG/bjj-app/analyses/bjj-agent-knowledge-index.md
+  - wiki/projects/TFG/bjj-app/analyses/bjj-java-python-contracts.md
+  - wiki/projects/TFG/bjj-app/analyses/company-vs-tfg-comparison.md
+  - wiki/projects/TFG/bjj-app/analyses/improvements-prompt.md
+  - wiki/projects/TFG/bjj-app/analyses/plan-assessment.md
+  - wiki/projects/TFG/bjj-app/analyses/rag-patterns.md
+  - wiki/projects/TFG/bjj-app/bjj-app-index.md
 
