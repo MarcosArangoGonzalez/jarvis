@@ -178,6 +178,12 @@ Summary: Chronological operating log for JarvisOS.
 - El wrapper detiene temporalmente `jarvis-whatsapp-listener.service`, limpia locks stale del perfil WhatsApp Web, aplica timeout y reinicia el servicio al salir.
 - Uso esperado: `bash tools/skills/whatsapp_listener/ingest_recent.sh --list --since today --limit 120` y después `--select 1,3-5` para ingerir únicamente esos vídeos.
 
+## 2026-04-19 22:35 — Today's WhatsApp video links ingested
+
+- Ingeridos ocho enlaces de Instagram enviados hoy al chat personal usando `content_analyzer.py --origin whatsapp`; todos quedaron como capturas raw porque Instagram no devolvió transcripción y el LLM local no aportó análisis adicional.
+- Movidas las notas generadas a `wiki/areas/bjj/learning-videos/social-captures/` y añadido enlace `[[bjj-learning-videos]]`.
+- Ajustado el ruteo futuro: vídeos Instagram/YouTube de WhatsApp van por defecto al área de aprendizaje BJJ salvo que el contenido indique explícitamente material de sistema `bjj-app`/TFG/RAG.
+
 ## 2026-04-19 22:07 — session end
 
 ## 2026-04-19 22:07 — session end (auto)
@@ -231,4 +237,23 @@ Summary: Chronological operating log for JarvisOS.
   - .obsidian/graph.json
   - README.md
   - tools/skills/whatsapp_listener/ingest_recent.js
+
+## 2026-04-19 22:36 — session end
+
+## 2026-04-19 22:36 — session end (auto)
+
+- Archivos modificados o creados en esta sesión:
+  - .obsidian/graph.json
+  - README.md
+  - tools/skills/content_analyzer.py
+  - tools/skills/whatsapp_listener/ingest_recent.js
+  - wiki/areas/bjj/learning-videos/social-captures/https-www-instagram-com-p-dw-lserdaqk-img-index-1-igsh-mwpxy.md
+  - wiki/areas/bjj/learning-videos/social-captures/https-www-instagram-com-p-dxpmxh4mrjo-img-index-1-igsh-mww5d.md
+  - wiki/areas/bjj/learning-videos/social-captures/https-www-instagram-com-reel-dw5uyesgo2m-igsh-btkyogxxbxyynt.md
+  - wiki/areas/bjj/learning-videos/social-captures/https-www-instagram-com-reel-dxr8612cus8-igsh-mtawnny0nnrmod.md
+  - wiki/areas/bjj/learning-videos/social-captures/https-www-instagram-com-reel-dxsmacedvsk-igsh-ejhrohfnbzi2ed.md
+  - wiki/areas/bjj/learning-videos/social-captures/https-www-instagram-com-reel-dxss2jsk9wu-igsh-mw00dzfpathtbx.md
+  - wiki/areas/bjj/learning-videos/social-captures/https-www-instagram-com-reel-dxufzxigotr-igsh-njr6agxwbzgzzz.md
+  - wiki/areas/bjj/learning-videos/social-captures/https-www-instagram-com-reel-dxugoemevn5-igsh-mwgxzdbkzhozew.md
+  - wiki/log.md
 

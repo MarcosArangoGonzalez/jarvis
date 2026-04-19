@@ -96,7 +96,7 @@ function extractCandidates(messages, args) {
   const contains = args.contains.toLowerCase();
 
   for (const msg of messages) {
-    const body = msg.body || "";
+    const body = msg.body || msg.caption || "";
     if (!body || (msg.timestamp || 0) < since) continue;
     if (contains && !body.toLowerCase().includes(contains)) continue;
 
@@ -115,6 +115,37 @@ function extractCandidates(messages, args) {
   }
 
   return candidates.sort((a, b) => a.timestamp - b.timestamp);
+}
+
+async function fetchRawMessages(client, chatId, limit) {
+  return client.pupPage.evaluate(async ({ chatId, limit }) => {
+    const wid = window.Store.WidFactory.createWid(chatId);
+    let chat = window.Store.Chat.get(wid);
+    if (!chat && window.Store.FindOrCreateChat?.findOrCreateLatestChat) {
+      chat = (await window.Store.FindOrCreateChat.findOrCreateLatestChat(wid))?.chat;
+    }
+    if (!chat) return [];
+
+    const toPlain = (msg) => ({
+      body: msg.body || msg.caption || "",
+      caption: msg.caption || "",
+      timestamp: msg.t || 0,
+      fromMe: Boolean(msg.id?.fromMe),
+    });
+
+    let msgs = chat.msgs?.getModelsArray?.() || [];
+    while (msgs.length < limit && window.Store.ConversationMsgs?.loadEarlierMsgs) {
+      const loaded = await window.Store.ConversationMsgs.loadEarlierMsgs(chat, chat.msgs);
+      if (!loaded || !loaded.length) break;
+      msgs = [...loaded, ...msgs];
+    }
+
+    return msgs
+      .filter((msg) => !msg.isNotification)
+      .sort((a, b) => (a.t || 0) - (b.t || 0))
+      .slice(-limit)
+      .map(toPlain);
+  }, { chatId, limit });
 }
 
 function formatDate(timestamp) {
@@ -177,17 +208,10 @@ async function main() {
   const ready = waitForReady(client);
   await client.initialize();
   await ready;
-  let chat;
-  try {
-    chat = await client.getChatById(TARGET_CHAT);
-  } catch {
-    const chats = await client.getChats();
-    chat = chats.find((candidate) => candidate.id?._serialized === TARGET_CHAT);
+  const messages = await fetchRawMessages(client, TARGET_CHAT, args.limit);
+  if (!messages.length) {
+    throw new Error(`No messages found for WhatsApp chat: ${TARGET_CHAT}`);
   }
-  if (!chat) {
-    throw new Error(`Could not find WhatsApp chat: ${TARGET_CHAT}`);
-  }
-  const messages = await chat.fetchMessages({ limit: args.limit });
   const candidates = extractCandidates(messages, args);
 
   if (!args.select) {

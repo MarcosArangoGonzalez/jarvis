@@ -493,6 +493,23 @@ def is_bjj_sport_learning(extracted: ExtractResult, analysis: dict) -> bool:
     return any(term in haystack for term in sport_terms) and not any(term in haystack for term in app_terms)
 
 
+def is_bjj_app_system_material(extracted: ExtractResult, analysis: dict) -> bool:
+    haystack = " ".join([
+        extracted.title,
+        extracted.text[:2000],
+        _as_text(analysis.get("title")),
+        _as_text(analysis.get("summary")),
+        _as_text(analysis.get("tags")),
+        _as_text(analysis.get("concepts")),
+    ]).lower()
+    app_terms = (
+        "bjj-app", "agentgraphservice", "java/python", "webhook",
+        "contract", "dto", "rag agent", "agentic rag", "tfg",
+        "video analysis pipeline",
+    )
+    return any(term in haystack for term in app_terms)
+
+
 def choose_output_folder(extracted: ExtractResult, analysis: dict, out_folder: str,
                          origin: str | None = None, project: str | None = None) -> Path:
     """Route generated notes to the correct knowledge area."""
@@ -505,7 +522,7 @@ def choose_output_folder(extracted: ExtractResult, analysis: dict, out_folder: s
         return WIKI_BJJ_APP_SOURCES
 
     if origin == "whatsapp" and extracted.content_type in {"youtube", "instagram"}:
-        if is_bjj_sport_learning(extracted, analysis):
+        if not is_bjj_app_system_material(extracted, analysis):
             if extracted.content_type == "instagram":
                 return WIKI_BJJ_LEARNING_VIDEOS / "social-captures"
             return WIKI_BJJ_LEARNING_VIDEOS / "whatsapp"
