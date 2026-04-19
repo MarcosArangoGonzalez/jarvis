@@ -28,14 +28,12 @@ Summary: Chronological operating log for JarvisOS.
 - Fixed Jarvis Voice Wayland injection: prefer direct `ydotool type`/`wtype` text insertion before falling back to simulated paste, avoiding raw keycode artifacts such as `2442`.
 - Reduced Jarvis Voice latency: added `JARVIS_VOICE_MODE=fast|balanced`, set the toggle default to `fast`, and made clipboard copy non-fatal when desktop clipboard access is unavailable.
 
-## 2026-04-18 20:58 — session end
+## 2026-04-19 12:30 — Jarvis auto-log: limpieza del sistema de logs y hooks de sesión
 
-## 2026-04-18 20:59 — session end
+- Eliminadas 87 entradas vacías `session end` de `wiki/log.md`; log restaurado a contenido semántico real.
+- Añadida regla **Auto-log** en `CLAUDE.md`: Claude escribe entrada detallada en `wiki/log.md` tras cualquier respuesta con trabajo significativo, sin necesidad de pedirlo.
+- Reescrito `~/.claude/commands/jarvis-log.md`: exige 3–6 bullets concretos y sobreescribe `## Last Session` en `session_manager.md` en lugar de crear entradas duplicadas infinitas.
+- Creado `tools/skills/session_end_hook.sh`: detecta archivos modificados/creados via `git diff` y `git ls-files`; escribe entrada automática al cerrar sesión.
+- Registrado Stop hook en `~/.claude/settings.json`: ejecuta el script en cada cierre de Claude Code.
+- Siguiente acción: hacer `/hooks` o reiniciar Claude Code para activar el hook en la sesión actual.
 
-## 2026-04-18 21:02 — session end
-
-## 2026-04-18 21:04 — session end
-
-## 2026-04-18 21:12 — session end
-
-## 2026-04-18 21:36 — session end

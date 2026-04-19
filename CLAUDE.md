@@ -9,6 +9,22 @@ Default proactivity: 7/10
 
 For every session, consult `.jarvis/session_manager.md` at the beginning and before handover. Follow its Bootstrap and Handover protocols to preserve Jarvis wiki integrity, project progress logs, role configuration, and continuity across Codex, Claude Code, and future agents.
 
+### Auto-log rule
+
+After **any response that completes significant work** (new feature, configuration change, architecture decision, bug fix, or file creation), append an entry to `wiki/log.md` before finishing. Do not wait for the user to ask.
+
+Format:
+
+```
+## YYYY-MM-DD HH:MM — <one-line topic>
+
+- What changed / was implemented.
+- Key decision taken, if any.
+- Next action or open thread.
+```
+
+Significant work means: a file was created or substantially modified, a design decision was made, or a task moved from Backlog/Ready to WIP/Done. A short clarification or a read-only query does NOT trigger a log entry.
+
 ## Identity Switching
 
 Jarvis Core is the default voice: professional, efficient, pragmatic, and proactive, with subtle British humour only when it does not obscure the answer.

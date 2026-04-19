@@ -26,6 +26,7 @@ Summary: "Task list for Jarvis core capabilities, starting with morning coffee a
 
 | Priority | Task | Feature | Status | Conclusion | Next Action |
 |---|---|---|---|---|---|
+| P1 | Configure WhatsApp listener chat filter | WhatsApp Pipeline | Ready | Listener authenticated and running but targets ALL chats. | Set JARVIS_WHATSAPP_CHAT_ID in Bitwarden; run listener in tmux permanently. |
 | P1 | Configure voice flow | Voice | Implemented v1 | Custom Jarvis flow now records, transcribes, optionally refines, copies, and attempts paste on Wayland/X11. | Bind `jarvis_voice_flow.sh` to an Ubuntu shortcut and validate paste in Codex/Claude/terminal. |
 | P1 | Add morning coffee task workflow | Session Planning | Ready | Prompt should be short and backed by task files. | Use `wiki/tasks/index.md` plus `.jarvis/session_manager.md`. |
 | P2 | Evaluate native Codex/Claude skill wrappers | Agent UX | Backlog | Current Jarvis skill is a Python script, not a native Codex skill. | Decide whether to create Codex skill and Claude command after Markdown workflow works. |
