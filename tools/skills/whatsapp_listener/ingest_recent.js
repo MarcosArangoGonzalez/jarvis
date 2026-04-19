@@ -142,6 +142,20 @@ function runAnalyzer(url, model) {
   });
 }
 
+function waitForReady(client) {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error("Timed out waiting for WhatsApp client ready")), 60_000);
+    client.once("ready", () => {
+      clearTimeout(timer);
+      resolve();
+    });
+    client.once("auth_failure", (message) => {
+      clearTimeout(timer);
+      reject(new Error(`WhatsApp auth failure: ${message}`));
+    });
+  });
+}
+
 async function main() {
   const args = parseArgs(process.argv);
   if (!TARGET_CHAT) {
@@ -160,8 +174,19 @@ async function main() {
     console.error("WhatsApp session is not authenticated. Start listener.js and scan the QR first.");
   });
 
+  const ready = waitForReady(client);
   await client.initialize();
-  const chat = await client.getChatById(TARGET_CHAT);
+  await ready;
+  let chat;
+  try {
+    chat = await client.getChatById(TARGET_CHAT);
+  } catch {
+    const chats = await client.getChats();
+    chat = chats.find((candidate) => candidate.id?._serialized === TARGET_CHAT);
+  }
+  if (!chat) {
+    throw new Error(`Could not find WhatsApp chat: ${TARGET_CHAT}`);
+  }
   const messages = await chat.fetchMessages({ limit: args.limit });
   const candidates = extractCandidates(messages, args);
 

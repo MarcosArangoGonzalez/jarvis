@@ -222,3 +222,13 @@ Summary: Chronological operating log for JarvisOS.
   - tools/skills/whatsapp_listener/start.sh
   - wiki/log.md
 
+
+## 2026-04-19 22:29 — session end
+
+## 2026-04-19 22:29 — session end (auto)
+
+- Archivos modificados o creados en esta sesión:
+  - .obsidian/graph.json
+  - README.md
+  - tools/skills/whatsapp_listener/ingest_recent.js
+
