@@ -85,3 +85,11 @@ Summary: Chronological operating log for JarvisOS.
   - wiki/projects/tfg_bjj_app.md
   - wiki/tasks/projects/bjj_rag.md
 
+
+## 2026-04-19 20:57 — session end
+
+## 2026-04-19 20:57 — session end (auto)
+
+- Archivos modificados o creados en esta sesión:
+  - .obsidian/graph.json
+
