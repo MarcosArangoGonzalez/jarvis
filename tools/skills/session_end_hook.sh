@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Stop hook: writes a session-end entry to wiki/log.md with git-derived context.
+# Stop hook: writes a session-end entry to wiki/log.md and auto-commits wiki changes.
 # Called by Claude Code on session stop. Does NOT require conversation context.
 
 JARVIS_DIR="/home/marcos/jarvis"
@@ -11,7 +11,7 @@ CHANGES=$(git -C "$JARVIS_DIR" diff --name-only HEAD 2>/dev/null \
   | grep -v "node_modules\|\.wwebjs_auth\|__pycache__\|\.pyc" \
   | head -15)
 
-# Also include untracked files in wiki/ and tools/ (new notes created this session)
+# Untracked files in wiki/ and tools/ (new notes created this session)
 UNTRACKED=$(git -C "$JARVIS_DIR" ls-files --others --exclude-standard 2>/dev/null \
   | grep -E "^(wiki|tools|\.jarvis)/" \
   | grep -v "node_modules\|__pycache__" \
@@ -33,3 +33,19 @@ $FILE_BULLETS
 "
 
 printf "%s\n" "$ENTRY" >> "$LOG_FILE"
+
+# Stage and commit wiki/, tools/, .jarvis/ changes (skip raw/ and secrets)
+git -C "$JARVIS_DIR" add \
+  wiki/ \
+  tools/skills/ \
+  .jarvis/ \
+  CLAUDE.md \
+  2>/dev/null
+
+# Only commit if there's something staged
+if ! git -C "$JARVIS_DIR" diff --cached --quiet 2>/dev/null; then
+  git -C "$JARVIS_DIR" commit -m "chore: auto-commit session end $(date '+%Y-%m-%d %H:%M')
+
+Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>" \
+  --no-gpg-sign 2>/dev/null
+fi
