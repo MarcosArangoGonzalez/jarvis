@@ -9,13 +9,19 @@ tags:
   - software-architecture
   - security-specs
 created: 2026-04-12
-updated: 2026-04-16
+updated: 2026-04-19
 tokens_consumed: 1200
 sources:
   - "/home/marcos/Descargas/20260416-Anteproxecto-TFG-MarcosArangoGonzález.pdf"
   - "/home/marcos/Escritorio/TFG/pa/bjj-app/memory/tfg.md"
   - "/home/marcos/jarvis/wiki/analyses/bjj_agent_design.md"
   - "/home/marcos/jarvis/wiki/projects/bjj_rag_implementation.md"
+  - "/home/marcos/jarvis/wiki/analyses/bjj-agent-knowledge-index.md"
+  - "/home/marcos/jarvis/wiki/analyses/plan-assessment.md"
+  - "/home/marcos/jarvis/wiki/analyses/rag-patterns.md"
+  - "/home/marcos/jarvis/wiki/analyses/agent-langgraph-migration.md"
+  - "/home/marcos/jarvis/wiki/analyses/company-vs-tfg-comparison.md"
+  - "/home/marcos/jarvis/wiki/analyses/improvements-prompt.md"
 Summary: "Indice de gestion del TFG para bjj-app: anteproyecto firmado (15/04/2026), memoria, metodologia, bibliografia, experimentos, decisiones arquitectonicas y pendientes."
 ---
 
@@ -33,6 +39,7 @@ Gestionar los documentos y decisiones del TFG asociado a `bjj-app`, especialment
 | Memoria | Backlog | Pendiente | Sincronizar estructura con `memory/tfg.md`. |
 | Bibliografia | Backlog | Pendiente | Consolidar referencias RAG, pgvector, LangChain, HNSW y agentes. |
 | Evaluacion empirica | Backlog | Pendiente | Definir tabla RAG stateless vs RAG agentico. |
+| Arquitectura AI Agent | Activo | [[bjj-agent-knowledge-index]] | Usar como indice de decisiones y mejoras del AgentGraphService. |
 
 ## Anteproyecto — Resumen
 
@@ -87,6 +94,7 @@ Desarrollo iterativo e incremental para único desarrollador. Iteraciones de 2-3
 - El canal de retorno del analisis de video sigue siendo webhook con `X-Webhook-Secret`.
 - V1 del RAG agentico usa Custom Graph Service; LangGraph queda para post-TFG.
 - Memoria v1 es `session_summary` devuelto por el agente y almacenado localmente por frontend, sin persistencia en BD.
+- Agentic RAG/CRAG es el patron elegido para tecnica y grounding; GraphRAG y LangGraph quedan documentados como mejoras post-TFG.
 
 ## Experiments
 
@@ -102,6 +110,7 @@ Desarrollo iterativo e incremental para único desarrollador. Iteraciones de 2-3
 - Decidir si `agent_metrics` se expone solo en modo debug/eval o tambien en UI interna.
 - Resolver drift `visuals` por frame entre Python y Java.
 - Decidir si se crea `shared/contracts/` o si la Wiki queda como contrato operativo versionado durante el TFG.
+- Confirmar endpoint Java para `combat_story` antes de cerrar Technique Debugger.
 
 ## Next Actions
 

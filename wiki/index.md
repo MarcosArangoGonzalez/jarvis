@@ -6,7 +6,7 @@ tags:
   - jarvis
   - index
 created: 2026-04-12
-updated: 2026-04-12
+updated: 2026-04-19
 tokens_consumed: 0
 sources: []
 Summary: Entry point for the JarvisOS local knowledge base.
@@ -34,3 +34,6 @@ Summary: Entry point for the JarvisOS local knowledge base.
 
 ## Source Notes
 
+## Active Analysis Indexes
+
+- [[bjj-agent-knowledge-index]] — AI architecture index for the BJJ AgentGraphService notes.

@@ -9,7 +9,7 @@ tags:
   - agentic-rag
   - tfg
 created: 2026-04-12
-updated: 2026-04-12
+updated: 2026-04-19
 tokens_consumed: 12000
 sources:
   - "/home/marcos/jarvis/wiki/analyses/bjj_agentic_rag_context.md"
@@ -22,6 +22,12 @@ sources:
   - "/home/marcos/Escritorio/TFG/pa/bjj-app/phases/5B.md"
   - "/home/marcos/Escritorio/TFG/pa/bjj-app/phases/5C.md"
   - "/home/marcos/Escritorio/TFG/pa/bjj-app/phases/5D.md"
+  - "/home/marcos/jarvis/wiki/analyses/bjj-agent-knowledge-index.md"
+  - "/home/marcos/jarvis/wiki/analyses/plan-assessment.md"
+  - "/home/marcos/jarvis/wiki/analyses/rag-patterns.md"
+  - "/home/marcos/jarvis/wiki/analyses/agent-langgraph-migration.md"
+  - "/home/marcos/jarvis/wiki/analyses/company-vs-tfg-comparison.md"
+  - "/home/marcos/jarvis/wiki/analyses/improvements-prompt.md"
 Summary: "Log activo del proyecto para convertir el RAG actual de bjj-app en un RAG agentico: inicio de sesion 2026-04-12, estado base, restricciones de seguridad y modularidad, contratos Java/Python, protocolo JarvisOS de sesion, diseno de grafo agentico, hitos pendientes y criterios de validacion."
 ---
 
@@ -81,6 +87,13 @@ Estado base al 2026-04-12:
 - Fijado orden de implementacion posterior: Wiki, Intent Classifier + Router, `search_kb` + cache LRU, Generator, Combined Evaluator, Technique Debugger, Query Rewriter y `agent_metrics`.
 - Creado indice de gestion TFG en `/home/marcos/jarvis/wiki/projects/tfg_bjj_app.md`.
 
+### 2026-04-19 - Agent Architecture Notes Imported
+
+- Incorporadas notas descargadas de arquitectura AI Agent en `wiki/analyses/`.
+- Creado indice `[[bjj-agent-knowledge-index]]` para navegar `[[plan-assessment]]`, `[[rag-patterns]]`, `[[agent-langgraph-migration]]`, `[[company-vs-tfg-comparison]]` y `[[improvements-prompt]]`.
+- Validado criterio de alcance: AgentGraphService custom para TFG; LangGraph, GraphRAG, Redis cache, streaming y fine-tuning quedan como roadmap post-TFG.
+- Convertido `[[improvements-prompt]]` en prompt operativo para cerrar cache, memoria, rewriter defensivo, grounding, metricas y fallback.
+
 ## Feature Progress
 
 | Feature | Status | Progreso | Ultima modificacion | Conclusion | Siguiente accion |
@@ -92,6 +105,7 @@ Estado base al 2026-04-12:
 | AgentInput/AgentOutput Contracts | WIP | 40% | 2026-04-12 | Contrato compatible definido a nivel Wiki; falta reflejarlo en Pydantic/Java si se implementa. | Anadir campos opcionales y tests de contrato. |
 | Conversation Memory | WIP | 35% | 2026-04-12 | Memoria v1 definida como `session_summary` stateless; falta frontend/backend. | Implementar envio y retorno local de `session_summary`. |
 | Retrieval Quality / Curated Weighting | WIP | 35% | 2026-04-12 | Prioridad `curated > PDF gold > generated` y cache LRU definidas; falta codigo. | Implementar scoring/filtros y `get_query_embedding`. |
+| AgentGraphService Improvements | Ready | 0% | 2026-04-19 | Prompt operativo preparado con seis bloques verificables. | Ejecutar `[[improvements-prompt]]` tras completar y probar AgentGraphService v1. |
 | Java/Python Contract Drift | WIP | 20% | 2026-04-12 | Riesgos identificados, pero no hay test automatizado ni schema compartido. | Decidir `shared/contracts/` vs Wiki versionada y cubrir con tests. |
 | Tests / E2E Validation | Backlog | 0% | - | No iniciado para la capa agentica. | Crear tests de RAG, contrato, fallback y seguridad. |
 | TFG Document Management | WIP | 20% | 2026-04-12 | Indice TFG creado; faltan anteproyecto, memoria y rubrica de evaluacion. | Crear esquema de anteproyecto y memoria. |
@@ -104,6 +118,7 @@ Estado base al 2026-04-12:
 - [x] Configurar protocolo de sesion JarvisOS para bootstrap, roles, progreso, logs y handover.
 - [x] Disenar arquitectura del RAG agentico sin romper endpoints existentes.
 - [x] Definir contratos `AgentInput`/`AgentOutput` y politica de memoria corta a nivel Wiki.
+- [x] Incorporar notas de evaluacion y roadmap del AgentGraphService en Wiki.
 - [ ] Decidir si los contratos pasan a `shared/contracts/` o si la Wiki queda como contrato operativo versionado.
 - [ ] Resolver drift `visuals` por frame: persistirlo en Java o limitarlo a `combat_story`.
 - [ ] Decidir estrategia de skills/tools: clases `services/skills/` vs tools LangChain especializadas.
@@ -134,6 +149,7 @@ Estado base al 2026-04-12:
 5. Implementar Technique Debugger con gate estricto.
 6. Implementar Query Rewriter al final, con un solo retry y maximo 150 caracteres.
 7. Exponer `agent_metrics` para evaluacion TFG.
+8. Aplicar mejoras de `[[improvements-prompt]]` tras validar AgentGraphService v1.
 
 ## Implementation Order
 

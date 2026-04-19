@@ -8,11 +8,12 @@ tags:
   - agentic-rag
   - tasks
 created: 2026-04-12
-updated: 2026-04-12
+updated: 2026-04-19
 tokens_consumed: 0
 sources:
   - "/home/marcos/jarvis/wiki/projects/bjj_rag_implementation.md"
   - "/home/marcos/jarvis/wiki/analyses/bjj_agent_design.md"
+  - "/home/marcos/jarvis/wiki/analyses/improvements-prompt.md"
 Summary: "Project task list for implementing the BJJ agentic RAG system."
 ---
 
@@ -30,6 +31,7 @@ Summary: "Project task list for implementing the BJJ agentic RAG system."
 | P3 | Implement Technique Debugger | Technique Debug | Backlog | Depends on gate and video context availability. | Enforce `vectorized`, `combat_story`, `joint_angles`. |
 | P3 | Implement Query Rewriter | Retrieval Retry | Backlog | Least critical and most behaviorally risky. | Implement last, max 150 chars. |
 | P3 | Expose `agent_metrics` | TFG Evaluation | Backlog | Needed for empirical comparison. | Add debug/eval response fields. |
+| P3 | Apply AgentGraphService improvements | Quality Hardening | Ready after v1 | Six-block prompt exists in `[[improvements-prompt]]`. | Run after AgentGraphService v1 is implemented and tested. |
 
 ## Implementation Order
 
