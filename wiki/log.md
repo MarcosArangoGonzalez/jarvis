@@ -166,6 +166,18 @@ Summary: Chronological operating log for JarvisOS.
 - Ajustado el ruteo de ingesta: WhatsApp/queue URLs usan `content_analyzer.py --origin whatsapp|queue`; vídeos BJJ de WhatsApp van al área de aprendizaje, mientras material explícito de `bjj-app` puede ir a `projects/TFG/bjj-app/sources/ai-rag-research`.
 - Cerrada parte pendiente de ingesta automática: `sync_watcher.py` ya distingue URLs de texto plano, `whatsapp_skill.py` y `whatsapp_listener/listener.js` usan el analizador rico para URLs, y `ingest_server.py` convierte capturas de navegador en nota wiki automáticamente.
 
+## 2026-04-19 22:10 — WhatsApp self-chat automatic ingest enabled
+
+- Instalado y habilitado `jarvis-whatsapp-listener.service` como servicio systemd de usuario para escuchar el chat personal de WhatsApp y procesar URLs de vídeos automáticamente.
+- Añadido manejo de `message_create` para el chat "You", filtro anti-bucle para respuestas de Jarvis y guard temporal para ignorar historial anterior al arranque.
+- Corregida robustez operativa: `content_analyzer.py` cae a extracción raw si Ollama/LLM no está disponible; limpiado bloqueo stale de Chromium y confirmado servicio `active/enabled`.
+
+## 2026-04-19 22:25 — Selective WhatsApp history ingest picker
+
+- Añadido `tools/skills/whatsapp_listener/ingest_recent.js` y wrapper `ingest_recent.sh` para listar enlaces de vídeo recientes del chat personal y procesar solo índices seleccionados.
+- El wrapper detiene temporalmente `jarvis-whatsapp-listener.service`, limpia locks stale del perfil WhatsApp Web, aplica timeout y reinicia el servicio al salir.
+- Uso esperado: `bash tools/skills/whatsapp_listener/ingest_recent.sh --list --since today --limit 120` y después `--select 1,3-5` para ingerir únicamente esos vídeos.
+
 ## 2026-04-19 22:07 — session end
 
 ## 2026-04-19 22:07 — session end (auto)
@@ -196,4 +208,17 @@ Summary: Chronological operating log for JarvisOS.
   - wiki/projects/TFG/bjj-app/bjj-app-index.md
   - wiki/projects/TFG/bjj-app/sources/bjj-training/2-conceptos-que-cambiar-n-tu-forma-de-entender-la-guardia-ab.md
   - wiki/projects/TFG/bjj-app/sources/bjj-training/a-sneaky-armbar-that-everyone-should-know.md
+
+## 2026-04-19 22:26 — session end
+
+## 2026-04-19 22:26 — session end (auto)
+
+- Archivos modificados o creados en esta sesión:
+  - .obsidian/graph.json
+  - README.md
+  - tools/skills/whatsapp_listener/ingest_recent.js
+  - tools/skills/whatsapp_listener/ingest_recent.sh
+  - tools/skills/whatsapp_listener/package.json
+  - tools/skills/whatsapp_listener/start.sh
+  - wiki/log.md
 

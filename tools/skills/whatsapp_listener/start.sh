@@ -32,6 +32,10 @@ fi
 export JARVIS_ROOT
 cd "$SCRIPT_DIR"
 mkdir -p "$JARVIS_ROOT/raw/logs"
+AUTH_DIR="$SCRIPT_DIR/.wwebjs_auth/session"
+if [ -d "$AUTH_DIR" ] && ! pgrep -f "$AUTH_DIR" >/dev/null 2>&1; then
+  rm -f "$AUTH_DIR/SingletonLock" "$AUTH_DIR/SingletonSocket" "$AUTH_DIR/SingletonCookie" "$AUTH_DIR/DevToolsActivePort"
+fi
 
 if [ ! -d node_modules ]; then
   echo "Installing dependencies..."

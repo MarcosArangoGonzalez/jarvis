@@ -5,7 +5,9 @@
   "main": "listener.js",
   "type": "module",
   "scripts": {
-    "start": "node listener.js"
+    "start": "node listener.js",
+    "recent:list": "bash ingest_recent.sh --list",
+    "recent:ingest": "bash ingest_recent.sh --select"
   },
   "dependencies": {
     "qrcode-terminal": "^0.12.0",
