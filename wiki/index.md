@@ -6,7 +6,7 @@ tags:
   - jarvis
   - index
 created: 2026-04-12
-updated: 2026-04-19
+updated: 2026-04-20
 tokens_consumed: 0
 sources: []
 Summary: Entry point for the JarvisOS local knowledge base.
@@ -38,3 +38,4 @@ Summary: Entry point for the JarvisOS local knowledge base.
 
 - [[bjj-app-index]] — project-local index for TFG bjj-app.
 - [[bjj-agent-knowledge-index]] — AI architecture index for the BJJ AgentGraphService notes.
+- [[odoo-practica3/index]] — SIE Practica 3 Odoo module project.

@@ -14,6 +14,16 @@ Summary: Chronological operating log for JarvisOS.
 
 # Jarvis Log
 
+## 2026-04-20 — SIE Practica 3 Odoo: apartado Jarvis y modulo de audiolibros
+
+- Leido `/home/marcos/Descargas/SIE-P3.Odoo-Modulo.pdf`; el objetivo es un modulo Odoo para catalogo de audiolibros con autores, titulo, productor, duracion, portada, genero, formato, ISBN y precio.
+- Detectado entorno local Odoo 19 en `/home/marcos/Escritorio/odoo`, con addons montados en `/home/marcos/Escritorio/odoo/addons/19.0`.
+- Creado apartado Jarvis `wiki/projects/sie/odoo-practica3/` con especificacion, plan de implementacion, estructura de ficheros, test plan y notas de entrega.
+- Implementado staging del modulo `sie_audiobook_library` en `odoo_modules/sie_audiobook_library/` con modelos Python, seguridad, vistas, menus, datos demo y README.
+- Copiado el modulo al directorio real de addons: `/home/marcos/Escritorio/odoo/addons/19.0/sie_audiobook_library`.
+- Actualizadas tareas SIE y dashboard global con cola especifica de Practica 3 Odoo.
+- Tareas a hacer: instalarlo en Odoo, validar CRUD/reglas/relaciones, confirmar nombre final de pareja y generar el comprimido de entrega.
+
 ## 2026-04-12
 
 - Initialized JarvisOS workspace in `/home/marcos/jarvis`.
@@ -443,6 +453,15 @@ Summary: Chronological operating log for JarvisOS.
   - README.md
 
 
+## 2026-04-20 17:30 — RAG pipeline: AI_SERVICE_URL fix, chunk size, CoT prompt
+
+- Creado `application-local.yml` en backend: override `AI_SERVICE_URL=http://localhost:8082` (el default `host.docker.internal` no resuelve en Linux fuera de Docker). Backend debe reiniciarse con perfil `local`.
+- `ai-service/config.py`: `rag_chunk_size` 500→1000, `rag_chunk_overlap` 50→200, `rag_retrieval_k` 3→4.
+- ChromaDB re-indexado: 13→26 chunks. Script: `scripts/populate_chroma_from_pdf_annotations.py --reset`.
+- `agent_graph_service.py`: prompt CoT en 3 pasos (IDENTIFICA → RELACIONA → RESPONDE) con grounding estricto. Fragmentos numerados para citabilidad.
+- Resultado query de prueba: `llm_error` — Gemini quota agotada. Prompt aplicado, verificar tras reset de quota.
+- Siguiente: RagController.java — 3 campos request + 5 campos response.
+
 ## 2026-04-20 17:15 — session end
 
 ## 2026-04-20 17:15 — session end (auto)
@@ -451,4 +470,24 @@ Summary: Chronological operating log for JarvisOS.
   - .obsidian/graph.json
   - README.md
   - wiki/log.md
+
+## 2026-04-20 22:24 — session end
+
+## 2026-04-20 22:24 — session end (auto)
+
+- Archivos modificados o creados en esta sesión:
+  - .jarvis/session_manager.md
+  - .obsidian/graph.json
+  - README.md
+  - wiki/index.md
+  - wiki/log.md
+  - wiki/projects/sie.md
+  - wiki/projects/sie/odoo-practica3/delivery.md
+  - wiki/projects/sie/odoo-practica3/file-structure.md
+  - wiki/projects/sie/odoo-practica3/implementation-plan.md
+  - wiki/projects/sie/odoo-practica3/index.md
+  - wiki/projects/sie/odoo-practica3/spec.md
+  - wiki/projects/sie/odoo-practica3/test-plan.md
+  - wiki/tasks/index.md
+  - wiki/tasks/projects/sie.md
 
