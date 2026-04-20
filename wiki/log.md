@@ -93,6 +93,19 @@ Summary: Chronological operating log for JarvisOS.
 - Archivos modificados o creados en esta sesión:
   - .obsidian/graph.json
 
+## 2026-04-20 — Phase 5D: cierre de sesión — stack operativo, tareas pendientes
+
+- Stack completo levantado: Docker (postgres + backend + frontend) + ai-service en host:8082.
+- `HOST_VIDEOS_DIR` fijado a `ai-service/videos/` en `.env` del proyecto; volumen montado correctamente.
+- Corregido error MIME en miniaturas: publicaciones `local:` ya no intentan capturar frame del vídeo cuando el fichero no existe — muestran placeholder. Fix en `frontend/src/app/(main)/page.tsx`.
+- Modelo Gemini actualizado a `gemini-2.0-flash` en `config.py` (el anterior `gemini-1.5-flash` ya no existe en la API v1beta).
+- Disco limpiado x2 durante la sesión; queda ~5GB libres sobre 192GB total.
+- **Tareas pendientes para la próxima sesión:**
+  1. `RagController.java` — reenviar `session_summary`, `publication_id`, `debug` al ai-service.
+  2. Frontend `/rag` — guardar `session_summary` en localStorage, mostrar `confidence` y `warnings`.
+  3. Query real "cómo escapo del mount?" cuando se resetee la quota de Gemini.
+  4. Phase 8 `improvements-prompt.md` — ejecutar tras validar v1 con LLM real.
+
 ## 2026-04-19 — Phase 5D: e2e validado — pipeline completo, API key necesaria
 
 - `config.py` completado: añadidos `python_parity_mode`, `spring_poc_enabled`, `spring_poc_base_url`, `poc_python_dir` (referenciados en `main.py` pero ausentes del modelo de configuración).
@@ -407,4 +420,16 @@ Summary: Chronological operating log for JarvisOS.
   - .obsidian/graph.json
   - README.md
   - wiki/log.md
+
+
+## 2026-04-20 11:04 — session end
+
+## 2026-04-20 11:04 — session end (auto)
+
+- Archivos modificados o creados en esta sesión:
+  - .jarvis/session_manager.md
+  - .obsidian/graph.json
+  - README.md
+  - wiki/log.md
+  - wiki/projects/TFG/bjj-app/project/bjj-rag-implementation.md
 

@@ -170,344 +170,45 @@ column is mandatory because it carries the real progress signal.
 - For Claude Code or similar agents, keep the same role definitions and record final handover in the project log.
 - Never store secrets in the wiki or session manager.
 
-## Handover 2026-04-18 20:58
-- session_end: 2026-04-18T18:58:18Z
-
-## Handover 2026-04-18 20:59
-- session_end: 2026-04-18T18:59:54Z
-
-## Handover 2026-04-18 21:02
-- session_end: 2026-04-18T19:02:06Z
-
-## Handover 2026-04-18 21:04
-- session_end: 2026-04-18T19:04:12Z
-
-## Handover 2026-04-18 21:12
-- session_end: 2026-04-18T19:12:01Z
-
-## Handover 2026-04-18 21:36
-- session_end: 2026-04-18T19:36:00Z
-
-## Handover 2026-04-18 21:45
-- session_end: 2026-04-18T19:45:30Z
-
-## Handover 2026-04-18 21:52
-- session_end: 2026-04-18T19:52:30Z
-
-## Handover 2026-04-18 21:53
-- session_end: 2026-04-18T19:53:46Z
-
-## Handover 2026-04-18 21:59
-- session_end: 2026-04-18T19:59:55Z
-
-## Handover 2026-04-18 22:05
-- session_end: 2026-04-18T20:05:21Z
-
-## Handover 2026-04-18 22:17
-- session_end: 2026-04-18T20:17:32Z
-
-## Handover 2026-04-18 22:25
-- session_end: 2026-04-18T20:25:15Z
-
-## Handover 2026-04-18 22:43
-- session_end: 2026-04-18T20:43:05Z
-
-## Handover 2026-04-18 22:43
-- session_end: 2026-04-18T20:43:08Z
-
-## Handover 2026-04-18 22:43
-- session_end: 2026-04-18T20:43:21Z
-
-## Handover 2026-04-18 22:44
-- session_end: 2026-04-18T20:44:02Z
-
-## Handover 2026-04-18 22:44
-- session_end: 2026-04-18T20:44:31Z
-
-## Handover 2026-04-18 22:44
-- session_end: 2026-04-18T20:44:56Z
-
-## Handover 2026-04-18 22:45
-- session_end: 2026-04-18T20:45:25Z
-
-## Handover 2026-04-18 22:45
-- session_end: 2026-04-18T20:45:54Z
-
-## Handover 2026-04-18 22:46
-- session_end: 2026-04-18T20:46:39Z
-
-## Handover 2026-04-18 22:47
-- session_end: 2026-04-18T20:47:06Z
-
-## Handover 2026-04-18 22:47
-- session_end: 2026-04-18T20:47:48Z
-
-## Handover 2026-04-18 22:48
-- session_end: 2026-04-18T20:48:22Z
-
-## Handover 2026-04-18 22:48
-- session_end: 2026-04-18T20:48:50Z
-
-## Handover 2026-04-18 22:49
-- session_end: 2026-04-18T20:49:28Z
-
-## Handover 2026-04-18 22:50
-- session_end: 2026-04-18T20:50:08Z
-
-## Handover 2026-04-18 22:50
-- session_end: 2026-04-18T20:50:44Z
-
-## Handover 2026-04-18 22:50
-- session_end: 2026-04-18T20:50:48Z
-
-## Handover 2026-04-18 22:51
-- session_end: 2026-04-18T20:51:15Z
-
-## Handover 2026-04-18 22:52
-- session_end: 2026-04-18T20:52:01Z
-
-## Handover 2026-04-18 22:52
-- session_end: 2026-04-18T20:52:44Z
-
-## Handover 2026-04-18 22:53
-- session_end: 2026-04-18T20:53:21Z
-
-## Handover 2026-04-18 22:53
-- session_end: 2026-04-18T20:53:24Z
-
-## Handover 2026-04-18 22:53
-- session_end: 2026-04-18T20:53:26Z
-
-## Handover 2026-04-18 22:54
-- session_end: 2026-04-18T20:54:14Z
-
-## Handover 2026-04-18 22:55
-- session_end: 2026-04-18T20:55:21Z
-
-## Handover 2026-04-18 22:56
-- session_end: 2026-04-18T20:56:23Z
-
-## Handover 2026-04-18 22:57
-- session_end: 2026-04-18T20:57:03Z
-
-## Handover 2026-04-18 22:57
-- session_end: 2026-04-18T20:57:44Z
-
-## Handover 2026-04-18 22:58
-- session_end: 2026-04-18T20:58:43Z
-
-## Handover 2026-04-18 22:59
-- session_end: 2026-04-18T20:59:28Z
-
-## Handover 2026-04-18 22:59
-- session_end: 2026-04-18T20:59:59Z
-
-## Handover 2026-04-18 23:00
-- session_end: 2026-04-18T21:00:33Z
-
-## Handover 2026-04-18 23:01
-- session_end: 2026-04-18T21:01:08Z
-
-## Handover 2026-04-18 23:01
-- session_end: 2026-04-18T21:01:59Z
-
-## Handover 2026-04-18 23:02
-- session_end: 2026-04-18T21:02:15Z
-
-## Handover 2026-04-18 23:03
-- session_end: 2026-04-18T21:03:04Z
-
-## Handover 2026-04-18 23:04
-- session_end: 2026-04-18T21:04:09Z
-
-## Handover 2026-04-18 23:04
-- session_end: 2026-04-18T21:04:31Z
-
-## Handover 2026-04-18 23:05
-- session_end: 2026-04-18T21:05:02Z
-
-## Handover 2026-04-18 23:05
-- session_end: 2026-04-18T21:05:30Z
-
-## Handover 2026-04-18 23:06
-- session_end: 2026-04-18T21:06:01Z
-
-## Handover 2026-04-18 23:06
-- session_end: 2026-04-18T21:06:33Z
-
-## Handover 2026-04-18 23:07
-- session_end: 2026-04-18T21:07:12Z
-
-## Handover 2026-04-18 23:07
-- session_end: 2026-04-18T21:07:46Z
-
-## Handover 2026-04-18 23:08
-- session_end: 2026-04-18T21:08:26Z
-
-## Handover 2026-04-18 23:08
-- session_end: 2026-04-18T21:08:50Z
-
-## Handover 2026-04-18 23:09
-- session_end: 2026-04-18T21:09:31Z
-
-## Handover 2026-04-18 23:09
-- session_end: 2026-04-18T21:09:58Z
-
-## Handover 2026-04-18 23:10
-- session_end: 2026-04-18T21:10:42Z
-
-## Handover 2026-04-18 23:11
-- session_end: 2026-04-18T21:11:47Z
-
-## Handover 2026-04-18 23:12
-- session_end: 2026-04-18T21:12:21Z
-
-## Handover 2026-04-18 23:13
-- session_end: 2026-04-18T21:13:14Z
-
-## Handover 2026-04-18 23:13
-- session_end: 2026-04-18T21:13:23Z
-
-## Handover 2026-04-18 23:14
-- session_end: 2026-04-18T21:14:12Z
-
-## Handover 2026-04-18 23:14
-- session_end: 2026-04-18T21:14:14Z
-
-## Handover 2026-04-18 23:14
-- session_end: 2026-04-18T21:14:40Z
-
-## Handover 2026-04-18 23:15
-- session_end: 2026-04-18T21:15:14Z
-
-## Handover 2026-04-18 23:15
-- session_end: 2026-04-18T21:15:16Z
-
-## Handover 2026-04-18 23:16
-- session_end: 2026-04-18T21:16:01Z
-
-## Handover 2026-04-18 23:16
-- session_end: 2026-04-18T21:16:48Z
-
-## Handover 2026-04-18 23:17
-- session_end: 2026-04-18T21:17:33Z
-
-## Handover 2026-04-18 23:18
-- session_end: 2026-04-18T21:18:13Z
-
-## Handover 2026-04-18 23:19
-- session_end: 2026-04-18T21:19:39Z
-
-## Handover 2026-04-18 23:20
-- session_end: 2026-04-18T21:20:31Z
-
-## Handover 2026-04-18 23:21
-- session_end: 2026-04-18T21:21:22Z
-
-## Handover 2026-04-18 23:24
-- session_end: 2026-04-18T21:24:16Z
-
-## Handover 2026-04-18 23:38
-- session_end: 2026-04-18T21:38:46Z
-
-## Handover 2026-04-18 23:39
-- session_end: 2026-04-18T21:39:40Z
-
-## Handover 2026-04-18 23:56
-- session_end: 2026-04-18T21:56:42Z
-
-## Handover 2026-04-19 00:05
-- session_end: 2026-04-18T22:05:55Z
-
-## Handover 2026-04-19 00:15
-- session_end: 2026-04-18T22:15:07Z
-
-## Handover 2026-04-19 00:16
-- session_end: 2026-04-18T22:16:34Z
-
-## Handover 2026-04-19 12:09
-- session_end: 2026-04-19T10:09:58Z
-
-## Handover 2026-04-19 12:12
-- session_end: 2026-04-19T10:12:12Z
-
-## Handover 2026-04-19 12:22
-- session_end: 2026-04-19T10:22:55Z
-
-## Handover 2026-04-19 12:24
-- session_end: 2026-04-19T10:24:52Z
-
-## Handover 2026-04-19 12:27
-- session_end: 2026-04-19T10:27:27Z
-
-## Handover 2026-04-19 12:32
-- session_end: 2026-04-19T10:32:19Z
-
-## Handover 2026-04-19 19:08
-- session_end: 2026-04-19T17:08:14Z
-
-## Handover 2026-04-19 20:57
-- session_end: 2026-04-19T18:57:38Z
-
-## Handover 2026-04-19 21:10
-- session_end: 2026-04-19T19:10:49Z
-
-## Handover 2026-04-19 21:18
-- session_end: 2026-04-19T19:18:51Z
-
-## Handover 2026-04-19 22:07
-- session_end: 2026-04-19T20:07:20Z
-
-## Handover 2026-04-19 22:26
-- session_end: 2026-04-19T20:26:22Z
-
-## Handover 2026-04-19 22:29
-- session_end: 2026-04-19T20:29:14Z
-
-## Handover 2026-04-19 22:36
-- session_end: 2026-04-19T20:36:55Z
-
-## Handover 2026-04-19 22:40
-- session_end: 2026-04-19T20:40:36Z
-
-## Handover 2026-04-19 22:41
-- session_end: 2026-04-19T20:41:30Z
-
-## Handover 2026-04-19 22:46
-- session_end: 2026-04-19T20:46:19Z
-
-## Handover 2026-04-19 23:25
-- session_end: 2026-04-19T21:25:40Z
-
-## Handover 2026-04-19 23:28
-- session_end: 2026-04-19T21:28:39Z
-
-## Handover 2026-04-19 23:30
-- session_end: 2026-04-19T21:30:08Z
-
-## Handover 2026-04-19 23:40
-- session_end: 2026-04-19T21:40:13Z
-
-## Handover 2026-04-19 23:54
-- session_end: 2026-04-19T21:54:43Z
-
-## Handover 2026-04-20 00:02
-- session_end: 2026-04-19T22:02:44Z
-
-## Handover 2026-04-20 00:03
-- session_end: 2026-04-19T22:03:24Z
-
-## Handover 2026-04-20 00:08
-- session_end: 2026-04-19T22:08:22Z
-
-## Handover 2026-04-20 00:19
-- session_end: 2026-04-19T22:19:26Z
-
-## Handover 2026-04-20 00:35
-- session_end: 2026-04-19T22:35:29Z
-
-## Handover 2026-04-20 00:38
-- session_end: 2026-04-19T22:38:48Z
-
-## Handover 2026-04-20 00:46
-- session_end: 2026-04-19T22:46:57Z
+## Handover 2026-04-20 — Phase 5D Complete
+
+---
+type: handover
+project: "bjj-rag-implementation"
+date: "2026-04-20"
+mode: "Senior Architect"
+status: "active"
+next_goal: "Actualizar RagController.java para reenviar session_summary, publication_id y debug al ai-service."
+---
+
+## Handover para la siguiente sesion
+
+Ultima posicion: Phase 5D completada — AgentGraphService integrado en FastAPI, 27 tests pasan, pipeline classifier→retriever→generator validado hasta quota Gemini.
+
+Cambios realizados:
+- `services/agent_graph_service.py`: `_fetch_publication_for_debugger`, `_java_base_url`, confidence fix (0.5/0.0), auto-fetch publication cuando intent=video_debug.
+- `routers/rag.py`: `RagQueryRequest` extendido con `session_summary`, `publication_id`, `debug`; `RagQueryResponse` con `confidence`, `warnings`, `mode`, `session_summary`, `agent_metrics`.
+- `main.py`: `AgentGraphService` inicializado en lifespan tras `RagService`.
+- `config.py`: campos `python_parity_mode`, `spring_poc_enabled`, `spring_poc_base_url`, `poc_python_dir` añadidos; modelo por defecto → `gemini-2.0-flash`.
+- `services/rag_service.py`: fallback a búsqueda sin filtro cuando `document_type=master` devuelve 0 resultados.
+- `tests/test_agent_graph_service.py`: 27 tests nuevos — todos pasan.
+- `frontend/src/app/(main)/page.tsx`: `showVideoThumb` evita error MIME en publicaciones `local:`.
+- `.env`: `HOST_VIDEOS_DIR` apunta a ruta correcta de videos.
+
+Validacion: 27 tests unitarios OK. E2E pipeline OK hasta generator — bloqueado por quota Gemini free tier (reset diario).
+
+Bloqueos/riesgos:
+- Quota Gemini agotada — reset diario; alternativa: habilitar billing.
+- `RagController.java` todavía no reenvía `session_summary`/`publication_id`/`debug` al ai-service — bloquea uso agentico desde frontend.
+- Frontend `/rag` no almacena ni reenvía `session_summary` — memoria conversacional inactiva.
+
+Siguiente objetivo: actualizar `RagController.java` — añadir los 3 campos opcionales al DTO y propagarlos en el proxy. Cambio pequeño, desbloquea todo el camino crítico.
+
+Contexto que debe leerse:
+- `wiki/projects/TFG/bjj-app/project/bjj-rag-implementation.md`
+- `wiki/projects/TFG/bjj-app/analyses/bjj-agent-design.md`
+- `wiki/projects/TFG/bjj-app/analyses/bjj-java-python-contracts.md`
+- `.jarvis/session_manager.md`
+
+## Handover 2026-04-20 11:04
+- session_end: 2026-04-20T09:04:01Z

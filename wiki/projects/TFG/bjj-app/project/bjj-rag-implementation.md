@@ -101,13 +101,13 @@ Estado base al 2026-04-12:
 | Context Sync | Done | 100% | 2026-04-12 | Contexto base del RAG sincronizado en Jarvis. | Usarlo como entrada para diseno de agentes. |
 | Contract Map | Done | 100% | 2026-04-12 | Contratos Java/Python documentados; queda riesgo concreto en `visuals`. | Resolver si `visuals` se persiste por frame o solo en `combat_story`. |
 | JarvisOS Session Protocol | Done | 100% | 2026-04-12 | Protocolo Markdown-only creado y conectado desde `CLAUDE.md`. | Aplicarlo en la siguiente sesion real y ajustar si hay friccion. |
-| Agentic RAG Design | WIP | 60% | 2026-04-12 | Diseno v1 aprobado en Wiki; falta implementacion en `ai-service`. | Implementar Intent Classifier + Router. |
-| AgentInput/AgentOutput Contracts | WIP | 40% | 2026-04-12 | Contrato compatible definido a nivel Wiki; falta reflejarlo en Pydantic/Java si se implementa. | Anadir campos opcionales y tests de contrato. |
-| Conversation Memory | WIP | 35% | 2026-04-12 | Memoria v1 definida como `session_summary` stateless; falta frontend/backend. | Implementar envio y retorno local de `session_summary`. |
-| Retrieval Quality / Curated Weighting | WIP | 35% | 2026-04-12 | Prioridad `curated > PDF gold > generated` y cache LRU definidas; falta codigo. | Implementar scoring/filtros y `get_query_embedding`. |
-| AgentGraphService Improvements | Ready | 0% | 2026-04-19 | Prompt operativo preparado con seis bloques verificables. | Ejecutar `[[improvements-prompt]]` tras completar y probar AgentGraphService v1. |
-| Java/Python Contract Drift | WIP | 20% | 2026-04-12 | Riesgos identificados, pero no hay test automatizado ni schema compartido. | Decidir `shared/contracts/` vs Wiki versionada y cubrir con tests. |
-| Tests / E2E Validation | Backlog | 0% | - | No iniciado para la capa agentica. | Crear tests de RAG, contrato, fallback y seguridad. |
+| Agentic RAG Design | Done | 100% | 2026-04-20 | AgentGraphService implementado: todos los nodos, GraphState, run() async, wired en rag.py y main.py. | — |
+| AgentInput/AgentOutput Contracts | WIP | 75% | 2026-04-20 | Pydantic extendido con confidence/warnings/mode/session_summary/agent_metrics. Falta RagController.java. | Actualizar RagController.java para reenviar campos nuevos. |
+| Conversation Memory | WIP | 50% | 2026-04-20 | session_summary generada y devuelta por el agente. Falta que frontend la almacene y reenvie. | Implementar localStorage en /rag page. |
+| Retrieval Quality / Curated Weighting | Done | 85% | 2026-04-20 | Retriever con LRU cache, normalización de query, fallback sin filtro implementados. Bug document_type corregido. | Verificar con LLM real cuando se resetee quota. |
+| AgentGraphService Improvements | Ready | 0% | 2026-04-19 | Prompt operativo preparado. Bloques 1/3/4/6 parcialmente cubiertos en v1. | Ejecutar improvements-prompt.md tras query real con Gemini. |
+| Java/Python Contract Drift | WIP | 50% | 2026-04-20 | Python extendido. Java RagController aun solo reenvía query+filters. vectorized no en PublicationDto — verificado via ChromaDB. | Actualizar RagController.java. |
+| Tests / E2E Validation | WIP | 40% | 2026-04-20 | 27 tests unitarios pasan. E2e validado hasta generator (falla por quota Gemini). Falta test con LLM real. | Query real tras reset de quota. |
 | TFG Document Management | WIP | 20% | 2026-04-12 | Indice TFG creado; faltan anteproyecto, memoria y rubrica de evaluacion. | Crear esquema de anteproyecto y memoria. |
 
 ## Milestones
