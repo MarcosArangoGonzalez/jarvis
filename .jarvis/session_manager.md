@@ -43,7 +43,7 @@ Modo: [profile]. Rol principal: [role]. Roles de apoyo: [roles].
 ```
 
 If the current path does not map clearly to a project note, ask before writing
-project logs. In that case, writing to `wiki/log.md` is allowed only for global
+project logs. In that case, writing to `wiki/logs/core/jarvis-log.md` is allowed only for global
 Jarvis maintenance.
 
 ## Morning Coffee
@@ -108,7 +108,7 @@ At the end of every substantial session:
    - files or notes touched
    - verification performed
    - remaining blockers
-2. Update `wiki/log.md` with one concise global line.
+2. Update `wiki/logs/core/jarvis-log.md` with one concise global line.
 3. If a new durable constraint was discovered, update the relevant note in `wiki/analyses/`.
 4. Update the feature progress table in the active project log. Percentages are directional only; always include a natural-language conclusion.
 5. Produce a handover prompt with YAML frontmatter and a structured body.
@@ -135,8 +135,9 @@ Siguiente objetivo:
 Contexto que debe leerse:
 ```
 
-Do not create a per-session file in `wiki/logs/` by default. Use the project log
-and `wiki/log.md` unless the user explicitly requests a standalone session note.
+Do not create a per-session file in `wiki/logs/` by default. Use the global log
+in `wiki/logs/core/jarvis-log.md` and project logs in `wiki/logs/projects/`
+unless the user explicitly requests a standalone session note.
 
 ## Feature Progress Table
 
@@ -233,3 +234,6 @@ Contexto que debe leerse:
 
 ## Handover 2026-04-21 14:32
 - session_end: 2026-04-21T12:32:38Z
+
+## Handover 2026-04-21 15:49
+- session_end: 2026-04-21T13:49:15Z

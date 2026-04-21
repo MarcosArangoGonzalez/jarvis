@@ -75,7 +75,7 @@ Estado base al 2026-04-12:
 - Definido `Senior Architect` como perfil por defecto para la siguiente fase del RAG.
 - Definidos roles de apoyo por sesion: Contract Guardian, Research Curator, SRE Debugger e Implementation Worker.
 - Decidido que el proyecto activo se infiere por path; si no hay mapeo claro, el agente debe preguntar antes de escribir project logs.
-- Decidido que no se crearan notas por sesion en `wiki/logs/` por defecto; se usaran el project log activo y `wiki/log.md`.
+- Decidido inicialmente que no se crearian notas por sesion en `wiki/logs/`; politica posterior actualizada a logs centralizados en `wiki/logs/core/` y `wiki/logs/projects/` segun ambito.
 
 ### 2026-04-12 - Agentic Graph Design
 

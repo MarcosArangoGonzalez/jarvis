@@ -11,7 +11,7 @@ For every session, consult `.jarvis/session_manager.md` at the beginning and bef
 
 ### Auto-log rule
 
-After **any response that completes significant work** (new feature, configuration change, architecture decision, bug fix, or file creation), append an entry to `wiki/log.md` before finishing. Do not wait for the user to ask.
+After **any response that completes significant work** (new feature, configuration change, architecture decision, bug fix, or file creation), append an entry to `wiki/logs/core/jarvis-log.md` before finishing. Do not wait for the user to ask.
 
 Format:
 
@@ -72,7 +72,7 @@ Goal: answer from local memory first, then external tools only when needed.
 1. Search `wiki/index.md`, `wiki/overview.md`, and relevant subfolders.
 2. Prefer frontmatter `Summary` for fast recall.
 3. If local context is insufficient, use configured MCP servers or explicit external tools.
-4. Record important answers, decisions, and follow-ups in `wiki/log.md` or a project note.
+4. Record important answers, decisions, and follow-ups in `wiki/logs/core/jarvis-log.md` or a project log under `wiki/logs/projects/`.
 
 ### LINT
 Goal: keep Jarvis memory compact, reliable, and automation-friendly.

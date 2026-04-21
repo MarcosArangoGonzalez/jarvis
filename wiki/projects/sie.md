@@ -9,7 +9,7 @@ tags:
   - odoo
   - universidad
 created: 2026-04-13
-updated: 2026-04-20
+updated: 2026-04-21
 tokens_consumed: 0
 sources:
   - "https://docs.google.com/document/d/1UL570oHD5F6zx-q6utapLoqkyNb7ZuDhKjRIhtGKSc8/edit"
@@ -64,15 +64,8 @@ SIE/
 
 ## Log de sesiones
 
-### 2026-04-20
-- Leido `/home/marcos/Descargas/SIE-P3.Odoo-Modulo.pdf`.
-- Detectado entorno Odoo local en `/home/marcos/Escritorio/odoo` con addons en `/home/marcos/Escritorio/odoo/addons/19.0`.
-- Creado nuevo apartado Jarvis para la Practica 3 Odoo en `wiki/projects/sie/odoo-practica3/`.
-- Preparado modulo `sie_audiobook_library` en staging Jarvis: `odoo_modules/sie_audiobook_library/`.
-- Copiado el modulo al directorio real de addons: `/home/marcos/Escritorio/odoo/addons/19.0/sie_audiobook_library`.
-- Ajustado entorno Odoo con `compose.override.yml` y `odoo.conf` para montar `./addons/19.0` en `/mnt/extra-addons`.
-- Instalacion validada por CLI en base `sie_p3_test3`; Odoo queda arrancado en `http://localhost:8069`.
-- Siguiente accion: ejecutar el checklist manual desde UI y preparar la entrega.
+- Log centralizado: [[logs/projects/sie-log|SIE Log]].
+- El detalle historico de sesiones, implementacion y validacion Odoo se mantiene en `wiki/logs/projects/sie-log.md`.
 
 ### 2026-04-13
 - Directorio local creado con estructura inicial.

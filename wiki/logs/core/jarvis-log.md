@@ -6,7 +6,7 @@ tags:
   - jarvis
   - log
 created: 2026-04-12
-updated: 2026-04-12
+updated: 2026-04-21
 tokens_consumed: 0
 sources: []
 Summary: Chronological operating log for JarvisOS.
@@ -22,9 +22,20 @@ Summary: Chronological operating log for JarvisOS.
 - Implementado staging del modulo `sie_audiobook_library` en `odoo_modules/sie_audiobook_library/` con modelos Python, seguridad, vistas, menus, datos demo y README.
 - Copiado el modulo al directorio real de addons: `/home/marcos/Escritorio/odoo/addons/19.0/sie_audiobook_library`.
 - Corregido el entorno Odoo con `compose.override.yml` y `odoo.conf`: el contenedor carga `/mnt/extra-addons`, montado desde `/home/marcos/Escritorio/odoo/addons/19.0`.
-- Validada instalacion por CLI en base limpia `sie_p3_test3`; se corrigieron incompatibilidades de Odoo 19 en grupos de seguridad, `models.Constraint` y search view.
+- Intento inicial de instalacion CLI en `sie_p3_test` detecto incompatibilidad Odoo 19: `res.groups.category_id` ya no existe; el modulo se adapto a `res.groups.privilege`.
+- Sustituidas restricciones `_sql_constraints` por `models.Constraint` para compatibilidad con Odoo 19.
+- Segundo intento en `sie_p3_test2` detecto incompatibilidad de search view; se actualizo la vista de busqueda a sintaxis valida de Odoo 19.
+- Validada instalacion final por CLI en base limpia `sie_p3_test3`; el modulo queda en estado `installed`.
+- Odoo y Postgres quedan operativos en Docker, con `http://localhost:8069` expuesto para validacion manual desde navegador.
+- Limpiadas las bases temporales fallidas `sie_p3_test` y `sie_p3_test2` tras la depuracion.
 - Actualizadas tareas SIE y dashboard global con cola especifica de Practica 3 Odoo.
 - Tareas a hacer: validar CRUD/reglas/relaciones desde UI, confirmar nombre final de pareja y generar el comprimido de entrega.
+
+## 2026-04-21 — SIE Practica 3 Odoo: consolidacion de logs
+
+- Ampliado el log global con el detalle completo de implementacion y validacion del modulo Odoo.
+- Reflejado en logs de proyecto que el entorno quedo ajustado con `compose.override.yml` y `odoo.conf`.
+- Confirmado que el siguiente paso real ya no es implementacion tecnica sino validacion manual UI y preparacion de entrega.
 
 ## 2026-04-12
 
@@ -43,7 +54,14 @@ Summary: Chronological operating log for JarvisOS.
 ## 2026-04-19 12:30 — Jarvis auto-log: limpieza del sistema de logs y hooks de sesión
 
 - Eliminadas 87 entradas vacías `session end` de `wiki/log.md`; log restaurado a contenido semántico real.
-- Añadida regla **Auto-log** en `CLAUDE.md`: Claude escribe entrada detallada en `wiki/log.md` tras cualquier respuesta con trabajo significativo, sin necesidad de pedirlo.
+- Añadida regla **Auto-log** en `CLAUDE.md`: Claude escribe entrada detallada en el log global tras cualquier respuesta con trabajo significativo, sin necesidad de pedirlo.
+
+## 2026-04-21 — Centralizacion de logs en `wiki/logs/`
+
+- Movido el log global de `wiki/log.md` a `wiki/logs/core/jarvis-log.md`.
+- Creado indice centralizado en `wiki/logs/index.md`.
+- Creado log de proyecto SIE en `wiki/logs/projects/sie-log.md`.
+- Actualizadas referencias operativas en `CLAUDE.md`, `README.md`, `.jarvis/session_manager.md`, hooks y comandos `.claude/`.
 - Reescrito `~/.claude/commands/jarvis-log.md`: exige 3–6 bullets concretos y sobreescribe `## Last Session` en `session_manager.md` en lugar de crear entradas duplicadas infinitas.
 - Creado `tools/skills/session_end_hook.sh`: detecta archivos modificados/creados via `git diff` y `git ls-files`; escribe entrada automática al cerrar sesión.
 - Registrado Stop hook en `~/.claude/settings.json`: ejecuta el script en cada cierre de Claude Code.
@@ -548,4 +566,25 @@ Summary: Chronological operating log for JarvisOS.
 - Archivos modificados o creados en esta sesión:
   - .obsidian/graph.json
   - README.md
+
+## 2026-04-21 15:49 — session end
+
+## 2026-04-21 15:49 — session end (auto)
+
+- Archivos modificados o creados en esta sesión:
+  - .claude/commands/jarvis-log.md
+  - .claude/commands/jarvis.md
+  - .claude/hooks/log_session.sh
+  - CLAUDE.md
+  - .jarvis/session_manager.md
+  - .obsidian/graph.json
+  - README.md
+  - tools/skills/session_end_hook.sh
+  - wiki/index.md
+  - wiki/log.md
+  - wiki/logs/core/jarvis-log.md
+  - wiki/logs/index.md
+  - wiki/logs/projects/sie-log.md
+  - wiki/projects/sie.md
+  - wiki/projects/TFG/bjj-app/project/bjj-rag-implementation.md
 

@@ -39,3 +39,7 @@ Summary: Entry point for the JarvisOS local knowledge base.
 - [[bjj-app-index]] — project-local index for TFG bjj-app.
 - [[bjj-agent-knowledge-index]] — AI architecture index for the BJJ AgentGraphService notes.
 - [[odoo-practica3/index]] — SIE Practica 3 Odoo module project.
+
+## Logs
+
+- [[logs/index]] — centralized logs index.

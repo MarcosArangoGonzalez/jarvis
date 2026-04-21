@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# Stop hook: writes a session-end entry to wiki/log.md and auto-commits wiki changes.
+# Stop hook: writes a session-end entry to wiki/logs/core/jarvis-log.md and auto-commits wiki changes.
 # Called by Claude Code on session stop. Does NOT require conversation context.
 
 JARVIS_DIR="/home/marcos/jarvis"
-LOG_FILE="$JARVIS_DIR/wiki/log.md"
+LOG_FILE="$JARVIS_DIR/wiki/logs/core/jarvis-log.md"
 DATE=$(date '+%Y-%m-%d %H:%M')
 
 # Files changed since last commit (excluding noise)
