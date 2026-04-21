@@ -70,7 +70,9 @@ SIE/
 - Creado nuevo apartado Jarvis para la Practica 3 Odoo en `wiki/projects/sie/odoo-practica3/`.
 - Preparado modulo `sie_audiobook_library` en staging Jarvis: `odoo_modules/sie_audiobook_library/`.
 - Copiado el modulo al directorio real de addons: `/home/marcos/Escritorio/odoo/addons/19.0/sie_audiobook_library`.
-- Siguiente accion: instalarlo en Odoo y ejecutar el checklist de pruebas.
+- Ajustado entorno Odoo con `compose.override.yml` y `odoo.conf` para montar `./addons/19.0` en `/mnt/extra-addons`.
+- Instalacion validada por CLI en base `sie_p3_test3`; Odoo queda arrancado en `http://localhost:8069`.
+- Siguiente accion: ejecutar el checklist manual desde UI y preparar la entrega.
 
 ### 2026-04-13
 - Directorio local creado con estructura inicial.

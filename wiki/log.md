@@ -21,8 +21,10 @@ Summary: Chronological operating log for JarvisOS.
 - Creado apartado Jarvis `wiki/projects/sie/odoo-practica3/` con especificacion, plan de implementacion, estructura de ficheros, test plan y notas de entrega.
 - Implementado staging del modulo `sie_audiobook_library` en `odoo_modules/sie_audiobook_library/` con modelos Python, seguridad, vistas, menus, datos demo y README.
 - Copiado el modulo al directorio real de addons: `/home/marcos/Escritorio/odoo/addons/19.0/sie_audiobook_library`.
+- Corregido el entorno Odoo con `compose.override.yml` y `odoo.conf`: el contenedor carga `/mnt/extra-addons`, montado desde `/home/marcos/Escritorio/odoo/addons/19.0`.
+- Validada instalacion por CLI en base limpia `sie_p3_test3`; se corrigieron incompatibilidades de Odoo 19 en grupos de seguridad, `models.Constraint` y search view.
 - Actualizadas tareas SIE y dashboard global con cola especifica de Practica 3 Odoo.
-- Tareas a hacer: instalarlo en Odoo, validar CRUD/reglas/relaciones, confirmar nombre final de pareja y generar el comprimido de entrega.
+- Tareas a hacer: validar CRUD/reglas/relaciones desde UI, confirmar nombre final de pareja y generar el comprimido de entrega.
 
 ## 2026-04-12
 
@@ -487,6 +489,21 @@ Summary: Chronological operating log for JarvisOS.
   - wiki/projects/sie/odoo-practica3/implementation-plan.md
   - wiki/projects/sie/odoo-practica3/index.md
   - wiki/projects/sie/odoo-practica3/spec.md
+  - wiki/projects/sie/odoo-practica3/test-plan.md
+  - wiki/tasks/index.md
+  - wiki/tasks/projects/sie.md
+
+## 2026-04-21 11:35 — session end
+
+## 2026-04-21 11:35 — session end (auto)
+
+- Archivos modificados o creados en esta sesión:
+  - .obsidian/graph.json
+  - README.md
+  - wiki/log.md
+  - wiki/projects/sie.md
+  - wiki/projects/sie/odoo-practica3/implementation-plan.md
+  - wiki/projects/sie/odoo-practica3/index.md
   - wiki/projects/sie/odoo-practica3/test-plan.md
   - wiki/tasks/index.md
   - wiki/tasks/projects/sie.md

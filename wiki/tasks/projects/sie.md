@@ -25,9 +25,9 @@ Summary: "Lista de tareas del trabajo de investigación SIE: investigación, red
 | Priority | Task | Feature | Status | Conclusion | Next Action |
 |---|---|---|---|---|---|
 | P0 | Copiar modulo a addons Odoo | Odoo | Done | Modulo copiado a `/home/marcos/Escritorio/odoo/addons/19.0/sie_audiobook_library`. | Mantener staging y copia real sincronizados si se hacen cambios. |
-| P0 | Instalar modulo en Odoo | Odoo | Backlog | Hay entorno Docker Odoo 19 en `/home/marcos/Escritorio/odoo`. | Levantar Odoo, actualizar Apps e instalar `SIE Audiobook Library`. |
-| P1 | Validar CRUD de audiolibros | Testing | Backlog | El enunciado exige visualizar, introducir, modificar y borrar. | Ejecutar checklist de `wiki/projects/sie/odoo-practica3/test-plan.md`. |
-| P1 | Validar reglas y relaciones | Testing | Backlog | ISBN unico, precio/duracion no negativos, relaciones de autores/productor/genero/formato. | Crear registros demo y probar validaciones. |
+| P0 | Instalar modulo en Odoo | Odoo | Done | Instalacion validada por CLI en la base `sie_p3_test3`; Odoo queda arrancado en `http://localhost:8069`. | Entrar por navegador y revisar el modulo instalado. |
+| P1 | Validar CRUD de audiolibros | Testing | Backlog | La instalacion carga modelos, vistas, menus y datos demo; falta prueba manual desde UI. | Ejecutar checklist de `wiki/projects/sie/odoo-practica3/test-plan.md`. |
+| P1 | Validar reglas y relaciones | Testing | Partially Done | Instalacion valida restricciones SQL y relaciones al cargar; falta probar errores desde UI. | Probar ISBN duplicado, precio negativo y duracion negativa desde formulario. |
 | P2 | Redactar memoria opcional | Documentacion | Backlog | El PDF permite memoria de maximo 2 paginas. | Decidir si se entrega memoria y redactarla en `SIE/borradores/`. |
 | P2 | Preparar ZIP final | Entrega | Backlog | Entrega antes del 15/05/2026. | Confirmar nombre de pareja y comprimir modulo segun `delivery.md`. |
 

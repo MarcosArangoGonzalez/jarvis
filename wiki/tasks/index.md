@@ -34,7 +34,7 @@ Summary: "Global Jarvis task dashboard for daily planning across projects and li
 | P1 | Implement Intent Classifier + Router | BJJ RAG | Agentic RAG | Ready | Start with rules-only classifier, no LLM | `wiki/projects/TFG/bjj-app/tasks/bjj-rag-tasks.md` |
 | P2 | Create TFG anteproyecto/memoria outline | TFG BJJ App | TFG Docs | Backlog | Draft document structure and evaluation rubric | `wiki/projects/TFG/bjj-app/tasks/tfg-bjj-app-tasks.md` |
 | P0 | Configurar OAuth Google Drive MCP | SIE | Integración | Pendiente | Ejecutar flujo OAuth para activar acceso a Drive | `wiki/tasks/projects/sie.md` |
-| P0 | Instalar y validar modulo Odoo de audiolibros | SIE | Practica 3 Odoo | Ready | Copiar `sie_audiobook_library` a addons, instalar en Odoo y ejecutar checklist | `wiki/tasks/projects/sie.md` |
+| P1 | Validar modulo Odoo de audiolibros desde UI | SIE | Practica 3 Odoo | Backlog | Abrir `http://localhost:8069`, usar DB `sie_p3_test3` y ejecutar checklist manual | `wiki/tasks/projects/sie.md` |
 | P1 | Ampliar investigación + redactar contenido | SIE | Investigación | WIP | Fuentes en NotebookLM; doc en Drive necesita más desarrollo | `wiki/tasks/projects/sie.md` |
 
 ## Cross-Project Backlog

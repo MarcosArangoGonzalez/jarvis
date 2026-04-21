@@ -20,9 +20,10 @@ Summary: "Checklist de validacion del modulo Odoo de audiolibros."
 1. Ir a `/home/marcos/Escritorio/odoo`.
 2. Levantar Odoo con `docker compose up -d`.
 3. Abrir `http://localhost:8069`.
-4. Activar modo desarrollador si es necesario.
-5. Actualizar lista de aplicaciones.
-6. Instalar `SIE Audiobook Library`.
+4. Confirmar que `/home/marcos/Escritorio/odoo/odoo.conf` contiene `/mnt/extra-addons` en `addons_path`.
+5. Activar modo desarrollador si es necesario.
+6. Actualizar lista de aplicaciones.
+7. Instalar `SIE Audiobook Library`.
 
 ## Pruebas Funcionales
 
@@ -50,4 +51,3 @@ Summary: "Checklist de validacion del modulo Odoo de audiolibros."
 - El ZIP no contiene caches Python ni archivos temporales.
 - El nombre del ZIP sigue el formato pedido por el PDF.
 - Si se anade memoria, no supera dos paginas.
-

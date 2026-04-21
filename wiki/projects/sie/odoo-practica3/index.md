@@ -40,6 +40,10 @@ El modulo debe permitir visualizar, introducir, modificar y borrar audiolibros, 
 | Recurso | Ubicacion |
 |---|---|
 | Odoo compose | `/home/marcos/Escritorio/odoo/compose.yml` |
+| Odoo override staging | `/home/marcos/jarvis/odoo_config/compose.override.yml` |
+| Odoo config staging | `/home/marcos/jarvis/odoo_config/odoo.conf` |
+| Odoo override final | `/home/marcos/Escritorio/odoo/compose.override.yml` |
+| Odoo config final | `/home/marcos/Escritorio/odoo/odoo.conf` |
 | Addons Odoo 19 | `/home/marcos/Escritorio/odoo/addons/19.0` |
 | Modulo Jarvis staging | `/home/marcos/jarvis/odoo_modules/sie_audiobook_library` |
 | Modulo Odoo final | `/home/marcos/Escritorio/odoo/addons/19.0/sie_audiobook_library` |
@@ -51,4 +55,3 @@ El modulo debe permitir visualizar, introducir, modificar y borrar audiolibros, 
 - [[file-structure]]: estructura de ficheros.
 - [[test-plan]]: pruebas y checklist.
 - [[delivery]]: preparacion del comprimido final.
-

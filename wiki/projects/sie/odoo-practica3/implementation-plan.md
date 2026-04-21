@@ -38,7 +38,13 @@ El modulo se instala en Odoo 19 dentro de `/home/marcos/Escritorio/odoo/addons/1
 
 ## Seguridad
 
-Crear grupo `Audiobook Library / User` y permisos CRUD sobre todos los modelos del modulo mediante `ir.model.access.csv`.
+Crear categoria `Audiobook Library`, privilegio `Audiobook Library` y grupo `Audiobook Library / User` con el modelo `res.groups.privilege` de Odoo 19. Los permisos CRUD se definen sobre todos los modelos del modulo mediante `ir.model.access.csv`.
+
+## Compatibilidad Odoo 19
+
+- Usar `models.Constraint` en lugar de `_sql_constraints`.
+- Montar addons externos en `/mnt/extra-addons` mediante `compose.override.yml`.
+- Incluir `/mnt/extra-addons` en `addons_path`.
 
 ## Vistas y Navegacion
 
@@ -57,4 +63,3 @@ Crear grupo `Audiobook Library / User` y permisos CRUD sobre todos los modelos d
 - El ISBN se valida como unico.
 - El precio no puede ser negativo.
 - La duracion no puede ser negativa.
-
