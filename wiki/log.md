@@ -455,6 +455,17 @@ Summary: Chronological operating log for JarvisOS.
   - README.md
 
 
+## 2026-04-21 — Frontend RAG: memoria conversacional + confidence + warnings
+
+- `rag/page.tsx`: estado `sessionSummary` acumulado entre queries; se reenvía y actualiza desde `response.session_summary`. Clear history lo resetea.
+- Header dinámico: badge "Memory active" cuando hay contexto activo; texto descripción contextual.
+- Metadatos de respuesta: `mode`, `confidence` con color semáforo, contador de fuentes.
+- Warnings: badges amarillos bajo el answer (e.g., `⚠ llm_error`).
+- `types.ts`: request con 3 nuevos campos, response con 5 nuevos campos.
+- `RagController.java`: request + response DTOs actualizados (3+5 campos, `@JsonInclude NON_NULL`).
+- Build Next.js: OK sin errores de TS.
+- Pendiente: reiniciar backend con perfil `local` y verificar e2e cuando Gemini quota reset.
+
 ## 2026-04-20 17:30 — RAG pipeline: AI_SERVICE_URL fix, chunk size, CoT prompt
 
 - Creado `application-local.yml` en backend: override `AI_SERVICE_URL=http://localhost:8082` (el default `host.docker.internal` no resuelve en Linux fuera de Docker). Backend debe reiniciarse con perfil `local`.
@@ -507,4 +518,14 @@ Summary: Chronological operating log for JarvisOS.
   - wiki/projects/sie/odoo-practica3/test-plan.md
   - wiki/tasks/index.md
   - wiki/tasks/projects/sie.md
+
+
+## 2026-04-21 11:58 — session end
+
+## 2026-04-21 11:58 — session end (auto)
+
+- Archivos modificados o creados en esta sesión:
+  - .obsidian/graph.json
+  - README.md
+  - wiki/log.md
 
