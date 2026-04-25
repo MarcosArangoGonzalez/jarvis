@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% set title = module.title %}
+{% block content %}
+  <section class="panel">
+    <div class="panel-head">
+      <h3>{{ module.title }}</h3>
+      <div class="badge-row">
+        {% for badge in module.badges %}
+          <span class="badge">{{ badge }}</span>
+        {% endfor %}
+      </div>
+    </div>
+    <p>{{ module.description }}</p>
+    <div class="quick-actions">
+      {% for action in module.quick_actions %}
+        <a class="button-link" href="{{ action.href }}">{{ action.label }}</a>
+      {% endfor %}
+    </div>
+  </section>
+  <section class="panel">
+    <div class="panel-head"><h3>Notas recientes</h3></div>
+    <div class="result-list">
+      {% for note in module.items %}
+        <article class="result-card">
+          <div class="result-head">
+            <strong>{{ note.title }}</strong>
+            <span class="badge">{{ note.folder }}</span>
+          </div>
+          <p>{{ note.summary }}</p>
+          <small>{{ note.path }}</small>
+        </article>
+      {% endfor %}
+    </div>
+  </section>
+{% endblock %}

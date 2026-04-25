@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% set title = "05-Inbox" %}
+{% block content %}
+  <section class="panel">
+    <div class="panel-head">
+      <h3>Inbox</h3>
+      <form method="post" action="/inbox/process" class="job-form">
+        <button type="submit" name="all_items" value="1">process all</button>
+      </form>
+      <span class="badge">{{ items | length }} items</span>
+    </div>
+    <div class="result-list">
+      {% for item in items %}
+        <article class="result-card">
+          <div class="result-head">
+            <strong>{{ item.name }}</strong>
+            <span class="badge">{{ item.status }}</span>
+          </div>
+          <p>{{ item.path }}</p>
+          <small>{{ item.suffix }} · {{ item.size_bytes }} bytes</small>
+          <form method="post" action="/inbox/process" class="job-form">
+            <input type="hidden" name="path" value="{{ item.path }}">
+            <button type="submit">convert</button>
+          </form>
+        </article>
+      {% else %}
+        <p class="empty">No pending files in vault/05-Inbox.</p>
+      {% endfor %}
+    </div>
+  </section>
+  <section class="panel">
+    <div class="panel-head"><h3>Recent ingestions</h3><span class="badge">{{ ingestions | length }}</span></div>
+    <div class="result-list">
+      {% for item in ingestions[:8] %}
+        <article class="result-card">
+          <div class="result-head">
+            <strong>{{ item.title or item.source_path }}</strong>
+            <span class="badge">{{ item.status }}</span>
+          </div>
+          <p>{{ item.output_path or item.error }}</p>
+          <small>{{ item.source_path }} · {{ item.chunks }} chunks</small>
+        </article>
+      {% else %}
+        <p class="empty">No ingestions recorded yet.</p>
+      {% endfor %}
+    </div>
+  </section>
+{% endblock %}

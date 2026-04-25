@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% set title = "Jobs" %}
+{% block content %}
+  <section class="grid two">
+    <article class="panel">
+      <div class="panel-head"><h3>Lanzar job</h3></div>
+      <form method="post" action="/jobs/run" class="job-form">
+        <button type="submit" name="kind" value="health_snapshot">health snapshot</button>
+        <button type="submit" name="kind" value="vault_migrate">vault migrate</button>
+        <button type="submit" name="kind" value="inbox_process">process inbox</button>
+        <button type="submit" name="kind" value="whatsapp_backlog_dry_run">whatsapp backlog dry-run</button>
+        <button type="submit" name="kind" value="security_scan">security scan</button>
+        <button type="submit" name="kind" value="precommit_hook_generate">pre-commit hook</button>
+      </form>
+    </article>
+    <article class="panel">
+      <div class="panel-head"><h3>Observabilidad</h3></div>
+      <p>Los jobs se guardan en <code>data/runtime/jobs.json</code> y emiten eventos estructurados.</p>
+    </article>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head"><h3>Histórico de jobs</h3></div>
+    <div class="result-list">
+      {% for job in jobs %}
+        <article class="result-card">
+          <div class="result-head">
+            <strong>{{ job.title }}</strong>
+            <span class="badge">{{ job.status }}</span>
+          </div>
+          <p>{{ job.result.stdout_excerpt if job.result else job.error }}</p>
+          <small>{{ job.kind }} · {{ job.created_at }}</small>
+        </article>
+      {% else %}
+        <p class="empty">Todavía no hay jobs ejecutados.</p>
+      {% endfor %}
+    </div>
+  </section>
+{% endblock %}

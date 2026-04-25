@@ -4,3 +4,6 @@ watchdog
 pyperclip
 pypdf
 httpx
+jinja2
+apscheduler
+markitdown[all]

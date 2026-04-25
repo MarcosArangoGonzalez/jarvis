@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% set title = "Security Regex" %}
+{% block content %}
+  <section class="grid two">
+    <article class="panel">
+      <div class="panel-head"><h3>Scan jobs</h3></div>
+      <form method="post" action="/security/scan" class="search-bar">
+        <input type="text" name="path" value="." aria-label="scan path">
+        <select name="mode">
+          <option value="repo">repo</option>
+          <option value="artifact">artifact</option>
+        </select>
+        <button type="submit">scan</button>
+      </form>
+      <form method="post" action="/jobs/run" class="job-form">
+        <button type="submit" name="kind" value="precommit_hook_generate">generate hook</button>
+      </form>
+    </article>
+    <article class="panel">
+      <div class="panel-head"><h3>Patterns</h3></div>
+      <div class="chip-row">
+        <span class="chip">IPv4</span>
+        <span class="chip">Email</span>
+        <span class="chip">URL</span>
+        <span class="chip">MD5</span>
+        <span class="chip">AWS</span>
+        <span class="chip">Base64</span>
+        <span class="chip">JWT</span>
+      </div>
+    </article>
+  </section>
+  <section class="panel">
+    <div class="panel-head"><h3>Findings</h3><span class="badge">{{ findings | length }}</span></div>
+    <div class="result-list">
+      {% for finding in findings[:30] %}
+        <article class="result-card">
+          <div class="result-head">
+            <strong>{{ finding.label }}</strong>
+            <span class="badge">{{ finding.severity }}</span>
+          </div>
+          <p>{{ finding.path }}:{{ finding.line }}</p>
+          <small>{{ finding.pattern_id }} · {{ finding.match }}</small>
+        </article>
+      {% else %}
+        <p class="empty">No findings recorded yet.</p>
+      {% endfor %}
+    </div>
+  </section>
+{% endblock %}

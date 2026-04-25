@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% set title = "Arquitectura del Sistema" %}
+{% block content %}
+  <section class="stack">
+    {% for layer in topology.layers %}
+      <article class="layer layer-{{ layer.id }}">
+        <header>
+          <h2>{{ layer.title }}</h2>
+          <p>{{ layer.description }}</p>
+        </header>
+        <div class="layer-nodes">
+          {% for node in layer.nodes %}
+            <div class="node tone-{{ node.tone }}">
+              <strong>{{ node.title }}</strong>
+              {% if node.subtitle %}<small>{{ node.subtitle }}</small>{% endif %}
+              {% if node.items %}
+                <div class="chip-row">
+                  {% for item in node.items %}
+                    <span class="chip">{{ item }}</span>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      </article>
+    {% endfor %}
+  </section>
+{% endblock %}

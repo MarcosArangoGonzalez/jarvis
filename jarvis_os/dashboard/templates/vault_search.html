@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% set title = "Búsqueda en Vault" %}
+{% block content %}
+  <section class="panel">
+    <form class="search-bar" method="get" action="/vault/search">
+      <input type="text" name="query" placeholder="RAG" value="{{ query.query }}">
+      <select name="mode">
+        <option value="text" {% if query.mode == "text" %}selected{% endif %}>texto</option>
+        <option value="semantic" {% if query.mode == "semantic" %}selected{% endif %}>semántico</option>
+        <option value="ask_claude" {% if query.mode == "ask_claude" %}selected{% endif %}>preguntar a Claude</option>
+      </select>
+      <select name="folder">
+        <option value="all" {% if query.folder == "all" %}selected{% endif %}>todo</option>
+        <option value="daily" {% if query.folder == "daily" %}selected{% endif %}>daily</option>
+        <option value="projects" {% if query.folder == "projects" %}selected{% endif %}>projects</option>
+        <option value="research" {% if query.folder == "research" %}selected{% endif %}>research</option>
+        <option value="dev" {% if query.folder == "dev" %}selected{% endif %}>dev</option>
+        <option value="skills" {% if query.folder == "skills" %}selected{% endif %}>skills</option>
+      </select>
+      <select name="date_filter">
+        <option value="any" {% if query.date_filter == "any" %}selected{% endif %}>cualquier fecha</option>
+        <option value="week" {% if query.date_filter == "week" %}selected{% endif %}>esta semana</option>
+        <option value="month" {% if query.date_filter == "month" %}selected{% endif %}>este mes</option>
+      </select>
+      <button type="submit">buscar</button>
+    </form>
+  </section>
+
+  <section class="grid vault-layout">
+    <aside class="panel filters">
+      <div class="panel-head"><h3>Carpetas</h3></div>
+      <ul class="folder-list">
+        <li>todas <span>{{ counts.all }}</span></li>
+        <li>daily <span>{{ counts.daily }}</span></li>
+        <li>projects <span>{{ counts.projects }}</span></li>
+        <li>research <span>{{ counts.research }}</span></li>
+        <li>dev <span>{{ counts.dev }}</span></li>
+        <li>skills <span>{{ counts.skills }}</span></li>
+      </ul>
+    </aside>
+    <section class="panel results">
+      <div class="panel-head">
+        <h3>{{ result.total }} resultados para "{{ query.query or 'todo' }}"</h3>
+        <span class="badge">{{ query.mode }}</span>
+      </div>
+      {% if result.notice %}
+        <p class="notice">{{ result.notice }}</p>
+      {% endif %}
+      <div class="result-list">
+        {% for note in result.items %}
+          <article class="result-card">
+            <div class="result-head">
+              <strong>{{ note.title }}</strong>
+              <span class="badge">{{ note.folder }}</span>
+            </div>
+            <p>{{ note.summary }}</p>
+            <small>{{ note.path }}</small>
+          </article>
+        {% else %}
+          <p class="empty">No hay resultados con los filtros actuales.</p>
+        {% endfor %}
+      </div>
+    </section>
+  </section>
+{% endblock %}

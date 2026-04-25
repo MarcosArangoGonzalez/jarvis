@@ -71,3 +71,6 @@ keys.json
 # Raw alert dumps and personal chat exports
 raw/alerts/
 wiki/sources/whatsapp_chat*
+
+# JarvisOS runtime
+data/runtime/*.json
