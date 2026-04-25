@@ -807,3 +807,9 @@ Summary: Chronological operating log for JarvisOS.
 - Added persisted ingestion history and security finding storage under `data/runtime/`.
 - Added dashboard forms and API endpoints for processing individual/all inbox items and launching configurable regex scans.
 - Verified `pytest -q tests/test_jarvis_os.py` passes with 10 tests and started the refreshed dashboard on `127.0.0.1:5056`.
+
+## 2026-04-25 16:52 — JarvisOS gap closure regressions
+
+- Replaced the vault `CLAUDE.md` stub with the full Personal OS v2 operating contract and aligned future `VaultMigrator` output.
+- Added regression coverage for persisted MarkItDown conversion jobs, persisted security scan findings, and semantic search textual fallback.
+- Verified full `pytest` passes with 12 tests.

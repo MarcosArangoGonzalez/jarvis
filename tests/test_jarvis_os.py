@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+
 from jarvis_os.app import create_app
 from jarvis_os.config import Settings, get_settings
 from jarvis_os.integrations.markitdown import MarkItDownIngestor
@@ -22,6 +24,14 @@ def test_overview_has_metrics_and_recent_notes() -> None:
 def test_vault_search_returns_results_for_rag() -> None:
     result = make_kernel().search_vault(VaultSearchQuery(query="RAG"))
     assert result.mode == "text"
+    assert result.total >= 1
+
+
+def test_semantic_vault_search_degrades_to_textual_fallback() -> None:
+    result = make_kernel().search_vault(VaultSearchQuery(query="RAG", mode="semantic"))
+    assert result.mode == "semantic"
+    assert result.supported is False
+    assert "fallback textual" in result.notice
     assert result.total >= 1
 
 
@@ -79,6 +89,27 @@ def test_security_scan_job_persists_findings(tmp_path) -> None:
     job = kernel.create_job(kind="security_scan", payload={"path": str(sample), "mode": "artifact"})
     assert job.status == "succeeded"
     assert any(finding.pattern_id == "aws-key" for finding in kernel.get_security_findings())
+    persisted = json.loads((settings.runtime_dir / "security-findings.json").read_text(encoding="utf-8"))
+    assert any(finding["pattern_id"] == "aws-key" for finding in persisted)
+
+
+def test_markitdown_convert_job_persists_ingestion(tmp_path) -> None:
+    settings = _temp_settings(tmp_path)
+    source = settings.vault_inbox_dir / "convert-me.md"
+    source.parent.mkdir(parents=True)
+    source.write_text("# Convert Me\n\n## Context\n\nBody", encoding="utf-8")
+    kernel = KernelService(settings)
+    job = kernel.create_job(kind="markitdown_convert", payload={"path": str(source)})
+    assert job.status == "succeeded"
+    assert job.result is not None
+    assert job.result.artifacts
+    ingestions = kernel.get_ingestions()
+    assert len(ingestions) == 1
+    assert ingestions[0].status == "converted"
+    assert (settings.root_dir / ingestions[0].output_path).exists()
+    persisted = json.loads((settings.runtime_dir / "ingestions.json").read_text(encoding="utf-8"))
+    assert persisted[0]["title"] == "Convert Me"
+    assert persisted[0]["status"] == "converted"
 
 
 def test_vault_migration_copies_wiki_into_vault_layout(tmp_path) -> None:
@@ -89,7 +120,15 @@ def test_vault_migration_copies_wiki_into_vault_layout(tmp_path) -> None:
     stats = VaultMigrator(settings).migrate()
     assert stats["copied"] >= 2
     assert (settings.vault_dir / "02-Research" / "sources" / "rag-note.md").exists()
-    assert (settings.vault_dir / "CLAUDE.md").exists()
+    claude_md = (settings.vault_dir / "CLAUDE.md").read_text(encoding="utf-8")
+    for section in (
+        "## Pipeline RAG",
+        "## MarkItDown",
+        "## Regex de seguridad",
+        "## Stack de desarrollo",
+        "## Búsqueda en vault",
+    ):
+        assert section in claude_md
 
 
 def test_markitdown_ingestor_uses_text_fallback_for_markdown(tmp_path) -> None:
