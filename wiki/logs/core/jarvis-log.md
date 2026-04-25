@@ -813,3 +813,9 @@ Summary: Chronological operating log for JarvisOS.
 - Replaced the vault `CLAUDE.md` stub with the full Personal OS v2 operating contract and aligned future `VaultMigrator` output.
 - Added regression coverage for persisted MarkItDown conversion jobs, persisted security scan findings, and semantic search textual fallback.
 - Verified full `pytest` passes with 12 tests.
+
+## 2026-04-25 17:34 — ArtifactRef schema consistency
+
+- Replaced dict-based job artifacts with explicit `ArtifactRef` instances in kernel job results.
+- Covered both MarkItDown conversion artifacts and pre-commit hook generation artifacts.
+- Verified `pytest tests/test_jarvis_os.py` passes with 12 tests.

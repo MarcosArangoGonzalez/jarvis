@@ -13,6 +13,7 @@ from ..integrations.security import SecurityRegexScanner
 from ..integrations.vault import VaultMigrator
 from ..repositories import EventRepository, IngestionRepository, JobRepository, SecurityFindingRepository
 from ..schemas import (
+    ArtifactRef,
     DashboardMetric,
     DashboardOverview,
     DashboardTask,
@@ -311,7 +312,7 @@ class KernelService:
                 started_at=job.started_at,
                 finished_at=datetime.now(),
                 duration_ms=1,
-                artifacts=[{"label": "Converted note", "path": conversion.output_path}] if conversion.output_path else [],
+                artifacts=[ArtifactRef(label="Converted note", path=conversion.output_path)] if conversion.output_path else [],
                 stdout_excerpt=conversion.output_path or conversion.error,
                 error_excerpt=conversion.error,
                 data=conversion.model_dump(mode="json"),
@@ -353,7 +354,7 @@ class KernelService:
                 started_at=job.started_at,
                 finished_at=datetime.now(),
                 duration_ms=1,
-                artifacts=[{"label": "Pre-commit hook", "path": str(output.relative_to(self.settings.root_dir))}],
+                artifacts=[ArtifactRef(label="Pre-commit hook", path=str(output.relative_to(self.settings.root_dir)))],
                 stdout_excerpt=str(output.relative_to(self.settings.root_dir)),
             )
             job.status = "succeeded"
