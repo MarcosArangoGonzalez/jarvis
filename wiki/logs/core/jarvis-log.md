@@ -887,3 +887,12 @@ Summary: Chronological operating log for JarvisOS.
   - .obsidian/graph.json
   - README.md
 
+
+## 2026-04-25 23:28 — session end
+
+## 2026-04-25 23:28 — session end (auto)
+
+- Archivos modificados o creados en esta sesión:
+  - .obsidian/graph.json
+  - wiki/logs/core/jarvis-log.md
+
