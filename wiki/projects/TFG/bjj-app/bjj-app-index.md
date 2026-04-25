@@ -9,8 +9,9 @@ tags:
   - index
 created: 2026-04-19
 updated: 2026-04-19
-tokens_consumed: 0
-sources: []
+tokens_consumed: 204
+sources:
+  - "jarvis://local"
 Summary: "Entry point for the TFG bjj-app project folder, grouping project state, analyses, tasks, and related source material."
 ---
 

@@ -1,5 +1,5 @@
 ---
-title: "https://www.instagram.com/reel/DXSMaceDvSK/?igsh=ejhrOHFnbzI2eDN4"
+title: "BJJ Instagram Reel Learning Capture DXUFZXIgOTr"
 type: source
 status: NEW
 tags:
@@ -9,19 +9,21 @@ created: 2026-04-19
 updated: 2026-04-19
 tokens_consumed: 4
 sources:
-  - "https://www.instagram.com/reel/DXSMaceDvSK/?igsh=ejhrOHFnbzI2eDN4"
+  - "https://www.instagram.com/reel/DXUFZXIgOTr/?igsh=NjR6aGxwbzgzZzRp"
 Summary: "No transcript available."
 requires_verification: true
 validated: ~
+aliases:
+  - "bjj-instagram-reel-dxufzxigotr-learning-capture"
 ---
 
-# https://www.instagram.com/reel/DXSMaceDvSK/?igsh=ejhrOHFnbzI2eDN4
+# BJJ Instagram Reel Learning Capture DXUFZXIgOTr
 
 > No transcript available.
 
 ## Source
 
-- URL: https://www.instagram.com/reel/DXSMaceDvSK/?igsh=ejhrOHFnbzI2eDN4
+- URL: https://www.instagram.com/reel/DXUFZXIgOTr/?igsh=NjR6aGxwbzgzZzRp
 - Type: instagram
 - Origin: whatsapp
 

@@ -1,5 +1,5 @@
 ---
-title: "https://www.instagram.com/p/DWKevXwDK3e/?img_index=2&igsh=MTZ3bGxvanpoMjQ0Zw=="
+title: "BJJ Instagram Post Learning Capture DWKevXwDK3e"
 type: source
 status: NEW
 tags:
@@ -12,9 +12,11 @@ sources:
 Summary: "No transcript available."
 requires_verification: true
 validated: ~
+aliases:
+  - "bjj-instagram-post-dwkevxwdk3e-learning-capture"
 ---
 
-# https://www.instagram.com/p/DWKevXwDK3e/?img_index=2&igsh=MTZ3bGxvanpoMjQ0Zw==
+# BJJ Instagram Post Learning Capture DWKevXwDK3e
 
 > No transcript available.
 

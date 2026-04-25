@@ -11,6 +11,7 @@ updated: 2026-04-20
 sources:
   - "/home/marcos/jarvis/odoo_modules/sie_audiobook_library"
 Summary: "Estructura esperada del modulo Odoo de audiolibros."
+tokens_consumed: 188
 ---
 
 # Estructura de Ficheros

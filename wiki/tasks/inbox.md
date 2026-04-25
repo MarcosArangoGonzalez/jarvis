@@ -8,8 +8,9 @@ tags:
   - inbox
 created: 2026-04-12
 updated: 2026-04-12
-tokens_consumed: 0
-sources: []
+tokens_consumed: 44
+sources:
+  - "jarvis://local"
 Summary: "Unclassified task capture queue for Jarvis before grooming into project or area task files."
 ---
 

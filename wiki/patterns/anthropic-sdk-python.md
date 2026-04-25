@@ -12,7 +12,7 @@ created: 2026-04-18
 updated: 2026-04-18
 tokens_consumed: 145
 sources:
-  - "https://github.com/anthropics/anthropic-sdk-python"
+  - "wiki/sources/anthropic-sdk-python.md"
 Summary: "A Python client library for interacting with the Anthropic Claude AI system."
 requires_verification: true
 ---
@@ -83,4 +83,3 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md).
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-

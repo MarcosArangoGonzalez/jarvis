@@ -9,9 +9,9 @@ tags:
   - whatsapp
 created: 2026-04-19
 updated: 2026-04-19
-tokens_consumed: 0
+tokens_consumed: 105
 sources:
-  - "wiki/sources/whatsapp_chat_de_whatsapp_con_34_647_00_10_54.md"
+  - "wiki/sources/whatsapp-chat-de-whatsapp-con-34-647-00-10-54.md"
 Summary: "Area index for BJJ videos and social captures saved for learning the sport, kept separate from the bjj-app TFG/RAG/video-analysis project files."
 ---
 

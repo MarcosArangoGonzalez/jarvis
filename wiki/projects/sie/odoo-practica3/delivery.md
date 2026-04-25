@@ -11,6 +11,7 @@ updated: 2026-04-20
 sources:
   - "/home/marcos/Descargas/SIE-P3.Odoo-Modulo.pdf"
 Summary: "Notas para preparar el comprimido final de la practica 3."
+tokens_consumed: 84
 ---
 
 # Entrega

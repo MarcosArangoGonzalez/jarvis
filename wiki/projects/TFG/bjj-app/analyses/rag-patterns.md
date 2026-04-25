@@ -11,7 +11,7 @@ tags:
   - architecture
 created: 2026-04-19
 updated: 2026-04-19
-tokens_consumed: 0
+tokens_consumed: 954
 sources:
   - "/home/marcos/Descargas/rag-patterns.md"
 Summary: "Comparison of naive RAG, Agentic RAG/CRAG, GraphRAG, and Self-RAG for the BJJ-app AgentGraphService design."

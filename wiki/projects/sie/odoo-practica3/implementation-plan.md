@@ -11,6 +11,7 @@ updated: 2026-04-20
 sources:
   - "/home/marcos/jarvis/wiki/projects/sie/odoo-practica3/spec.md"
 Summary: "Plan tecnico para implementar el modulo de audiolibros en Odoo 19."
+tokens_consumed: 308
 ---
 
 # Plan de Implementacion

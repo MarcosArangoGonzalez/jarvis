@@ -11,6 +11,7 @@ updated: 2026-04-20
 sources:
   - "/home/marcos/jarvis/wiki/projects/sie/odoo-practica3/implementation-plan.md"
 Summary: "Checklist de validacion del modulo Odoo de audiolibros."
+tokens_consumed: 268
 ---
 
 # Test Plan

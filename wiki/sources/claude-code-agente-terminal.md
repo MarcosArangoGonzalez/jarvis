@@ -15,6 +15,8 @@ sources:
   - "texto manual"
 Summary: "Claude Code es el agente de terminal de Anthropic que permite trabajar con bases de código completas desde la línea de comandos, ejecutar comandos, leer y escribir ficheros, y colaborar en proyectos complejos."
 requires_verification: false
+aliases:
+  - "claude-code-agente-terminal"
 ---
 
 # Claude Code: agente de terminal de Anthropic

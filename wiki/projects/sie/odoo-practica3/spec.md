@@ -11,6 +11,7 @@ updated: 2026-04-20
 sources:
   - "/home/marcos/Descargas/SIE-P3.Odoo-Modulo.pdf"
 Summary: "Resumen operativo del enunciado de la practica 3 de SIE."
+tokens_consumed: 197
 ---
 
 # Especificacion

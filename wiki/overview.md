@@ -7,8 +7,9 @@ tags:
   - overview
 created: 2026-04-12
 updated: 2026-04-12
-tokens_consumed: 0
-sources: []
+tokens_consumed: 118
+sources:
+  - "jarvis://local"
 Summary: High-level map of JarvisOS goals, memory, automation, and local voice layers.
 ---
 

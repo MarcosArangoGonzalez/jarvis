@@ -9,8 +9,9 @@ tags:
   - tasks
 created: 2026-04-12
 updated: 2026-04-12
-tokens_consumed: 0
-sources: []
+tokens_consumed: 28
+sources:
+  - "jarvis://local"
 Summary: "Area task list for BJJ, strength, recovery, and training notes."
 ---
 

@@ -9,7 +9,7 @@ tags:
   - tasks
 created: 2026-04-12
 updated: 2026-04-19
-tokens_consumed: 0
+tokens_consumed: 370
 sources:
   - "/home/marcos/jarvis/wiki/projects/TFG/bjj-app/project/bjj-rag-implementation.md"
   - "/home/marcos/jarvis/wiki/projects/TFG/bjj-app/analyses/bjj-agent-design.md"

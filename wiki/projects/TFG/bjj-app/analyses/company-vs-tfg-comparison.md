@@ -10,7 +10,7 @@ tags:
   - roadmap
 created: 2026-04-19
 updated: 2026-04-19
-tokens_consumed: 0
+tokens_consumed: 1365
 sources:
   - "/home/marcos/Descargas/company-vs-tfg-comparison.md"
 Summary: "Honest comparison between a well-funded BJJ AI product and the TFG system, including tradeoffs, projected metrics, security gaps, moat, and post-TFG roadmap."

@@ -16,6 +16,8 @@ sources:
 Summary: "Andrea Eskalelet explora cómo cambia la manera en que podemos utilizar las IAs para mejorar nuestra productividad laboral al pasar de usarlas como chatbots a sistemas completos."
 requires_verification: true
 validated: ~
+aliases:
+  - "video-by-andrea-eskailet-como-hacer-que-la-ia-te-sea-til-en"
 ---
 
 # Video by andrea.eskailet: Como hacer que la IA te sea útil en el trabajo

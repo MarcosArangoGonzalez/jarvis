@@ -11,7 +11,7 @@ tags:
   - "actions"
 created: 2026-04-18
 updated: 2026-04-18
-tokens_consumed: 0
+tokens_consumed: 56
 sources:
   - "/home/marcos/Descargas/Chat de WhatsApp con +34 647 00 10 54.zip"
 Summary: "Action items extracted from: Chat de Whatsapp con +34 647 00 10 54"

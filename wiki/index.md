@@ -7,8 +7,9 @@ tags:
   - index
 created: 2026-04-12
 updated: 2026-04-20
-tokens_consumed: 0
-sources: []
+tokens_consumed: 134
+sources:
+  - "jarvis://local"
 Summary: Entry point for the JarvisOS local knowledge base.
 ---
 

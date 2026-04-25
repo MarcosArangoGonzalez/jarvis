@@ -11,7 +11,7 @@ tags:
   - architecture
 created: 2026-04-19
 updated: 2026-04-19
-tokens_consumed: 0
+tokens_consumed: 754
 sources:
   - "/home/marcos/Descargas/agent-langgraph-migration.md"
 Summary: "Mechanical post-TFG migration path from the custom AgentGraphService to LangGraph, including persistence, streaming, parallel retrieval, and observability benefits."

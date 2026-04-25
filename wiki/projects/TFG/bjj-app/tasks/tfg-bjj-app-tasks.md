@@ -8,7 +8,7 @@ tags:
   - tasks
 created: 2026-04-12
 updated: 2026-04-12
-tokens_consumed: 0
+tokens_consumed: 152
 sources:
   - "/home/marcos/jarvis/wiki/projects/TFG/bjj-app/project/tfg-bjj-app.md"
 Summary: "Task list for BJJ App TFG documents, methodology, experiments, and deliverables."

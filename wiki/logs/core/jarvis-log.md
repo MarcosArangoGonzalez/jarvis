@@ -7,8 +7,9 @@ tags:
   - log
 created: 2026-04-12
 updated: 2026-04-21
-tokens_consumed: 0
-sources: []
+tokens_consumed: 4498
+sources:
+  - "jarvis://local"
 Summary: Chronological operating log for JarvisOS.
 ---
 
@@ -179,7 +180,7 @@ Summary: Chronological operating log for JarvisOS.
   - wiki/analyses/improvements-prompt.md
   - wiki/analyses/plan-assessment.md
   - wiki/analyses/rag-patterns.md
-  - wiki/entities/marcos_arango.md
+  - wiki/entities/marcos-arango.md
   - wiki/index.md
   - wiki/log.md
   - wiki/projects/TFG/bjj-app/analyses/agent-langgraph-migration.md
@@ -245,10 +246,10 @@ Summary: Chronological operating log for JarvisOS.
   - tools/skills/whatsapp_listener/start.sh
   - tools/skills/whatsapp_skill.py
   - wiki/areas/bjj/learning-videos/bjj-learning-videos.md
-  - wiki/areas/bjj/learning-videos/social-captures/https-www-instagram-com-p-dv7pz20mivc-img-index-2-igsh-djzlz.md
-  - wiki/areas/bjj/learning-videos/social-captures/https-www-instagram-com-p-dwfqf6cjcnl-img-index-2-igsh-awn0c.md
-  - wiki/areas/bjj/learning-videos/social-captures/https-www-instagram-com-p-dwkevxwdk3e-img-index-2-igsh-mtz3b.md
-  - wiki/areas/bjj/learning-videos/social-captures/https-www-instagram-com-p-dwwvlice-yy-img-index-2-igsh-bdzhe.md
+  - wiki/areas/bjj/learning-videos/social-captures/bjj-instagram-post-dv7pz20mivc-learning-capture.md
+  - wiki/areas/bjj/learning-videos/social-captures/bjj-instagram-post-dwfqf6cjcnl-learning-capture.md
+  - wiki/areas/bjj/learning-videos/social-captures/bjj-instagram-post-dwkevxwdk3e-learning-capture.md
+  - wiki/areas/bjj/learning-videos/social-captures/bjj-instagram-post-dwwvlice-yy-learning-capture.md
   - wiki/areas/bjj/learning-videos/whatsapp/2-conceptos-que-cambiar-n-tu-forma-de-entender-la-guardia-ab.md
   - wiki/areas/bjj/learning-videos/whatsapp/a-sneaky-armbar-that-everyone-should-know.md
   - wiki/areas/bjj/learning-videos/whatsapp/bjj-beginners-kickboxing-combo-warmup.md
@@ -290,14 +291,14 @@ Summary: Chronological operating log for JarvisOS.
   - README.md
   - tools/skills/content_analyzer.py
   - tools/skills/whatsapp_listener/ingest_recent.js
-  - wiki/areas/bjj/learning-videos/social-captures/https-www-instagram-com-p-dw-lserdaqk-img-index-1-igsh-mwpxy.md
-  - wiki/areas/bjj/learning-videos/social-captures/https-www-instagram-com-p-dxpmxh4mrjo-img-index-1-igsh-mww5d.md
-  - wiki/areas/bjj/learning-videos/social-captures/https-www-instagram-com-reel-dw5uyesgo2m-igsh-btkyogxxbxyynt.md
-  - wiki/areas/bjj/learning-videos/social-captures/https-www-instagram-com-reel-dxr8612cus8-igsh-mtawnny0nnrmod.md
-  - wiki/areas/bjj/learning-videos/social-captures/https-www-instagram-com-reel-dxsmacedvsk-igsh-ejhrohfnbzi2ed.md
-  - wiki/areas/bjj/learning-videos/social-captures/https-www-instagram-com-reel-dxss2jsk9wu-igsh-mw00dzfpathtbx.md
-  - wiki/areas/bjj/learning-videos/social-captures/https-www-instagram-com-reel-dxufzxigotr-igsh-njr6agxwbzgzzz.md
-  - wiki/areas/bjj/learning-videos/social-captures/https-www-instagram-com-reel-dxugoemevn5-igsh-mwgxzdbkzhozew.md
+  - wiki/areas/bjj/learning-videos/social-captures/bjj-instagram-post-dw-lserdaqk-learning-capture.md
+  - wiki/areas/bjj/learning-videos/social-captures/bjj-instagram-post-dxpmxh4mrjo-learning-capture.md
+  - wiki/areas/bjj/learning-videos/social-captures/bjj-instagram-reel-dw5uyesgo2m-learning-capture.md
+  - wiki/areas/bjj/learning-videos/social-captures/bjj-instagram-reel-dxr8612cus8-learning-capture.md
+  - wiki/areas/bjj/learning-videos/social-captures/bjj-instagram-reel-dxsmacedvsk-learning-capture.md
+  - wiki/areas/bjj/learning-videos/social-captures/bjj-instagram-reel-dxss2jsk9wu-learning-capture.md
+  - wiki/areas/bjj/learning-videos/social-captures/bjj-instagram-reel-dxufzxigotr-learning-capture.md
+  - wiki/areas/bjj/learning-videos/social-captures/bjj-instagram-reel-dxugoemevn5-learning-capture.md
   - wiki/log.md
 
 
@@ -788,3 +789,15 @@ Summary: Chronological operating log for JarvisOS.
   - .obsidian/graph.json
   - README.md
 
+
+## 2026-04-25 14:41 — Obsidian vault format cleanup
+
+- Normalized Jarvis wiki frontmatter so `wiki_lint.py` reports 138 notes checked with no issues.
+- Renamed URL/no-title/underscore note filenames to more readable Obsidian graph nodes, including BJJ Instagram captures and task/entity source notes.
+- Added `tools/skills/obsidian_vault_maintenance.py` for repeatable vault normalization and updated plain-text references to renamed note paths.
+
+## 2026-04-25 15:20 — Personal OS v2 implementation
+
+- Added canonical `vault/` layout and migrated 138 current wiki notes into the new Personal OS folders without deleting legacy `wiki/`.
+- Added MarkItDown Python-first ingestion, inbox visibility, richer MCP catalog, RAG topology layer, and security regex scan jobs to `jarvis_os`.
+- Verified `pytest -q tests/test_jarvis_os.py` passes and started the dashboard server on `127.0.0.1:5055`.

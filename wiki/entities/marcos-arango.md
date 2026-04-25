@@ -12,6 +12,8 @@ tokens_consumed: 400
 sources:
   - "/home/marcos/Descargas/cv_marcos_arango_gonzález.pdf"
 Summary: "Perfil profesional de Marcos Arango González: estudiante último año GII (UDC), Mención Ingeniería del Software, especialización en Backend/Full Stack/IA, competidor de BJJ."
+aliases:
+  - "marcos-arango"
 ---
 
 # Marcos Arango González

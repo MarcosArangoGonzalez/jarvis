@@ -10,7 +10,7 @@ tags:
   - tasks
 created: 2026-04-13
 updated: 2026-04-20
-tokens_consumed: 0
+tokens_consumed: 604
 sources:
   - "/home/marcos/jarvis/wiki/projects/sie.md"
 Summary: "Lista de tareas del trabajo de investigación SIE: investigación, redacción y presentación."

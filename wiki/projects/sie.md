@@ -10,7 +10,7 @@ tags:
   - universidad
 created: 2026-04-13
 updated: 2026-04-21
-tokens_consumed: 0
+tokens_consumed: 350
 sources:
   - "https://docs.google.com/document/d/1UL570oHD5F6zx-q6utapLoqkyNb7ZuDhKjRIhtGKSc8/edit"
   - "/home/marcos/Escritorio/SIE"

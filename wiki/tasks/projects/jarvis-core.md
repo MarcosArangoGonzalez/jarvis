@@ -8,7 +8,7 @@ tags:
   - voice
 created: 2026-04-12
 updated: 2026-04-12
-tokens_consumed: 0
+tokens_consumed: 1081
 sources:
   - "/home/marcos/jarvis/.jarvis/session_manager.md"
   - "/home/marcos/jarvis/tools/skills/voice_bridge.py"
@@ -18,6 +18,8 @@ sources:
   - "https://flathub.org/apps/ink.whis.Whis"
   - "https://flathub.org/apps/net.mkiol.SpeechNote"
 Summary: "Task list for Jarvis core capabilities, starting with morning coffee and local voice flow."
+aliases:
+  - "jarvis-core"
 ---
 
 # Jarvis Core Tasks

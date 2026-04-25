@@ -9,7 +9,7 @@ tags:
   - universidad
 created: 2026-04-20
 updated: 2026-04-20
-tokens_consumed: 0
+tokens_consumed: 277
 sources:
   - "/home/marcos/Descargas/SIE-P3.Odoo-Modulo.pdf"
   - "/home/marcos/Escritorio/odoo"

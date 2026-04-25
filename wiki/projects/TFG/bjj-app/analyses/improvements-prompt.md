@@ -10,7 +10,7 @@ tags:
   - implementation
 created: 2026-04-19
 updated: 2026-04-19
-tokens_consumed: 0
+tokens_consumed: 1445
 sources:
   - "/home/marcos/Descargas/improvements-prompt.md"
 Summary: "Claude Code implementation prompt for six AgentGraphService improvements: embedding cache normalisation, session summary budget, defensive rewriter, grounded generator, metrics, and fallback messages."

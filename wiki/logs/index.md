@@ -8,8 +8,9 @@ tags:
   - index
 created: 2026-04-21
 updated: 2026-04-21
-tokens_consumed: 0
-sources: []
+tokens_consumed: 84
+sources:
+  - "jarvis://local"
 Summary: "Indice centralizado de logs de Jarvis, organizado por ambito y proyecto."
 ---
 
