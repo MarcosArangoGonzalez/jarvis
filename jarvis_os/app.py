@@ -8,7 +8,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from .api.routers import architecture, inbox, integrations, jobs, metrics, modules, overview, security, sessions, skills, vault
+from .api.routers import architecture, cicd, devhub, docs, inbox, integrations, jobs, metrics, modules, newsletter, notes, overview, render, research, security, session_wizard, sessions, skills, terminal, vault
 from .config import get_settings
 from .kernel.service import KernelService
 from .schemas import VaultSearchQuery
@@ -27,6 +27,7 @@ def create_app(*, enable_scheduler: bool = True) -> FastAPI:
             scheduler.start()
         app.state.scheduler = scheduler
         yield
+        app.state.kernel.terminal.close_all()
         if scheduler is not None:
             scheduler.shutdown(wait=False)
 
@@ -47,6 +48,15 @@ def create_app(*, enable_scheduler: bool = True) -> FastAPI:
         integrations.router,
         metrics.router,
         modules.router,
+        newsletter.router,
+        notes.router,
+        research.router,
+        terminal.router,
+        session_wizard.router,
+        cicd.router,
+        devhub.router,
+        render.router,
+        docs.router,
     ):
         app.include_router(router)
 
@@ -64,6 +74,31 @@ def create_app(*, enable_scheduler: bool = True) -> FastAPI:
     def dashboard_sessions(request: Request):
         context = {"request": request, "sessions": app.state.kernel.get_sessions()}
         return templates.TemplateResponse("sessions.html", context)
+
+    @app.get("/terminal", response_class=HTMLResponse)
+    def dashboard_terminal(request: Request):
+        context = {"request": request}
+        return templates.TemplateResponse("terminal.html", context)
+
+    @app.get("/research", response_class=HTMLResponse)
+    def dashboard_research(request: Request):
+        context = {"request": request, "history": app.state.kernel.get_research_history()}
+        return templates.TemplateResponse("research.html", context)
+
+    @app.get("/graph", response_class=HTMLResponse)
+    def dashboard_graph(request: Request):
+        context = {"request": request}
+        return templates.TemplateResponse("graph.html", context)
+
+    @app.get("/notepad", response_class=HTMLResponse)
+    def dashboard_notepad(request: Request):
+        context = {"request": request, "note": app.state.kernel.get_today_note()}
+        return templates.TemplateResponse("notepad.html", context)
+
+    @app.get("/newsletter", response_class=HTMLResponse)
+    def dashboard_newsletter(request: Request):
+        context = {"request": request, "newsletters": app.state.kernel.get_newsletters()}
+        return templates.TemplateResponse("newsletter.html", context)
 
     @app.get("/skills", response_class=HTMLResponse)
     def dashboard_skills(request: Request):
@@ -134,6 +169,33 @@ def create_app(*, enable_scheduler: bool = True) -> FastAPI:
     def dashboard_integrations(request: Request):
         context = {"request": request, "integrations": app.state.kernel.get_integrations()}
         return templates.TemplateResponse("integrations.html", context)
+
+    @app.get("/session/new", response_class=HTMLResponse)
+    def dashboard_session_wizard(request: Request):
+        contexts = app.state.kernel.session_wizard.list_contexts()
+        profiles = app.state.kernel.session_wizard.list_profiles()
+        context = {"request": request, "contexts": contexts, "profiles": profiles, "title": "Session Wizard"}
+        return templates.TemplateResponse("session_wizard.html", context)
+
+    @app.get("/dev_hub", response_class=HTMLResponse)
+    def dashboard_devhub(request: Request):
+        kernel = app.state.kernel
+        from .schemas import DevHubOverview
+        overview = DevHubOverview(
+            recent_jobs=kernel.get_jobs()[:8],
+            recent_findings=kernel.get_security_findings()[:5],
+            recent_insights=kernel.get_insights()[:6],
+            cicd=kernel.cicd.get_status(),
+            metrics=kernel.get_metrics(),
+        )
+        context = {"request": request, "hub": overview, "title": "Dev Hub"}
+        return templates.TemplateResponse("dev_hub.html", context)
+
+    @app.get("/insights", response_class=HTMLResponse)
+    def dashboard_insights(request: Request):
+        insights = app.state.kernel.get_insights(limit=20)
+        context = {"request": request, "insights": insights, "title": "Session Insights"}
+        return templates.TemplateResponse("insights.html", context)
 
     return app
 

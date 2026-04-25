@@ -54,7 +54,7 @@ Jarvis, morning coffee. Focus bjj-app.   # load specific project context
 Jarvis, set mode Research Scientist.     # switch to TFG/academic mode
 Jarvis, set mode SRE Debug.              # switch to logs/metrics mode
 Jarvis, handover.                        # write handover block
-/jarvis-log                              # semantic session summary → wiki/log.md
+/jarvis-log                              # semantic session summary → wiki/logs/core/jarvis-log.md
 /jarvis-commit [message]                 # show staged diff → confirm → commit
 /jarvis-remind [keyword]                 # surface P0/P1/overdue; notify-send on P0
 ```
@@ -83,7 +83,7 @@ Jarvis, open <note-filename>.
 
 ```
 /jarvis-ingest <url|path>               # URL or file → wiki note (auto-type)
-Jarvis, ingest <URL> as reference.      # → wiki/analyses/
+Jarvis, ingest <URL> as reference.      # → relevant project folder or wiki/sources/
 Jarvis, ingest chat <file>.             # exported chat → wiki source note
 Jarvis, process ingest queue.           # run sync_watcher on raw/ingest_queue/
 /jarvis-backlog [--dry-run|--limit N]   # process WhatsApp URL backlog
@@ -133,7 +133,7 @@ Fires automatically on every Claude Code session in this project:
 
 | Hook | Trigger | Effect |
 |---|---|---|
-| `log_session.sh` | Every turn stop | Timestamp → `wiki/log.md`, stamp → `session_manager.md` |
+| `log_session.sh` | Every turn stop | Timestamp → `wiki/logs/core/jarvis-log.md`, stamp → `session_manager.md` |
 | `wiki_lint_check.sh` | `Edit`/`Write` on `wiki/` | Frontmatter warnings in terminal |
 
 ```bash
@@ -144,6 +144,12 @@ Desktop task reminder: `~/.claude/scheduled-tasks/jarvis-tasks/` — runs every 
 
 ---
 
+## Ideas
+
+- Conectar agents y BDs como Obsidian a gafas con IA
+
+---
+
 ## Directory Map
 
 | Path | Purpose |
@@ -151,8 +157,11 @@ Desktop task reminder: `~/.claude/scheduled-tasks/jarvis-tasks/` — runs every 
 | `.jarvis/session_manager.md` | Bootstrap + handover protocol |
 | `CLAUDE.md` | Jarvis control plane |
 | `wiki/tasks/` | Task dashboards (index + per-project) |
-| `wiki/projects/` | Project logs |
-| `wiki/analyses/` | Research and design notes |
+| `wiki/projects/<area>/<project>/` | Project notes, analyses, tasks, and sources |
+| `wiki/logs/core/` | Global operational logs |
+| `wiki/logs/projects/` | Centralized logs by project or area |
+| `wiki/areas/bjj/learning-videos/` | BJJ sport-learning videos from WhatsApp/social captures |
+| `wiki/analyses/` | Global research and design notes not owned by one project |
 | `wiki/sources/` | Ingested external content |
 | `raw/` | Unprocessed inputs, alerts, backups |
 | `tools/skills/` | Local Python skill adapters |

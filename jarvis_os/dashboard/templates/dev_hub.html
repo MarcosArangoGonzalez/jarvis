@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-body">
+
+  <div class="hub-grid">
+
+    <div class="card">
+      <h2>CI/CD</h2>
+      {% if hub.cicd.available %}
+        {% if hub.cicd.sonar_gate %}
+        <div class="badge badge-{{ 'ok' if hub.cicd.sonar_gate == 'OK' else 'fail' }}">
+          SonarQube: {{ hub.cicd.sonar_gate }}
+        </div>
+        {% endif %}
+        <table class="data-table mt-2">
+          <thead><tr><th>Workflow</th><th>Estado</th><th>Conclusión</th><th>Fecha</th></tr></thead>
+          <tbody>
+          {% for run in hub.cicd.runs %}
+          <tr>
+            <td><a href="{{ run.url }}" target="_blank">{{ run.workflow }}</a></td>
+            <td><span class="badge badge-{{ 'ok' if run.status == 'completed' else 'warn' }}">{{ run.status }}</span></td>
+            <td>{{ run.conclusion or '—' }}</td>
+            <td>{{ run.created_at[:10] if run.created_at else '—' }}</td>
+          </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+        <form method="post" action="/jobs/run" class="mt-2">
+          <input type="hidden" name="kind" value="session_generate">
+          <button class="btn-secondary">Trigger pipeline</button>
+        </form>
+      {% else %}
+        <p class="hint">{{ hub.cicd.notice or 'GITHUB_TOKEN no configurado. Añadir a .env para activar.' }}</p>
+      {% endif %}
+    </div>
+
+    <div class="card">
+      <h2>Jobs recientes</h2>
+      <table class="data-table">
+        <thead><tr><th>Kind</th><th>Estado</th><th>Fecha</th></tr></thead>
+        <tbody>
+        {% for job in hub.recent_jobs %}
+        <tr>
+          <td>{{ job.kind }}</td>
+          <td><span class="badge badge-{{ 'ok' if job.status == 'succeeded' else 'fail' if job.status == 'failed' else 'warn' }}">{{ job.status }}</span></td>
+          <td>{{ job.created_at.strftime('%Y-%m-%d %H:%M') if job.created_at else '—' }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      <a href="/jobs" class="btn-link mt-2">Ver todos →</a>
+    </div>
+
+    <div class="card">
+      <h2>Security</h2>
+      {% if hub.recent_findings %}
+      <table class="data-table">
+        <thead><tr><th>Severidad</th><th>Label</th><th>Archivo</th></tr></thead>
+        <tbody>
+        {% for f in hub.recent_findings %}
+        <tr>
+          <td><span class="badge badge-{{ 'fail' if f.severity == 'high' else 'warn' }}">{{ f.severity }}</span></td>
+          <td>{{ f.label }}</td>
+          <td class="mono">{{ f.path | truncate(40) }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p class="hint">Sin hallazgos recientes.</p>
+      {% endif %}
+      <a href="/security" class="btn-link mt-2">Ver security scanner →</a>
+    </div>
+
+    <div class="card">
+      <h2>Session Insights</h2>
+      {% if hub.recent_insights %}
+      <ul class="item-list">
+        {% for insight in hub.recent_insights %}
+        <li>
+          <strong>{{ insight.title }}</strong>
+          <span class="hint">{{ insight.date }}</span>
+          {% if insight.technologies %}
+          <div class="tag-row">
+            {% for tech in insight.technologies[:4] %}
+            <span class="tag">{{ tech }}</span>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p class="hint">Sin insights todavía. Activa el modo aprendizaje en el Session Wizard.</p>
+      {% endif %}
+      <a href="/insights" class="btn-link mt-2">Ver todos →</a>
+    </div>
+
+    <div class="card">
+      <h2>Métricas</h2>
+      <div class="metrics-grid">
+        {% for m in hub.metrics %}
+        <div class="metric-card">
+          <div class="metric-value">{{ m.value }}</div>
+          <div class="metric-label">{{ m.label }}</div>
+          {% if m.hint %}<div class="metric-hint">{{ m.hint }}</div>{% endif %}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Acciones rápidas</h2>
+      <div class="quick-actions">
+        <a href="/terminal" class="btn-secondary">Terminal</a>
+        <a href="/research" class="btn-secondary">Research</a>
+        <a href="/session/new" class="btn-secondary">Session Wizard</a>
+        <a href="/security" class="btn-secondary">Security scan</a>
+        <a href="/vault/search" class="btn-secondary">Vault search</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<style>
+.hub-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 1.5rem; }
+.data-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.data-table th, .data-table td { padding: 6px 8px; border-bottom: 1px solid var(--border); text-align: left; }
+.data-table th { font-weight: 600; color: var(--text-muted, #666); }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
+.badge-ok { background: #d4edda; color: #155724; }
+.badge-fail { background: #f8d7da; color: #721c24; }
+.badge-warn { background: #fff3cd; color: #856404; }
+.item-list { list-style: none; padding: 0; margin: 0; }
+.item-list li { padding: 8px 0; border-bottom: 1px solid var(--border); }
+.tag-row { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+.tag { background: var(--surface, #f0f0f0); padding: 2px 6px; border-radius: 3px; font-size: 0.75rem; }
+.metrics-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+.metric-card { text-align: center; padding: 12px; background: var(--surface, #f8f8f8); border-radius: 4px; }
+.metric-value { font-size: 1.8rem; font-weight: 700; }
+.metric-label { font-size: 0.8rem; font-weight: 600; margin-top: 4px; }
+.metric-hint { font-size: 0.7rem; color: var(--text-muted, #888); }
+.quick-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.btn-link { display: inline-block; margin-top: 8px; font-size: 0.85rem; color: var(--accent, #0070f3); text-decoration: none; }
+.mt-2 { margin-top: 12px; }
+.mono { font-family: monospace; font-size: 0.8rem; }
+</style>
+{% endblock %}

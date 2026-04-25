@@ -25,3 +25,8 @@ def vault_search(
         tags=tags or [],
     )
     return request.app.state.kernel.search_vault(payload).model_dump(mode="json")
+
+
+@router.get("/api/vault/graph")
+async def vault_graph(request: Request, folder: str = "all", min_links: int = 0, tag: str = ""):
+    return request.app.state.kernel.get_vault_graph(folder=folder, min_links=min_links, tag=tag).model_dump(mode="json")

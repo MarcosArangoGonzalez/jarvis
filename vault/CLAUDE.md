@@ -70,6 +70,94 @@ fallback textual y marcar `supported=False` hasta que existan embeddings reales.
 No basta con registrar el job. La conversion debe llamar a
 `MarkItDownIngestor.convert(...)` y persistir el resultado.
 
+## Terminal Claude Code (Fase 1)
+
+El dashboard expone un terminal local en `/terminal` con API en
+`/api/terminal/sessions` y WebSocket en `/ws/terminal/{session_id}`. La sesión se
+ejecuta con `claude --model <model>` dentro de `settings.root_dir` cuando
+`load_vault_context=True`.
+
+Limitaciones v1:
+
+- Sesiones PTY en memoria del proceso FastAPI, sin persistencia histórica.
+- Uso local en `127.0.0.1`; no hay hardening multiusuario ni exposición pública.
+- Métricas básicas parseadas del stream; si Claude cambia el formato, quedan a
+  cero sin romper el terminal.
+- No inyecta contexto automáticamente al PTY: Claude Code lee el repo/vault desde
+  el directorio raíz.
+
+## Research Engine (Fase 2)
+
+El dashboard expone `/research` y la API `POST /api/research/query` con backends
+`perplexity`, `notebooklm` y `ollama`. Los resultados se guardan en
+`data/runtime/research.json`.
+
+Reglas v1:
+
+- `perplexity` solo hace web research real si existe `PERPLEXITY_API_KEY`.
+- `ollama` intenta `http://127.0.0.1:11434/api/generate`; si no está disponible,
+  devuelve contexto recuperado del vault.
+- `notebooklm` queda como adaptador no configurado y degrada a contexto del vault.
+- `save_to_vault=True` crea `vault/02-Research/research-{slug}.md` con
+  frontmatter y citas cuando existan.
+- Las degradaciones deben marcar `supported=False` y explicar `notice`.
+
+## Graph View (Fase 3)
+
+El dashboard expone `/graph` y la API `GET /api/vault/graph`. El grafo usa notas
+Markdown como nodos y wikilinks `[[Nota]]` como edges.
+
+Reglas v1:
+
+- El parser resuelve enlaces por `title` de frontmatter, encabezado `#` o stem
+  del archivo.
+- Filtros soportados: `folder`, `tag` y `min_links`.
+- La visualización D3.js vive en `jarvis_os/dashboard/static/graph.js`.
+- No hay embeddings ni ranking semántico en esta fase; solo enlaces explícitos.
+
+## Notepad + Calendario (Fase 4)
+
+El dashboard expone `/notepad`, `GET /api/notes/daily/today`,
+`GET|PUT /api/notes/{path}` y `GET /api/calendar/events`.
+
+Reglas v1:
+
+- La escritura de notas está restringida a `vault/` y solo permite Markdown.
+- Las notas nuevas reciben frontmatter automático con `title`, `type`, `status`,
+  `created`, `updated` y `tokens_consumed`.
+- El journal diario vive en `vault/00-Daily/journal-YYYY-MM-DD.md`.
+- El calendario detecta eventos por fechas `YYYY-MM-DD` en nombres de archivo.
+- El editor del dashboard auto-guarda cada 30 segundos.
+
+## Búsqueda semántica (Fase 5)
+
+El job `vault_reindex` crea `data/runtime/vault-index.db` con chunks del vault y
+embeddings locales. `search_vault(mode="semantic")` usa ese índice cuando existe.
+
+Reglas v1:
+
+- Si el índice no existe, `semantic` degrada a búsqueda textual con
+  `supported=False`.
+- El índice usa SQLite local y no se recalcula en cada query.
+- Las dependencias declaradas son `sqlite-vec` y `sentence-transformers`; la
+  implementación mantiene un embedding hash local como fallback operativo.
+- Reindexar después de cambios grandes en el vault.
+
+## Newsletter diario (Fase 6)
+
+El dashboard expone `/newsletter`, `POST /api/newsletter/generate`,
+`GET /newsletter/{date}` y `GET /newsletter/{date}/html`. El job
+`newsletter_generate` crea artefactos en
+`vault/00-Daily/newsletters/YYYY-MM-DD.{md,html,pdf}`.
+
+Reglas v1:
+
+- La fuente activa sin credenciales es el vault local.
+- Gmail queda como skill en `tools/skills/gmail/` y requiere OAuth externo.
+- PDF se genera solo si `weasyprint` está instalado.
+- El HTML usa CSS editorial aislado en `jarvis_os/dashboard/static/newsletter.css`.
+- La skill principal vive en `tools/skills/newsletter/SKILL.md`.
+
 ## Búsqueda en vault
 
 Modos soportados:
@@ -121,6 +209,63 @@ Los MCP servers son adaptadores de capacidad, no sustitutos de memoria local.
 Usalos cuando el vault no tenga suficiente contexto o cuando el usuario pida una
 fuente externa concreta. Las credenciales deben vivir fuera del repositorio o en
 archivos ignorados.
+
+## Contextos cargables (Fase 7)
+
+El directorio `contexts/` contiene fragmentos .md organizados por categoría
+(models, stack, workflow, quality, personal, profiles). El Session Wizard en
+`/session/new` los concatena para generar un CLAUDE.md de sesión personalizado.
+
+- `GET /api/session/contexts` → lista contextos por categoría
+- `POST /api/session/generate` → genera CLAUDE.md desde selección
+- Perfiles guardados en `vault/04-Skills/contexts/session-YYYY-MM-DD-*.md`
+- CLI: `tools/skills/session_init/session_init.py --list`
+
+## Dev Hub (Fase 7)
+
+El Dev Hub en `/dev_hub` agrega: jobs recientes, findings de seguridad, session
+insights y estado de CI/CD (GitHub Actions via GITHUB_TOKEN).
+
+- `GET /api/devhub` → overview completo
+- `GET /api/cicd/status` → GitHub Actions (requiere GITHUB_TOKEN)
+- `POST /api/cicd/trigger` → trigger manual de workflow
+
+## Session Insights (Fase 7)
+
+Las notas de aprendizaje viven en `vault/03-Dev/insights/YYYY-MM-DD-HH.md`.
+
+- `GET /insights` → viewer con lista y previews
+- `GET /api/insights` → API JSON
+- Job `session_insights_generate` → ejecuta `tools/skills/educator/session_insights.py`
+- El script lee `wiki/logs/core/jarvis-log.md` y genera frontmatter completo
+
+## Renderer (Fase 7)
+
+- `POST /api/render` → body `{spec, mode: mermaid|claude|auto}`
+- Modo mermaid: limpia y devuelve spec Mermaid para renderizar en frontend
+- Modo claude: llama Anthropic API con ANTHROPIC_API_KEY y devuelve SVG
+- Sin ANTHROPIC_API_KEY: fallback a spec Mermaid limpia
+
+## Doc Checker (Fase 7)
+
+- `POST /api/docs/check` → body `{libraries: [...], save_to_vault: bool}`
+- Usa Perplexity si hay PERPLEXITY_API_KEY, guarda en `vault/02-Research/doc-snapshots/`
+- Sin API key: devuelve `available=false` con aviso
+
+## Agent Definitions (Fase 7)
+
+Definiciones en `.claude/agents/`:
+- `backend.md` — FastAPI, Spring Boot, PostgreSQL, testing
+- `frontend.md` — React, Angular, Next.js, Stitch, 21st.dev
+- `reviewer.md` — Code review OWASP, seguridad, calidad
+- `docs.md` — Context7, OpenAPI, docstrings, ADRs
+
+## Skills nuevas (Fase 7)
+
+- `tools/skills/educator/session_insights.py` — genera insight note al cerrar sesión
+- `tools/skills/autosave/autosave_hook.sh` — auto-commit tras Write/Edit
+- `tools/skills/bitwarden/SKILL.md` — instrucciones Bitwarden CLI + MCP
+- `tools/skills/session_init/session_init.py` — CLI del Session Wizard
 
 ## Roadmap
 

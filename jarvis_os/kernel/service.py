@@ -7,11 +7,20 @@ from pathlib import Path
 from uuid import uuid4
 
 from ..config import Settings
+from ..integrations.cicd import CiCdIntegration
+from ..integrations.context7 import Context7Client
 from ..integrations.legacy import LegacyWorkspace
 from ..integrations.markitdown import MarkItDownIngestor
+from ..integrations.notes import NoteStore
+from ..integrations.newsletter import NewsletterEngine
+from ..integrations.renderer import DiagramRenderer
+from ..integrations.research import ResearchEngine
+from ..integrations.semantic import SemanticIndex
 from ..integrations.security import SecurityRegexScanner
+from ..integrations.session_wizard import SessionWizard
+from ..integrations.terminal import ClaudeTerminal
 from ..integrations.vault import VaultMigrator
-from ..repositories import EventRepository, IngestionRepository, JobRepository, SecurityFindingRepository
+from ..repositories import EventRepository, IngestionRepository, JobRepository, NewsletterRepository, ResearchRepository, SecurityFindingRepository
 from ..schemas import (
     ArtifactRef,
     DashboardMetric,
@@ -22,13 +31,23 @@ from ..schemas import (
     MCPServerStatus,
     ModuleState,
     QuickAction,
+    CalendarEvent,
+    NoteDocument,
+    NewsletterResult,
+    RenderRequest,
+    ResearchQuery,
+    ResearchResult,
     SecurityScanRequest,
     Session,
+    SessionInsight,
     SkillRunnerResult,
+    TerminalSessionCreate,
+    TerminalSessionInfo,
     TopologyLayer,
     TopologyMap,
     TopologyNode,
     VaultNoteSummary,
+    VaultGraph,
     VaultSearchQuery,
     VaultSearchResult,
 )
@@ -40,10 +59,21 @@ class KernelService:
         self.workspace = LegacyWorkspace(settings)
         self.migrator = VaultMigrator(settings)
         self.ingestor = MarkItDownIngestor(settings)
+        self.notes = NoteStore(settings)
+        self.newsletter = NewsletterEngine(settings)
+        self.research = ResearchEngine(settings)
+        self.semantic = SemanticIndex(settings)
         self.security = SecurityRegexScanner(settings)
+        self.terminal = ClaudeTerminal(settings)
+        self.session_wizard = SessionWizard(settings)
+        self.cicd = CiCdIntegration(settings)
+        self.context7 = Context7Client(settings)
+        self.renderer = DiagramRenderer()
         self.jobs = JobRepository(settings.runtime_dir / "jobs.json")
         self.events = EventRepository(settings.runtime_dir / "events.json")
         self.ingestions = IngestionRepository(settings.runtime_dir / "ingestions.json")
+        self.research_results = ResearchRepository(settings.runtime_dir / "research.json")
+        self.newsletters = NewsletterRepository(settings.runtime_dir / "newsletters.json")
         self.security_findings = SecurityFindingRepository(settings.runtime_dir / "security-findings.json")
         self.settings.runtime_dir.mkdir(parents=True, exist_ok=True)
 
@@ -78,9 +108,9 @@ class KernelService:
             ],
             quick_actions=[
                 QuickAction(label="Vault search", href="/vault/search"),
+                QuickAction(label="Research", href="/research"),
                 QuickAction(label="Arquitectura", href="/architecture"),
                 QuickAction(label="Sesiones", href="/sessions"),
-                QuickAction(label="Skills", href="/skills"),
             ],
         )
 
@@ -89,6 +119,15 @@ class KernelService:
 
     def get_sessions(self) -> list[Session]:
         return self.workspace.recent_sessions(limit=12)
+
+    def create_terminal_session(self, request: TerminalSessionCreate) -> TerminalSessionInfo:
+        return self.terminal.create_session(request)
+
+    def list_terminal_sessions(self) -> list[TerminalSessionInfo]:
+        return self.terminal.list_sessions()
+
+    def close_terminal_session(self, session_id: str) -> TerminalSessionInfo | None:
+        return self.terminal.close_session(session_id)
 
     def get_session(self, session_id: str) -> Session | None:
         for session in self.get_sessions():
@@ -239,7 +278,16 @@ class KernelService:
         notice = ""
         supported = True
         if query.mode == "semantic":
-            notice = "Modo semántico aún no tiene backend vectorial dedicado; se usa fallback textual."
+            if self.semantic.available():
+                items = self.semantic.search(query.query, folder=query.folder)
+                return VaultSearchResult(
+                    total=len(items),
+                    mode=query.mode,
+                    supported=True,
+                    notice="Modo semántico usa índice local SQLite en data/runtime/vault-index.db.",
+                    items=items,
+                )
+            notice = "Modo semántico requiere ejecutar el job vault_reindex; se usa fallback textual."
             supported = False
         if query.mode == "ask_claude":
             notice = "Modo preguntar a Claude devuelve contexto del vault para síntesis posterior; fallback textual activo."
@@ -257,6 +305,72 @@ class KernelService:
             notice=notice,
             items=items,
         )
+
+    def run_research(self, query: ResearchQuery) -> ResearchResult:
+        context = self.search_vault(self.research.context_query(query))
+        result = self.research.query(query, context)
+        return self.research_results.add(result)
+
+    def get_research_history(self) -> list[ResearchResult]:
+        return self.research_results.load()
+
+    def get_vault_graph(self, *, folder: str = "all", min_links: int = 0, tag: str = "") -> VaultGraph:
+        return self.migrator.build_graph(folder=folder, min_links=min_links, tag=tag)
+
+    def get_today_note(self) -> NoteDocument:
+        return self.notes.today()
+
+    def get_note(self, path: str) -> NoteDocument:
+        return self.notes.read(path)
+
+    def write_note(self, path: str, content: str) -> NoteDocument:
+        return self.notes.write(path, content)
+
+    def get_calendar_events(self, *, year: int, month: int) -> list[CalendarEvent]:
+        return self.notes.calendar_events(year=year, month=month)
+
+    def generate_newsletter(self, *, target_date: str | None = None, sections: list[str] | None = None, export_pdf: bool = True) -> NewsletterResult:
+        parsed_date = datetime.fromisoformat(target_date).date() if target_date else datetime.now().date()
+        result = self.newsletter.generate(target_date=parsed_date, sections=sections, export_pdf=export_pdf)
+        return self.newsletters.add(result)
+
+    def get_newsletters(self) -> list[NewsletterResult]:
+        stored = self.newsletters.load()
+        return stored or self.newsletter.list_newsletters()
+
+    def get_newsletter_html(self, target_date: str) -> str:
+        return self.newsletter.html_for_date(target_date)
+
+    def get_insights(self, limit: int = 10) -> list[SessionInsight]:
+        insights_dir = self.settings.insights_dir
+        if not insights_dir.exists():
+            return []
+        insights: list[SessionInsight] = []
+        for md_file in sorted(insights_dir.glob("*.md"), reverse=True)[:limit]:
+            insight = self._parse_insight(md_file)
+            if insight:
+                insights.append(insight)
+        return insights
+
+    def _parse_insight(self, path: "Path") -> SessionInsight | None:
+        try:
+            import yaml as _yaml
+            content = path.read_text(encoding="utf-8")
+            if not content.startswith("---"):
+                return SessionInsight(title=path.stem, date=path.stem, path=str(path.relative_to(self.settings.root_dir)))
+            end = content.index("---", 3)
+            meta = _yaml.safe_load(content[3:end]) or {}
+            summary_body = content[end + 3:].strip()
+            return SessionInsight(
+                title=meta.get("title", path.stem),
+                date=meta.get("date", path.stem[:10]),
+                technologies=meta.get("technologies", []),
+                patterns_used=meta.get("patterns_used", []),
+                path=str(path.relative_to(self.settings.root_dir)),
+                summary=summary_body[:300] if summary_body else None,
+            )
+        except Exception:
+            return None
 
     def create_job(self, *, kind: str, payload: dict | None = None) -> Job:
         payload = payload or {}
@@ -346,6 +460,39 @@ class KernelService:
                 data=scan.model_dump(mode="json"),
             )
             job.status = "succeeded"
+        elif job.kind == "vault_reindex":
+            stats = self.semantic.reindex()
+            job.result = SkillRunnerResult(
+                status="succeeded",
+                started_at=job.started_at,
+                finished_at=datetime.now(),
+                duration_ms=1,
+                stdout_excerpt=f"Indexed {stats['indexed_chunks']} chunks into {stats['db_path']}.",
+                data=stats,
+            )
+            job.status = "succeeded"
+        elif job.kind == "newsletter_generate":
+            result = self.generate_newsletter(
+                target_date=job.payload.get("date"),
+                sections=job.payload.get("sections"),
+                export_pdf=job.payload.get("export_pdf", True),
+            )
+            artifacts = [
+                ArtifactRef(label="Markdown", path=result.md_path),
+                ArtifactRef(label="HTML", path=result.html_path),
+            ]
+            if result.pdf_path:
+                artifacts.append(ArtifactRef(label="PDF", path=result.pdf_path))
+            job.result = SkillRunnerResult(
+                status="succeeded",
+                started_at=job.started_at,
+                finished_at=datetime.now(),
+                duration_ms=1,
+                artifacts=artifacts,
+                stdout_excerpt=f"Newsletter {result.date} generated with {result.items_total} items.",
+                data=result.model_dump(mode="json"),
+            )
+            job.status = "succeeded"
         elif job.kind == "precommit_hook_generate":
             output = self.settings.runtime_dir / "pre-commit-security-scan.sh"
             output.write_text(self.security.precommit_hook(), encoding="utf-8")
@@ -364,6 +511,33 @@ class KernelService:
             )
             job.result = result
             job.status = "succeeded" if result.error_excerpt == "" else "failed"
+        elif job.kind == "session_generate":
+            from ..schemas import SessionWizardRequest
+            req = SessionWizardRequest(**job.payload)
+            wiz_result = self.session_wizard.generate_claude_md(req)
+            job.result = SkillRunnerResult(
+                status="succeeded",
+                started_at=job.started_at,
+                finished_at=datetime.now(),
+                duration_ms=1,
+                stdout_excerpt=f"Generated CLAUDE.md from {len(wiz_result.sources)} contexts.",
+                data=wiz_result.model_dump(),
+            )
+            job.status = "succeeded"
+        elif job.kind == "session_insights_generate":
+            insights_script = self.settings.root_dir / "tools" / "skills" / "educator" / "session_insights.py"
+            if insights_script.exists():
+                result = self._run_subprocess_job([sys.executable, str(insights_script)])
+                job.result = result
+                job.status = "succeeded" if result.error_excerpt == "" else "failed"
+            else:
+                job.result = SkillRunnerResult(
+                    status="failed",
+                    started_at=job.started_at,
+                    finished_at=datetime.now(),
+                    error_excerpt="session_insights.py skill not found.",
+                )
+                job.status = "failed"
         else:
             job.status = "failed"
             job.error = f"Unsupported job kind: {job.kind}"

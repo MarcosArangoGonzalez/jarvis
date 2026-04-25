@@ -1,7 +1,7 @@
 Write a session log entry and handover block for the current session.
 
-1. Run `tail -20 /home/marcos/jarvis/wiki/log.md` to read the current log tail.
-2. Based on what was done in this conversation, append a new dated section to `wiki/log.md` with 2–5 bullet points summarising the work (what changed, what was decided, what is next). Format:
+1. Run `tail -20 /home/marcos/jarvis/wiki/logs/core/jarvis-log.md` to read the current log tail.
+2. Based on what was done in this conversation, append a new dated section to `wiki/logs/core/jarvis-log.md` with 2–5 bullet points summarising the work (what changed, what was decided, what is next). Format:
 
 ```
 ## YYYY-MM-DD HH:MM — <one-line topic>

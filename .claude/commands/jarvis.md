@@ -11,7 +11,7 @@ List the following commands and their descriptions:
 | `/jarvis-tasks [keyword]` | Show P0/P1 active tasks from wiki/tasks/ |
 | `/jarvis-backlog [--dry-run\|--limit N]` | Process WhatsApp URL backlog through content analyzer |
 | `/jarvis-storage [--clean\|--docker-clean\|--push-image\|--cloud-check]` | Disk, Docker, and cloud storage management |
-| `/jarvis-log` | Write a semantic session log entry + handover block to wiki/log.md and session_manager.md |
+| `/jarvis-log` | Write a semantic session log entry + handover block to wiki/logs/core/jarvis-log.md and session_manager.md |
 | `/jarvis-commit [message]` | Stage and commit wiki/ + .jarvis/ + tools/ changes with a safe, reviewed commit |
 | `/jarvis-remind [keyword]` | Surface P0/P1 tasks, overdue items, and blocked work; notify-send on P0 |
 

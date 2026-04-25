@@ -19,6 +19,8 @@ class Settings:
     templates_dir: Path
     static_dir: Path
     session_manager_path: Path
+    contexts_dir: Path
+    insights_dir: Path
 
 
 def get_settings() -> Settings:
@@ -37,4 +39,6 @@ def get_settings() -> Settings:
         templates_dir=root_dir / "jarvis_os" / "dashboard" / "templates",
         static_dir=root_dir / "jarvis_os" / "dashboard" / "static",
         session_manager_path=root_dir / ".jarvis" / "session_manager.md",
+        contexts_dir=root_dir / "contexts",
+        insights_dir=root_dir / "vault" / "03-Dev" / "insights",
     )

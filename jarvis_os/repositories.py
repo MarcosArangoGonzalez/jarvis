@@ -6,7 +6,7 @@ from typing import Generic, TypeVar
 
 from pydantic import BaseModel, TypeAdapter
 
-from .schemas import Event, IngestionResult, Job, SecurityFinding
+from .schemas import Event, IngestionResult, Job, NewsletterResult, ResearchResult, SecurityFinding
 
 
 T = TypeVar("T", bound=BaseModel)
@@ -71,6 +71,28 @@ class IngestionRepository(JsonListRepository[IngestionResult]):
         items = self.load()
         items.insert(0, result)
         self.save(items[:200])
+        return result
+
+
+class ResearchRepository(JsonListRepository[ResearchResult]):
+    def __init__(self, path: Path) -> None:
+        super().__init__(path, ResearchResult)
+
+    def add(self, result: ResearchResult) -> ResearchResult:
+        items = self.load()
+        items.insert(0, result)
+        self.save(items[:100])
+        return result
+
+
+class NewsletterRepository(JsonListRepository[NewsletterResult]):
+    def __init__(self, path: Path) -> None:
+        super().__init__(path, NewsletterResult)
+
+    def add(self, result: NewsletterResult) -> NewsletterResult:
+        items = [item for item in self.load() if item.date != result.date]
+        items.insert(0, result)
+        self.save(items[:100])
         return result
 
 

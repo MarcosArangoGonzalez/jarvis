@@ -1,15 +1,18 @@
 from __future__ import annotations
 
 import shutil
+import re
 from pathlib import Path
 
 from ..config import Settings
+from ..schemas import VaultGraph, VaultGraphEdge, VaultGraphNode
 
 
 class VaultMigrator:
     """Non-destructive wiki -> vault copier for the Personal OS v2 layout."""
 
     FOLDERS = ("00-Daily", "01-Projects", "02-Research", "03-Dev", "04-Skills", "05-Inbox", "assets")
+    WIKILINK_RE = re.compile(r"\[\[([^\]|#]+)")
 
     def __init__(self, settings: Settings) -> None:
         self.settings = settings
@@ -58,6 +61,80 @@ class VaultMigrator:
         else:
             base = "04-Skills"
         return self.settings.vault_dir / base / rel
+
+    def build_graph(self, *, folder: str = "all", min_links: int = 0, tag: str = "") -> VaultGraph:
+        notes = self._index_notes()
+        title_map = {note.title.strip().lower(): note for note in notes}
+        stem_map = {Path(note.id).stem.strip().lower(): note for note in notes}
+        nodes_by_id: dict[str, VaultGraphNode] = {}
+        edges: list[VaultGraphEdge] = []
+
+        for note in notes:
+            path = self.settings.root_dir / note.id
+            text = path.read_text(encoding="utf-8", errors="replace")
+            links = self.WIKILINK_RE.findall(text)
+            resolved_targets: list[VaultGraphNode] = []
+            for raw_link in links:
+                key = raw_link.strip().lower()
+                target = title_map.get(key) or stem_map.get(key)
+                if target and target.id != note.id:
+                    resolved_targets.append(target)
+                    edges.append(VaultGraphEdge(source=note.id, target=target.id))
+
+            node = note.model_copy(update={"links_count": len(resolved_targets)})
+            if folder != "all" and node.folder != folder:
+                continue
+            if tag and tag not in node.tags:
+                continue
+            if node.links_count < min_links:
+                continue
+            nodes_by_id[node.id] = node
+
+        visible_ids = set(nodes_by_id)
+        visible_edges = [edge for edge in edges if edge.source in visible_ids and edge.target in visible_ids]
+        return VaultGraph(nodes=list(nodes_by_id.values()), edges=visible_edges)
+
+    def _index_notes(self) -> list[VaultGraphNode]:
+        root = self.settings.vault_dir if self.settings.vault_dir.exists() else self.settings.wiki_dir
+        notes: list[VaultGraphNode] = []
+        for path in sorted(root.rglob("*.md")):
+            if path.name.startswith(".") or path.name == "CLAUDE.md":
+                continue
+            text = path.read_text(encoding="utf-8", errors="replace")
+            notes.append(
+                VaultGraphNode(
+                    id=str(path.relative_to(self.settings.root_dir)),
+                    title=self._title_from_text(text, path),
+                    folder=self._folder_for_path(path),
+                    tags=re.findall(r'^\s*-\s+"?([a-zA-Z0-9:_#-]+)"?\s*$', text, flags=re.MULTILINE)[:8],
+                )
+            )
+        return notes
+
+    @staticmethod
+    def _title_from_text(text: str, path: Path) -> str:
+        frontmatter = re.search(r'^title:\s*"?([^"\n]+)"?\s*$', text, flags=re.MULTILINE)
+        if frontmatter:
+            return frontmatter.group(1).strip()
+        heading = re.search(r"^#\s+(.+)$", text, flags=re.MULTILINE)
+        if heading:
+            return heading.group(1).strip()
+        return path.stem.replace("-", " ").title()
+
+    @staticmethod
+    def _folder_for_path(path: Path) -> str:
+        raw = str(path).lower()
+        if "/vault/00-daily/" in raw or "/wiki/tasks/" in raw or "/wiki/logs/" in raw:
+            return "daily"
+        if "/vault/01-projects/" in raw or "/wiki/projects/" in raw:
+            return "projects"
+        if "/vault/02-research/" in raw or "/wiki/analyses/" in raw or "/wiki/sources/" in raw or "/wiki/areas/" in raw:
+            return "research"
+        if "/vault/03-dev/" in raw or "/wiki/patterns/" in raw:
+            return "dev"
+        if "/vault/04-skills/" in raw:
+            return "skills"
+        return "skills" if "/wiki/entities/" in raw else "research"
 
     @staticmethod
     def _default_claude_md() -> str:
@@ -132,6 +209,94 @@ fallback textual y marcar `supported=False` hasta que existan embeddings reales.
 
 No basta con registrar el job. La conversion debe llamar a
 `MarkItDownIngestor.convert(...)` y persistir el resultado.
+
+## Terminal Claude Code (Fase 1)
+
+El dashboard expone un terminal local en `/terminal` con API en
+`/api/terminal/sessions` y WebSocket en `/ws/terminal/{session_id}`. La sesión se
+ejecuta con `claude --model <model>` dentro de `settings.root_dir` cuando
+`load_vault_context=True`.
+
+Limitaciones v1:
+
+- Sesiones PTY en memoria del proceso FastAPI, sin persistencia histórica.
+- Uso local en `127.0.0.1`; no hay hardening multiusuario ni exposición pública.
+- Métricas básicas parseadas del stream; si Claude cambia el formato, quedan a
+  cero sin romper el terminal.
+- No inyecta contexto automáticamente al PTY: Claude Code lee el repo/vault desde
+  el directorio raíz.
+
+## Research Engine (Fase 2)
+
+El dashboard expone `/research` y la API `POST /api/research/query` con backends
+`perplexity`, `notebooklm` y `ollama`. Los resultados se guardan en
+`data/runtime/research.json`.
+
+Reglas v1:
+
+- `perplexity` solo hace web research real si existe `PERPLEXITY_API_KEY`.
+- `ollama` intenta `http://127.0.0.1:11434/api/generate`; si no está disponible,
+  devuelve contexto recuperado del vault.
+- `notebooklm` queda como adaptador no configurado y degrada a contexto del vault.
+- `save_to_vault=True` crea `vault/02-Research/research-{slug}.md` con
+  frontmatter y citas cuando existan.
+- Las degradaciones deben marcar `supported=False` y explicar `notice`.
+
+## Graph View (Fase 3)
+
+El dashboard expone `/graph` y la API `GET /api/vault/graph`. El grafo usa notas
+Markdown como nodos y wikilinks `[[Nota]]` como edges.
+
+Reglas v1:
+
+- El parser resuelve enlaces por `title` de frontmatter, encabezado `#` o stem
+  del archivo.
+- Filtros soportados: `folder`, `tag` y `min_links`.
+- La visualización D3.js vive en `jarvis_os/dashboard/static/graph.js`.
+- No hay embeddings ni ranking semántico en esta fase; solo enlaces explícitos.
+
+## Notepad + Calendario (Fase 4)
+
+El dashboard expone `/notepad`, `GET /api/notes/daily/today`,
+`GET|PUT /api/notes/{path}` y `GET /api/calendar/events`.
+
+Reglas v1:
+
+- La escritura de notas está restringida a `vault/` y solo permite Markdown.
+- Las notas nuevas reciben frontmatter automático con `title`, `type`, `status`,
+  `created`, `updated` y `tokens_consumed`.
+- El journal diario vive en `vault/00-Daily/journal-YYYY-MM-DD.md`.
+- El calendario detecta eventos por fechas `YYYY-MM-DD` en nombres de archivo.
+- El editor del dashboard auto-guarda cada 30 segundos.
+
+## Búsqueda semántica (Fase 5)
+
+El job `vault_reindex` crea `data/runtime/vault-index.db` con chunks del vault y
+embeddings locales. `search_vault(mode="semantic")` usa ese índice cuando existe.
+
+Reglas v1:
+
+- Si el índice no existe, `semantic` degrada a búsqueda textual con
+  `supported=False`.
+- El índice usa SQLite local y no se recalcula en cada query.
+- Las dependencias declaradas son `sqlite-vec` y `sentence-transformers`; la
+  implementación mantiene un embedding hash local como fallback operativo.
+- Reindexar después de cambios grandes en el vault.
+
+## Newsletter diario (Fase 6)
+
+El dashboard expone `/newsletter`, `POST /api/newsletter/generate`,
+`GET /newsletter/{date}` y `GET /newsletter/{date}/html`. El job
+`newsletter_generate` crea artefactos en
+`vault/00-Daily/newsletters/YYYY-MM-DD.{md,html,pdf}`.
+
+Reglas v1:
+
+- La fuente activa sin credenciales es el vault local.
+- Gmail queda como skill en `tools/skills/gmail/` y requiere OAuth externo.
+- PDF se genera solo si `weasyprint` está instalado.
+- El HTML usa CSS editorial aislado en `jarvis_os/dashboard/static/newsletter.css`.
+- La skill principal vive en `tools/skills/newsletter/SKILL.md`.
 
 ## Búsqueda en vault
 

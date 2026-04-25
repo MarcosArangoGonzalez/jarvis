@@ -15,15 +15,23 @@
           <h1>{{ title or "JarvisOS Dashboard" }}</h1>
         </div>
         <nav class="tabs">
-          <a href="/">overview</a>
-          <a href="/architecture">architecture</a>
-          <a href="/vault/search">vault search</a>
-          <a href="/inbox">inbox</a>
-          <a href="/security">security</a>
-          <a href="/sessions">sessions</a>
-          <a href="/skills">skills</a>
-          <a href="/jobs">jobs</a>
-          <a href="/integrations">integrations</a>
+          <a href="/" {% if request.url.path == "/" %}aria-current="page"{% endif %}>overview</a>
+          <a href="/vault/search" {% if request.url.path.startswith("/vault") %}aria-current="page"{% endif %}>vault</a>
+          <a href="/terminal" {% if request.url.path.startswith("/terminal") %}aria-current="page"{% endif %}>terminal</a>
+          <a href="/research" {% if request.url.path.startswith("/research") %}aria-current="page"{% endif %}>research</a>
+          <a href="/graph" {% if request.url.path.startswith("/graph") %}aria-current="page"{% endif %}>graph</a>
+          <a href="/notepad" {% if request.url.path.startswith("/notepad") %}aria-current="page"{% endif %}>notepad</a>
+          <a href="/newsletter" {% if request.url.path.startswith("/newsletter") %}aria-current="page"{% endif %}>newsletter</a>
+          <a href="/architecture" {% if request.url.path.startswith("/architecture") %}aria-current="page"{% endif %}>architecture</a>
+          <a href="/dev_hub" {% if request.url.path.startswith("/dev_hub") %}aria-current="page"{% endif %}>dev hub</a>
+          <a href="/session/new" {% if request.url.path.startswith("/session") %}aria-current="page"{% endif %}>wizard</a>
+          <a href="/insights" {% if request.url.path.startswith("/insights") %}aria-current="page"{% endif %}>insights</a>
+          <a href="/inbox" {% if request.url.path.startswith("/inbox") %}aria-current="page"{% endif %}>inbox</a>
+          <a href="/security" {% if request.url.path.startswith("/security") %}aria-current="page"{% endif %}>security</a>
+          <a href="/sessions" {% if request.url.path.startswith("/sessions") %}aria-current="page"{% endif %}>sessions</a>
+          <a href="/skills" {% if request.url.path.startswith("/skills") %}aria-current="page"{% endif %}>skills</a>
+          <a href="/jobs" {% if request.url.path.startswith("/jobs") %}aria-current="page"{% endif %}>jobs</a>
+          <a href="/integrations" {% if request.url.path.startswith("/integrations") %}aria-current="page"{% endif %}>integrations</a>
         </nav>
       </header>
       {% block content %}{% endblock %}

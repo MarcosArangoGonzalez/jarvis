@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-body">
+  <div class="insights-header">
+    <p class="hint">Notas de aprendizaje generadas al cerrar sesiones con modo aprendizaje activo.</p>
+    <form method="post" action="/jobs/run" style="display:inline">
+      <input type="hidden" name="kind" value="session_insights_generate">
+      <button class="btn-secondary">Generar insight de sesión actual</button>
+    </form>
+  </div>
+
+  {% if insights %}
+  <div class="insights-grid">
+    {% for insight in insights %}
+    <div class="card insight-card">
+      <div class="insight-header">
+        <h3>{{ insight.title }}</h3>
+        <span class="hint">{{ insight.date }}</span>
+      </div>
+      {% if insight.technologies %}
+      <div class="tag-row">
+        {% for tech in insight.technologies %}
+        <span class="tag tag-tech">{{ tech }}</span>
+        {% endfor %}
+      </div>
+      {% endif %}
+      {% if insight.patterns_used %}
+      <div class="tag-row mt-1">
+        {% for pattern in insight.patterns_used %}
+        <span class="tag tag-pattern">{{ pattern }}</span>
+        {% endfor %}
+      </div>
+      {% endif %}
+      {% if insight.summary %}
+      <p class="insight-summary">{{ insight.summary[:280] }}{% if insight.summary | length > 280 %}…{% endif %}</p>
+      {% endif %}
+      <div class="insight-footer">
+        <span class="mono hint">{{ insight.path }}</span>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="card">
+    <h3>Sin insights todavía</h3>
+    <p>Para generar insights automáticamente:</p>
+    <ol>
+      <li>Activa el <strong>Modo Aprendizaje</strong> en el <a href="/session/new">Session Wizard</a></li>
+      <li>Al cerrar la sesión, el sistema generará una nota en <code>vault/03-Dev/insights/</code></li>
+      <li>O ejecuta el job <strong>session_insights_generate</strong> desde <a href="/jobs">Jobs</a></li>
+    </ol>
+  </div>
+  {% endif %}
+</section>
+
+<style>
+.insights-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+.insights-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 1.2rem; }
+.insight-card { display: flex; flex-direction: column; gap: 8px; }
+.insight-header { display: flex; justify-content: space-between; align-items: flex-start; }
+.insight-header h3 { margin: 0; font-size: 1rem; }
+.tag-row { display: flex; flex-wrap: wrap; gap: 4px; }
+.tag { padding: 2px 7px; border-radius: 3px; font-size: 0.75rem; }
+.tag-tech { background: #dbeafe; color: #1e40af; }
+.tag-pattern { background: #f3e8ff; color: #6b21a8; }
+.insight-summary { font-size: 0.85rem; color: var(--text-secondary, #444); line-height: 1.5; margin: 4px 0 0; }
+.insight-footer { margin-top: auto; padding-top: 8px; border-top: 1px solid var(--border); }
+.mono { font-family: monospace; }
+.hint { font-size: 0.8rem; color: var(--text-muted, #666); }
+.mt-1 { margin-top: 4px; }
+</style>
+{% endblock %}

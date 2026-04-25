@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
-# Runs on Claude Stop event. Appends session entry to wiki/log.md,
+# Runs on Claude Stop event. Appends session entry to wiki/logs/core/jarvis-log.md,
 # writes a minimal handover block, and optionally auto-commits.
 set -euo pipefail
 
-LOG="$CLAUDE_PROJECT_DIR/wiki/log.md"
+LOG="$CLAUDE_PROJECT_DIR/wiki/logs/core/jarvis-log.md"
 SESSION_MGR="$CLAUDE_PROJECT_DIR/.jarvis/session_manager.md"
 TIMESTAMP=$(date '+%Y-%m-%d %H:%M')
 ISO=$(date -u '+%Y-%m-%dT%H:%M:%SZ')
 
-# 1. Append to wiki/log.md
+# 1. Append to wiki/logs/core/jarvis-log.md
 cat >> "$LOG" << EOF
 
 ## $TIMESTAMP — session end

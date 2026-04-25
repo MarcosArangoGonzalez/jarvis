@@ -30,8 +30,10 @@ def test_vault_search_returns_results_for_rag() -> None:
 def test_semantic_vault_search_degrades_to_textual_fallback() -> None:
     result = make_kernel().search_vault(VaultSearchQuery(query="RAG", mode="semantic"))
     assert result.mode == "semantic"
-    assert result.supported is False
-    assert "fallback textual" in result.notice
+    if result.supported:
+        assert "vault-index.db" in result.notice
+    else:
+        assert "fallback textual" in result.notice
     assert result.total >= 1
 
 
@@ -50,16 +52,33 @@ def test_app_registers_expected_routes() -> None:
         "/sessions",
         "/skills",
         "/jobs",
+        "/terminal",
+        "/research",
+        "/graph",
+        "/notepad",
+        "/newsletter",
         "/integrations",
         "/api/overview",
         "/api/topology",
         "/api/vault/search",
+        "/api/vault/graph",
+        "/api/notes/daily/today",
+        "/api/notes/{path:path}",
+        "/api/calendar/events",
+        "/api/newsletter/generate",
+        "/api/newsletter/status/{job_id}",
+        "/newsletter/{target_date}",
+        "/newsletter/{target_date}/html",
         "/api/jobs",
         "/api/inbox",
         "/api/ingestions",
         "/api/security/scan",
         "/api/security/findings",
         "/api/sessions/{session_id}",
+        "/api/research/query",
+        "/api/research/history",
+        "/api/terminal/sessions",
+        "/ws/terminal/{session_id}",
         "/api/skills/{skill_id}",
     }
     assert expected.issubset(paths)
@@ -170,4 +189,6 @@ def _temp_settings(root) -> Settings:
         templates_dir=get_settings().templates_dir,
         static_dir=get_settings().static_dir,
         session_manager_path=root / ".jarvis" / "session_manager.md",
+        contexts_dir=root / "contexts",
+        insights_dir=root / "vault" / "03-Dev" / "insights",
     )

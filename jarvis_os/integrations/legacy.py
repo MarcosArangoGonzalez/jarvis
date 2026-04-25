@@ -16,7 +16,23 @@ class LegacyWorkspace:
     def list_skills(self) -> list[SkillDefinition]:
         skills: list[SkillDefinition] = []
         for path in sorted(self.settings.skills_dir.glob("*")):
-            if path.is_dir() or path.name == "README.md":
+            if path.is_dir():
+                skill_md = path / "SKILL.md"
+                if skill_md.exists():
+                    skills.append(
+                        SkillDefinition(
+                            id=path.name.replace("_", "-"),
+                            name=path.name.replace("_", " ").title(),
+                            kind="skill",
+                            entrypoint=str(skill_md.relative_to(self.settings.root_dir)),
+                            description=self._extract_skill_description(skill_md),
+                            tags=[path.name],
+                            supports_tokens=False,
+                            health_status="healthy",
+                        )
+                    )
+                continue
+            if path.name == "README.md":
                 continue
             if path.suffix not in {".py", ".sh", ".js", ".desktop"}:
                 continue
@@ -93,7 +109,7 @@ class LegacyWorkspace:
         tokens = [token.lower() for token in query.split() if token.strip()]
         results: list[VaultNoteSummary] = []
         threshold = self._date_threshold(date_filter)
-        for path in self.settings.wiki_dir.rglob("*.md"):
+        for path in self._knowledge_root().rglob("*.md"):
             if path.name.startswith("."):
                 continue
             category = self._categorize_path(path)
@@ -235,6 +251,12 @@ class LegacyWorkspace:
                 if line:
                     return line.removeprefix("#").strip()
         return first_line.strip().strip("#").strip()[:120]
+
+    @staticmethod
+    def _extract_skill_description(path: Path) -> str:
+        text = path.read_text(encoding="utf-8", errors="replace")
+        match = re.search(r"^description:\s*(.+)$", text, flags=re.MULTILINE)
+        return match.group(1).strip()[:160] if match else path.stem
 
     @staticmethod
     def _infer_skill_tags(path: Path) -> list[str]:

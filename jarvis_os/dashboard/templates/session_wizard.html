@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-body">
+  <div class="wizard-layout">
+    <div class="wizard-form">
+      <h2>Configurar sesión de trabajo</h2>
+      <p class="hint">Selecciona los contextos que se concatenarán en tu CLAUDE.md de sesión.</p>
+
+      {% if profiles %}
+      <div class="card mb-4">
+        <h3>Perfiles predefinidos</h3>
+        <div class="context-grid">
+          {% for profile in profiles %}
+          <label class="context-item">
+            <input type="radio" name="profile" value="{{ profile.path }}" data-profile>
+            <strong>{{ profile.name }}</strong>
+            <span class="hint">{{ profile.description }}</span>
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      {% for category, files in contexts.items() %}
+      {% if category != 'profiles' %}
+      <div class="card mb-4">
+        <h3>{{ category | capitalize }}</h3>
+        <div class="context-grid">
+          {% for ctx in files %}
+          <label class="context-item">
+            <input type="checkbox" name="contexts" value="{{ ctx.path }}" class="ctx-check">
+            <strong>{{ ctx.name }}</strong>
+            <span class="hint">{{ ctx.description }}</span>
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+      {% endfor %}
+
+      <div class="card mb-4">
+        <h3>Opciones</h3>
+        <label class="context-item">
+          <input type="checkbox" id="save-profile">
+          Guardar como perfil en vault
+        </label>
+        <input type="text" id="profile-name" placeholder="Nombre del perfil (opcional)" class="input-field" style="margin-top:8px">
+      </div>
+
+      <div class="action-row">
+        <button class="btn-primary" id="generate-btn">Generar CLAUDE.md</button>
+        <button class="btn-secondary" id="copy-btn" style="display:none">Copiar</button>
+      </div>
+    </div>
+
+    <div class="wizard-preview" id="preview-panel" style="display:none">
+      <h3>CLAUDE.md generado</h3>
+      <div class="hint" id="sources-info"></div>
+      <pre id="claude-md-output" class="code-block"></pre>
+    </div>
+  </div>
+</section>
+
+<style>
+.wizard-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+.wizard-form { min-width: 0; }
+.wizard-preview { min-width: 0; }
+.context-grid { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+.context-item { display: flex; flex-direction: column; gap: 2px; padding: 8px; border: 1px solid var(--border); border-radius: 4px; cursor: pointer; }
+.context-item:hover { background: var(--surface-hover, #f5f5f5); }
+.context-item input { margin-bottom: 4px; }
+.hint { font-size: 0.8rem; color: var(--text-muted, #666); }
+.mb-4 { margin-bottom: 1.5rem; }
+.action-row { display: flex; gap: 1rem; margin-top: 1rem; }
+.code-block { background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 4px; overflow: auto; white-space: pre-wrap; font-size: 0.8rem; max-height: 70vh; }
+.input-field { width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px; font-size: 0.9rem; }
+@media (max-width: 900px) { .wizard-layout { grid-template-columns: 1fr; } }
+</style>
+
+<script>
+document.getElementById('generate-btn').addEventListener('click', async () => {
+  const checkboxes = document.querySelectorAll('.ctx-check:checked');
+  const profileRadio = document.querySelector('input[name="profile"]:checked');
+  const saveProfile = document.getElementById('save-profile').checked;
+  const profileName = document.getElementById('profile-name').value;
+
+  const payload = {
+    contexts: Array.from(checkboxes).map(c => c.value),
+    profile: profileRadio ? profileRadio.value : null,
+    save_profile: saveProfile,
+    profile_name: profileName,
+  };
+
+  const resp = await fetch('/api/session/generate', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(payload),
+  });
+  const data = await resp.json();
+
+  document.getElementById('claude-md-output').textContent = data.claude_md;
+  document.getElementById('sources-info').textContent = `Fuentes: ${data.sources.join(', ')}` + (data.saved_path ? ` · Guardado en: ${data.saved_path}` : '');
+  document.getElementById('preview-panel').style.display = 'block';
+  document.getElementById('copy-btn').style.display = 'inline-block';
+});
+
+document.getElementById('copy-btn').addEventListener('click', () => {
+  const text = document.getElementById('claude-md-output').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    document.getElementById('copy-btn').textContent = '✓ Copiado';
+    setTimeout(() => { document.getElementById('copy-btn').textContent = 'Copiar'; }, 2000);
+  });
+});
+</script>
+{% endblock %}
