@@ -1,0 +1,15 @@
+sections:
+  - id: tech
+    title: "Tecnología & IA"
+    topics: ["claude", "mcp", "rag", "agent", "python"]
+  - id: bjj
+    title: "BJJ & Entrenamiento"
+    topics: ["bjj", "jiu jitsu", "grappling", "guardia"]
+  - id: dev
+    title: "Desarrollo & Proyectos"
+    topics: ["jarvis", "tfg", "spring", "angular", "odoo"]
+output:
+  save_md: true
+  save_html: true
+  export_pdf: true
+  max_items_per_section: 5

@@ -819,3 +819,49 @@ Summary: Chronological operating log for JarvisOS.
 - Replaced dict-based job artifacts with explicit `ArtifactRef` instances in kernel job results.
 - Covered both MarkItDown conversion artifacts and pre-commit hook generation artifacts.
 - Verified `pytest tests/test_jarvis_os.py` passes with 12 tests.
+
+## 2026-04-25 — Fase 7: Dev Hub + IDE Features + Session Wizard + Contexts
+
+- Creado `contexts/` con 27 archivos .md en 6 categorías (models, stack, workflow, quality, personal, profiles).
+- Implementado Session Wizard: `GET /api/session/contexts`, `POST /api/session/generate`, `/session/new` con UI de selección + preview del CLAUDE.md generado.
+- Implementado Dev Hub en `/dev_hub`: agrega jobs, security findings, session insights y CI/CD status (GitHub Actions via GITHUB_TOKEN con fallback gracioso).
+- Añadido `/insights` con viewer de notas `vault/03-Dev/insights/`.
+- Nuevos endpoints: `POST /api/render` (Mermaid/Claude API), `POST /api/docs/check` (Perplexity wrapper).
+- Integrations: `SessionWizard`, `CiCdIntegration`, `Context7Client`, `DiagramRenderer`.
+- Nuevos job kinds: `session_generate`, `session_insights_generate`.
+- Agent definitions en `.claude/agents/`: backend, frontend, reviewer, docs.
+- Skills: `educator/session_insights.py`, `autosave/autosave_hook.sh`, `bitwarden/SKILL.md`, `session_init/session_init.py`.
+- Tests: 4 nuevos suites, 63 tests totales passing.
+- Siguiente: activar autosave hook en settings.json (bajo permiso), Gmail OAuth real, WeasyPrint para PDF, MCP Context7.
+
+## 2026-04-25 23:17 — session end
+
+## 2026-04-25 23:17 — session end (auto)
+
+- Archivos modificados o creados en esta sesión:
+  - .claude/commands/jarvis-log.md
+  - .claude/commands/jarvis.md
+  - .claude/hooks/log_session.sh
+  - jarvis_os/api/routers/vault.py
+  - jarvis_os/app.py
+  - jarvis_os/config.py
+  - jarvis_os/dashboard/static/dashboard.css
+  - jarvis_os/dashboard/templates/base.html
+  - jarvis_os/dashboard/templates/jobs.html
+  - jarvis_os/integrations/legacy.py
+  - jarvis_os/integrations/vault.py
+  - jarvis_os/kernel/service.py
+  - jarvis_os/repositories.py
+  - .obsidian/graph.json
+  - README.md
+  - tools/skills/autosave/autosave_hook.sh
+  - tools/skills/bitwarden/SKILL.md
+  - tools/skills/bridge/SKILL.md
+  - tools/skills/educator/session_insights.py
+  - tools/skills/gmail/extract_newsletter.py
+  - tools/skills/gmail/read_email.py
+  - tools/skills/gmail/search_gmail.py
+  - tools/skills/gmail/SKILL.md
+  - tools/skills/newsletter/config/feeds.opml
+  - tools/skills/newsletter/SKILL.md
+
