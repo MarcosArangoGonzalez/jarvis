@@ -89,6 +89,10 @@ class FakePtyProcess:
     def __init__(self) -> None:
         self.alive = True
         self.writes: list[bytes] = []
+        self.rows: int = 0
+        self.cols: int = 0
+        self._output: bytes = b""
+        self._raise_eof: bool = False
 
     def isalive(self) -> bool:
         return self.alive
@@ -98,7 +102,9 @@ class FakePtyProcess:
         return len(data)
 
     def read(self, size: int = 1024) -> bytes:
-        return b""
+        if self._raise_eof:
+            raise EOFError
+        return self._output
 
     def setwinsize(self, rows: int, cols: int) -> None:
         self.rows = rows
@@ -106,6 +112,146 @@ class FakePtyProcess:
 
     def terminate(self, force: bool = False) -> None:
         self.alive = False
+
+
+def test_session_list_after_create(tmp_path, monkeypatch: pytest.MonkeyPatch) -> None:
+    settings = _temp_settings(tmp_path)
+    workdir = settings.root_dir / "work"
+    workdir.mkdir(parents=True)
+    monkeypatch.setattr(terminal_integration.shutil, "which", lambda _: "/usr/bin/claude")
+    monkeypatch.setattr(terminal_integration.PtyProcess, "spawn", lambda *a, **kw: FakePtyProcess())
+    terminal = ClaudeTerminal(settings)
+    terminal.create_session(TerminalSessionCreate(cwd="work", load_vault_context=False))
+    sessions = terminal.list_sessions()
+    assert len(sessions) == 1
+    assert sessions[0].status == "active"
+
+
+def test_session_close_marks_closed(tmp_path, monkeypatch: pytest.MonkeyPatch) -> None:
+    settings = _temp_settings(tmp_path)
+    workdir = settings.root_dir / "work"
+    workdir.mkdir(parents=True)
+    monkeypatch.setattr(terminal_integration.shutil, "which", lambda _: "/usr/bin/claude")
+    monkeypatch.setattr(terminal_integration.PtyProcess, "spawn", lambda *a, **kw: FakePtyProcess())
+    terminal = ClaudeTerminal(settings)
+    info = terminal.create_session(TerminalSessionCreate(cwd="work", load_vault_context=False))
+    closed = terminal.close_session(info.session_id)
+    assert closed is not None
+    assert closed.status == "closed"
+
+
+def test_session_write_sends_bytes(tmp_path, monkeypatch: pytest.MonkeyPatch) -> None:
+    settings = _temp_settings(tmp_path)
+    workdir = settings.root_dir / "work"
+    workdir.mkdir(parents=True)
+    monkeypatch.setattr(terminal_integration.shutil, "which", lambda _: "/usr/bin/claude")
+    fake = FakePtyProcess()
+    monkeypatch.setattr(terminal_integration.PtyProcess, "spawn", lambda *a, **kw: fake)
+    terminal = ClaudeTerminal(settings)
+    info = terminal.create_session(TerminalSessionCreate(cwd="work", load_vault_context=False))
+    session = terminal.get_session(info.session_id)
+    assert session is not None
+    session.write("hello\n")
+    assert fake.writes == [b"hello\n"]
+
+
+def test_session_read_updates_metrics(tmp_path, monkeypatch: pytest.MonkeyPatch) -> None:
+    settings = _temp_settings(tmp_path)
+    workdir = settings.root_dir / "work"
+    workdir.mkdir(parents=True)
+    monkeypatch.setattr(terminal_integration.shutil, "which", lambda _: "/usr/bin/claude")
+    fake = FakePtyProcess()
+    fake._output = b"Tokens: 1,000 input, 500 output ... Context: 42.0% ... Cost: $0.10"
+    monkeypatch.setattr(terminal_integration.PtyProcess, "spawn", lambda *a, **kw: fake)
+    terminal = ClaudeTerminal(settings)
+    info = terminal.create_session(TerminalSessionCreate(cwd="work", load_vault_context=False))
+    session = terminal.get_session(info.session_id)
+    assert session is not None
+    session.read()
+    assert session.metrics.tokens_in == 1000
+    assert session.metrics.tokens_out == 500
+    assert session.metrics.context_pct == 42.0
+    assert session.metrics.cost_usd == 0.10
+
+
+def test_session_read_on_eof_marks_closed(tmp_path, monkeypatch: pytest.MonkeyPatch) -> None:
+    settings = _temp_settings(tmp_path)
+    workdir = settings.root_dir / "work"
+    workdir.mkdir(parents=True)
+    monkeypatch.setattr(terminal_integration.shutil, "which", lambda _: "/usr/bin/claude")
+    fake = FakePtyProcess()
+    fake._raise_eof = True
+    monkeypatch.setattr(terminal_integration.PtyProcess, "spawn", lambda *a, **kw: fake)
+    terminal = ClaudeTerminal(settings)
+    info = terminal.create_session(TerminalSessionCreate(cwd="work", load_vault_context=False))
+    session = terminal.get_session(info.session_id)
+    assert session is not None
+    result = session.read()
+    assert result == ""
+    assert session.status == "closed"
+
+
+def test_session_write_raises_on_closed(tmp_path, monkeypatch: pytest.MonkeyPatch) -> None:
+    settings = _temp_settings(tmp_path)
+    workdir = settings.root_dir / "work"
+    workdir.mkdir(parents=True)
+    monkeypatch.setattr(terminal_integration.shutil, "which", lambda _: "/usr/bin/claude")
+    fake = FakePtyProcess()
+    monkeypatch.setattr(terminal_integration.PtyProcess, "spawn", lambda *a, **kw: fake)
+    terminal = ClaudeTerminal(settings)
+    info = terminal.create_session(TerminalSessionCreate(cwd="work", load_vault_context=False))
+    terminal.close_session(info.session_id)
+    session = terminal.get_session(info.session_id)
+    assert session is not None
+    with pytest.raises(TerminalError, match="closed"):
+        session.write("anything")
+
+
+def test_session_resize_calls_setwinsize(tmp_path, monkeypatch: pytest.MonkeyPatch) -> None:
+    settings = _temp_settings(tmp_path)
+    workdir = settings.root_dir / "work"
+    workdir.mkdir(parents=True)
+    monkeypatch.setattr(terminal_integration.shutil, "which", lambda _: "/usr/bin/claude")
+    fake = FakePtyProcess()
+    monkeypatch.setattr(terminal_integration.PtyProcess, "spawn", lambda *a, **kw: fake)
+    terminal = ClaudeTerminal(settings)
+    info = terminal.create_session(TerminalSessionCreate(cwd="work", load_vault_context=False))
+    session = terminal.get_session(info.session_id)
+    assert session is not None
+    session.resize(cols=200, rows=50)
+    assert fake.rows == 50
+    assert fake.cols == 200
+
+
+def test_close_all_terminates_all_sessions(tmp_path, monkeypatch: pytest.MonkeyPatch) -> None:
+    settings = _temp_settings(tmp_path)
+    workdir = settings.root_dir / "work"
+    workdir.mkdir(parents=True)
+    monkeypatch.setattr(terminal_integration.shutil, "which", lambda _: "/usr/bin/claude")
+    fakes = [FakePtyProcess(), FakePtyProcess()]
+    fake_iter = iter(fakes)
+    monkeypatch.setattr(terminal_integration.PtyProcess, "spawn", lambda *a, **kw: next(fake_iter))
+    terminal = ClaudeTerminal(settings)
+    terminal.create_session(TerminalSessionCreate(cwd="work", load_vault_context=False))
+    terminal.create_session(TerminalSessionCreate(cwd="work", load_vault_context=False))
+    terminal.close_all()
+    assert all(not f.alive for f in fakes)
+
+
+def test_session_info_detects_dead_process(tmp_path, monkeypatch: pytest.MonkeyPatch) -> None:
+    settings = _temp_settings(tmp_path)
+    workdir = settings.root_dir / "work"
+    workdir.mkdir(parents=True)
+    monkeypatch.setattr(terminal_integration.shutil, "which", lambda _: "/usr/bin/claude")
+    fake = FakePtyProcess()
+    monkeypatch.setattr(terminal_integration.PtyProcess, "spawn", lambda *a, **kw: fake)
+    terminal = ClaudeTerminal(settings)
+    info = terminal.create_session(TerminalSessionCreate(cwd="work", load_vault_context=False))
+    session = terminal.get_session(info.session_id)
+    assert session is not None
+    fake.alive = False
+    updated = session.info()
+    assert updated.status == "closed"
 
 
 def _temp_settings(root: Path) -> Settings:

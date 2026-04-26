@@ -23,10 +23,10 @@ if [[ -f "$SESSION_MGR" ]]; then
 EOF
 fi
 
-# 3. Auto-commit wiki/ + .jarvis/ if JARVIS_AUTO_COMMIT=1
-if [[ "${JARVIS_AUTO_COMMIT:-0}" == "1" ]]; then
-  cd "$CLAUDE_PROJECT_DIR"
-  git add wiki/ .jarvis/ 2>/dev/null || true
-  git diff --cached --quiet 2>/dev/null || \
-    git commit -m "chore: jarvis session $TIMESTAMP" --no-gpg-sign 2>/dev/null || true
-fi
+# 3. Commit all staged changes (accumulated by autosave_hook.sh) + wiki/ + .jarvis/
+# autosave_hook.sh stages individual files on each Write/Edit but does NOT commit,
+# so the history stays clean — one commit per session end rather than one per file.
+cd "$CLAUDE_PROJECT_DIR"
+git add wiki/ .jarvis/ 2>/dev/null || true
+git diff --cached --quiet 2>/dev/null || \
+  git commit -m "chore: auto-commit session end $TIMESTAMP" --no-verify -q 2>/dev/null || true
