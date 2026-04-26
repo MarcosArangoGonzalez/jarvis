@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% set title = "05-Inbox" %}
 {% block content %}
-  <section class="panel">
+  <section class="panel s-amber">
     <div class="panel-head">
       <h3>Inbox</h3>
       <form method="post" action="/inbox/process" class="job-form">
@@ -28,7 +28,7 @@
       {% endfor %}
     </div>
   </section>
-  <section class="panel">
+  <section class="panel s-teal">
     <div class="panel-head"><h3>Recent ingestions</h3><span class="badge">{{ ingestions | length }}</span></div>
     <div class="result-list">
       {% for item in ingestions[:8] %}

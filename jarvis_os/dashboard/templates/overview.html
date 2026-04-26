@@ -19,7 +19,7 @@
   </section>
 
   <section class="grid three">
-    <article class="panel">
+    <article class="panel s-amber">
       <div class="panel-head"><h3>Tareas de Hoy</h3></div>
       <ul class="task-list">
         {% for task in overview.today %}
@@ -27,18 +27,22 @@
             <span>{{ task.title }}</span>
             <small>{{ task.project }} · {{ task.priority }}</small>
           </li>
+        {% else %}
+          <li><small class="empty">Sin tareas para hoy.</small></li>
         {% endfor %}
       </ul>
     </article>
-    <article class="panel">
+    <article class="panel s-teal">
       <div class="panel-head"><h3>Agenda</h3></div>
       <ul class="agenda-list">
         {% for item in overview.agenda %}
           <li>{{ item }}</li>
+        {% else %}
+          <li><small class="empty">Agenda vacía.</small></li>
         {% endfor %}
       </ul>
     </article>
-    <article class="panel">
+    <article class="panel s-blue">
       <div class="panel-head"><h3>Métricas</h3></div>
       <div class="metric-grid">
         {% for metric in overview.metrics %}
@@ -53,7 +57,7 @@
   </section>
 
   <section class="grid two">
-    <article class="panel">
+    <article class="panel s-purple">
       <div class="panel-head"><h3>Knowledge Base · Reciente</h3></div>
       <div class="note-grid">
         {% for note in overview.recent_notes %}
@@ -62,10 +66,12 @@
             <strong>{{ note.title }}</strong>
             <p>{{ note.summary or "Sin resumen." }}</p>
           </a>
+        {% else %}
+          <p class="empty">No hay notas recientes.</p>
         {% endfor %}
       </div>
     </article>
-    <article class="panel">
+    <article class="panel s-teal">
       <div class="panel-head"><h3>Sesiones</h3></div>
       <ul class="session-list">
         {% for session in overview.sessions %}
@@ -73,23 +79,26 @@
             <strong>{{ session.title }}</strong>
             <small>{{ session.summary }}</small>
           </li>
+        {% else %}
+          <li><small class="empty">Sin sesiones registradas.</small></li>
         {% endfor %}
       </ul>
     </article>
   </section>
 
-  <section class="panel">
+  <section class="panel s-green">
     <div class="panel-head"><h3>Acceso Rápido</h3></div>
     <div class="quick-actions">
       {% for action in overview.quick_actions %}
         <a class="button-link" href="{{ action.href }}">{{ action.label }}</a>
       {% endfor %}
-      <a class="button-link" href="/modules/dev">dev</a>
-      <a class="button-link" href="/modules/research">research</a>
-      <a class="button-link" href="/modules/projects">projects</a>
-      <a class="button-link" href="/modules/daily">daily</a>
+      <a class="button-link" href="/dev_hub">dev hub</a>
+      <a class="button-link" href="/research">research</a>
+      <a class="button-link" href="/session/new">wizard</a>
+      <a class="button-link" href="/vault/search">vault</a>
       <a class="button-link" href="/inbox">inbox</a>
-      <a class="button-link" href="/security">security scan</a>
+      <a class="button-link" href="/security">security</a>
+      <a class="button-link" href="/terminal">terminal</a>
     </div>
   </section>
 {% endblock %}

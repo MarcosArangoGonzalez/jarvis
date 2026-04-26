@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 {% set title = "Integrations" %}
 {% block content %}
-  <section class="panel">
+  <section class="panel s-teal">
     <div class="panel-head"><h3>MCP servers</h3></div>
     <div class="skill-grid">
       {% for item in integrations %}
         <article class="skill-card">
           <div class="result-head">
             <strong>{{ item.name }}</strong>
-            <span class="badge">{{ "available" if item.available else "offline" }}</span>
+            <span class="badge {% if item.available %}badge-ok{% else %}badge-fail{% endif %}">{{ "available" if item.available else "offline" }}</span>
           </div>
           <p>{{ item.description }}</p>
           <small>{{ item.id }}</small>

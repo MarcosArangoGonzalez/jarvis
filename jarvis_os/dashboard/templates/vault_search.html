@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% set title = "Búsqueda en Vault" %}
 {% block content %}
-  <section class="panel">
+  <section class="panel s-teal">
     <form class="search-bar" method="get" action="/vault/search">
       <input type="text" name="query" placeholder="RAG" value="{{ query.query }}">
       <select name="mode">
@@ -27,7 +27,7 @@
   </section>
 
   <section class="grid vault-layout">
-    <aside class="panel filters">
+    <aside class="panel s-amber filters">
       <div class="panel-head"><h3>Carpetas</h3></div>
       <ul class="folder-list">
         <li>todas <span>{{ counts.all }}</span></li>
@@ -38,7 +38,7 @@
         <li>skills <span>{{ counts.skills }}</span></li>
       </ul>
     </aside>
-    <section class="panel results">
+    <section class="panel s-purple results">
       <div class="panel-head">
         <h3>{{ result.total }} resultados para "{{ query.query or 'todo' }}"</h3>
         <span class="badge">{{ query.mode }}</span>

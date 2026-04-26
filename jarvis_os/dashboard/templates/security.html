@@ -2,7 +2,7 @@
 {% set title = "Security Regex" %}
 {% block content %}
   <section class="grid two">
-    <article class="panel">
+    <article class="panel s-red">
       <div class="panel-head"><h3>Scan jobs</h3></div>
       <form method="post" action="/security/scan" class="search-bar">
         <input type="text" name="path" value="." aria-label="scan path">
@@ -16,7 +16,7 @@
         <button type="submit" name="kind" value="precommit_hook_generate">generate hook</button>
       </form>
     </article>
-    <article class="panel">
+    <article class="panel s-amber">
       <div class="panel-head"><h3>Patterns</h3></div>
       <div class="chip-row">
         <span class="chip">IPv4</span>
@@ -29,14 +29,14 @@
       </div>
     </article>
   </section>
-  <section class="panel">
+  <section class="panel s-red">
     <div class="panel-head"><h3>Findings</h3><span class="badge">{{ findings | length }}</span></div>
     <div class="result-list">
       {% for finding in findings[:30] %}
         <article class="result-card">
           <div class="result-head">
             <strong>{{ finding.label }}</strong>
-            <span class="badge">{{ finding.severity }}</span>
+            <span class="badge {% if finding.severity == 'high' %}badge-fail{% elif finding.severity == 'medium' %}badge-warn{% else %}badge-info{% endif %}">{{ finding.severity }}</span>
           </div>
           <p>{{ finding.path }}:{{ finding.line }}</p>
           <small>{{ finding.pattern_id }} · {{ finding.match }}</small>
