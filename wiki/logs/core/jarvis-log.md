@@ -898,3 +898,11 @@ Summary: Chronological operating log for JarvisOS.
 
 
 ## 2026-04-26 14:16 — session end
+
+## 2026-04-26 14:16 — session end (auto)
+
+- Archivos modificados o creados en esta sesión:
+  - .jarvis/session_manager.md
+  - .obsidian/graph.json
+  - wiki/logs/core/jarvis-log.md
+
